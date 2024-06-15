@@ -1,0 +1,1 @@
+(()=>{"use strict";console.log("Webpack and SCSS setup with HMR complete!!")})();
