@@ -9,8 +9,9 @@
 7. npm install html-loader clean-webpack-plugin html-webpack-plugin --save-dev
 8. npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
 9. npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
-   10 .npm install mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin sass-loader sass css-loader babel-loader @babel/core @babel/preset-env --save-dev
+10. npm install mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin sass-loader sass css-loader babel-loader @babel/core @babel/preset-env --save-dev
 
 # build
 
-1. npm start
+1. npm start -> HMR local 작업환경
+2. npm run build -> 서버에 올릴 build 파일
