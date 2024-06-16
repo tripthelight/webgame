@@ -12,6 +12,7 @@ import {
 } from "./movingBall.js";
 
 // common variable
+let arrowElem = new Object();
 let dragType = "default";
 let sPos = { x: 0, y: 0 };
 let mPos = { x: 0, y: 0 };
@@ -41,10 +42,10 @@ const TRANSLATE_VALUE = () => {
     origin: "",
   };
   if (dragType === "center") {
-    value.translate = "-50%, 0%";
+    value.translate = "-50%, 0";
     value.origin = "center top";
   } else {
-    value.translate = "-50%, 50%";
+    value.translate = "-50%, -50%";
     value.origin = "center center";
   }
   return {
@@ -59,7 +60,7 @@ function dragArrowMoStart(_event) {
   const { touches, changeTouches } = _event.originalEvent ?? _event;
   const TOUCH = touches[0] ?? changeTouches[0];
   sPos.x = TOUCH.clientX;
-  sPos.x = TOUCH.clientY;
+  sPos.y = TOUCH.clientY;
 }
 
 function dragArrowMoMove(_event) {
@@ -68,35 +69,33 @@ function dragArrowMoMove(_event) {
   mPos.x = TOUCH.clientX - sPos.x;
   mPos.y = TOUCH.clientY - sPos.y;
 
-  let angle = Math.atan2(mPos.x, mPos.y) * (180 / Math.PI);
+  let angle = Math.round(Math.atan2(mPos.x, mPos.y) * (180 / Math.PI));
   currentRotation = -angle;
   _event.target.style.transformOrigin = `${TRANSLATE_VALUE().origin}`;
   _event.target.style.transform = `translate(${
     TRANSLATE_VALUE().translate
   }) rotate(${currentRotation}deg)`;
 
-  let distance = Math.sqrt(mPos.x * mPos.x + mPos.y + mPos.y);
-  finalHeight = initialHeight + distance;
+  let distance = Math.sqrt(mPos.x * mPos.x + mPos.y * mPos.y);
+  finalHeight = Math.round(initialHeight + distance);
   _event.target.style.height = `${finalHeight}px`;
 
-  lastMoveX.value = mPos.x;
-  lastMoveY.value = mPos.y;
+  lastMoveX.x = mPos.x;
+  lastMoveY.y = mPos.y;
 
   _event.preventDefault();
 }
 
 function dragArrowMoEnd(_event) {
   // start move ball
-  distanceFactor.value = finalHeight / initialHeight;
-  ballDistance.value =
-    Math.sqrt(
-      lastMoveX.value * lastMoveX.value + lastMoveY.value * lastMoveY.value
-    ) *
-    distanceFactor.value *
+  distanceFactor.setValue = finalHeight / initialHeight;
+  ballDistance.setValue =
+    Math.sqrt(lastMoveX.x * lastMoveX.x + lastMoveY.y * lastMoveY.y) *
+    distanceFactor.getValue *
     ballSpeed;
-  ballAngleRad.value = Math.atan2(lastMoveY.value, lastMoveX.value);
-  velocityX.value = -ballDistance.value * Math.cos(ballAngleRad.value);
-  velocityY.value = -ballDistance.value * Math.sin(ballAngleRad.value);
+  ballAngleRad.setValue = Math.atan2(lastMoveY.y, lastMoveX.x);
+  velocityX.x = -ballDistance.getValue * Math.cos(ballAngleRad.getValue);
+  velocityY.y = -ballDistance.getValue * Math.sin(ballAngleRad.getValue);
   moveBall();
 
   // reset
@@ -109,97 +108,107 @@ function dragArrowMoEnd(_event) {
 
 // PC =======================================
 function startInteraction(_x, _y) {
+  isDragging = true;
   sPos.x = _x;
   sPos.y = _y;
-  isDragging = true;
 }
 
-function moveInteraction(_x, _y, _elem) {
-  // const APP_ELEM = document.getElementById("app");
-  // if (!APP_ELEM) return;
-  // const LEVEL1_ELEM = APP_ELEM.getElementById("LEVEL1");
-  // if (!LEVEL1_ELEM) return;
-  // const ARROW_ELEM = LEVEL1_ELEM.querySelector("drag-arrow");
-  // if (!ARROW_ELEM) return;
-  if (ELEMENT_STATE("#app", "#LEVEL1", ".drag-arrow")) return;
+function moveInteraction(_x, _y) {
+  if (!isDragging) return;
   mPos.x = _x - sPos.x;
   mPos.y = _y - sPos.y;
 
-  // ///////////////
-  let angle = Math.atan2(mPos.x, mPos.y) * (180 / Math.PI);
+  let angle = Math.round(Math.atan2(mPos.x, mPos.y) * (180 / Math.PI));
   currentRotation = -angle;
-  _elem.style.transformOrigin = `${TRANSLATE_VALUE().origin}`;
-  _elem.style.transform = `translate(${
+  arrowElem.style.transformOrigin = `${TRANSLATE_VALUE().origin}`;
+  arrowElem.style.transform = `translate(${
     TRANSLATE_VALUE().translate
   }) rotate(${currentRotation}deg)`;
 
-  let distance = Math.sqrt(mPos.x * mPos.x + mPos.y + mPos.y);
-  finalHeight = initialHeight + distance;
-  _elem.style.height = `${finalHeight}px`;
+  let distance = Math.sqrt(mPos.x * mPos.x + mPos.y * mPos.y);
+  finalHeight = Math.round(initialHeight + distance);
+  arrowElem.style.height = `${finalHeight}px`;
+
+  lastMoveX.x = mPos.x;
+  lastMoveY.y = mPos.y;
 }
 
-function endInteraction(_elem) {
+function endInteraction() {
   isDragging = false;
-  removeStyle(_elem);
+
+  // start move ball
+  distanceFactor.setValue = finalHeight / initialHeight;
+  ballDistance.setValue =
+    Math.sqrt(lastMoveX.x * lastMoveX.x + lastMoveY.y * lastMoveY.y) *
+    distanceFactor.getValue *
+    ballSpeed;
+  ballAngleRad.setValue = Math.atan2(lastMoveY.y, lastMoveX.x);
+  velocityX.x = -ballDistance.getValue * Math.cos(ballAngleRad.getValue);
+  velocityY.y = -ballDistance.getValue * Math.sin(ballAngleRad.getValue);
+  moveBall();
+
+  // reset
+  sPos.x = 0;
+  sPos.y = 0;
+  mPos.x = 0;
+  mPos.y = 0;
+  removeStyle(arrowElem);
 }
 
 function dragArrowPcStart(_event) {
-  _event.target.style.opacity = 1;
-  const IMG = new Image();
-  IMG.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
-  _event.dataTransfer.setDragImage(IMG, 0, 0);
-  _event.dataTransfer.setData("text/plain", "Dragging element");
-  _event.target.classList.add("dragging");
-  _event.dataTransfer.effectAllowed = "move";
+  arrowElem.style.opacity = 1;
+  // const IMG = new Image();
+  // IMG.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+  // _event.dataTransfer.setDragImage(IMG, 0, 0);
+  // _event.dataTransfer.setData("text/plain", "Dragging element");
+  // _event.dataTransfer.effectAllowed = "move";
+  // arrowElem.classList.add("dragging");
   startInteraction(_event.clientX, _event.clientY);
 }
 
 function dragArrowPcMove(_event) {
-  moveInteraction(_event.clientX, _event.clientY, _event.target);
+  moveInteraction(_event.clientX, _event.clientY);
 }
 
 function dragArrowPcEnd(_event) {
-  _event.target.classList.remove("dragging");
-  endInteraction(_event.target);
+  // arrowElem.classList.remove("dragging");
+  endInteraction();
 }
 
 function dragArrow(_type) {
-  if (ELEMENT_STATE("#app", "#LEVEL1", ".drag-arrow")) return;
-  const ARROW_ELEM = document.querySelector(".drag-arrow");
-
   if (_type) {
     dragType = _type;
   }
 
   if (isMobile()) {
     // mobile
-    ARROW_ELEM.addEventListener("touchstart", dragArrowMoStart, false);
-    ARROW_ELEM.addEventListener("touchmove", dragArrowMoMove, false);
-    ARROW_ELEM.addEventListener("touchend", dragArrowMoEnd, false);
+    arrowElem.addEventListener("touchstart", dragArrowMoStart, false);
+    arrowElem.addEventListener("touchmove", dragArrowMoMove, false);
+    arrowElem.addEventListener("touchend", dragArrowMoEnd, false);
   } else {
     // PC
-    ARROW_ELEM.addEventListener("dragstart", dragArrowPcStart, false);
-    ARROW_ELEM.addEventListener("drag", dragArrowPcMove, false);
-    ARROW_ELEM.addEventListener("dragend", dragArrowPcEnd, false);
+    arrowElem.addEventListener("mousedown", dragArrowPcStart, false);
+    document.addEventListener("mousemove", dragArrowPcMove, false);
+    document.addEventListener("mouseup", dragArrowPcEnd, false);
   }
 }
 
 // INIT
 export function dragArrowInit() {
   if (ELEMENT_STATE("#app", "#LEVEL1", ".drag-arrow")) return;
-  const ARROW_ELEM = document.querySelector(".drag-arrow");
+  arrowElem = document.querySelector(".drag-arrow");
   if (isMobile()) {
     // mobile
-    ARROW_ELEM.removeAttribute("draggable");
-    ARROW_ELEM.removeEventListener("dragstart", dragArrowPcStart, false);
-    ARROW_ELEM.removeEventListener("drag", dragArrowPcMove, false);
-    ARROW_ELEM.removeEventListener("dragend", dragArrowPcEnd, false);
+    arrowElem.removeAttribute("draggable");
+    arrowElem.removeEventListener("mousedown", dragArrowPcStart, false);
+    document.removeEventListener("mousemove", dragArrowPcMove, false);
+    document.removeEventListener("mouseup", dragArrowPcEnd, false);
   } else {
     // PC
-    ARROW_ELEM.setAttribute("draggable", "true");
-    ARROW_ELEM.removeEventListener("touchstart", dragArrowMoStart, false);
-    ARROW_ELEM.removeEventListener("touchmove", dragArrowMoMove, false);
-    ARROW_ELEM.removeEventListener("touchend", dragArrowMoEnd, false);
+    arrowElem.setAttribute("draggable", "true");
+    arrowElem.removeEventListener("touchstart", dragArrowMoStart, false);
+    arrowElem.removeEventListener("touchmove", dragArrowMoMove, false);
+    arrowElem.removeEventListener("touchend", dragArrowMoEnd, false);
   }
 
   // init function

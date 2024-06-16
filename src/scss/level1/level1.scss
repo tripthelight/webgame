@@ -18,25 +18,16 @@
     top: 50%;
     width: 50px;
     height: 50px;
+    transform-origin: center center;
     transform: translate(-50%, -50%);
     background-color: #ff0000;
-    opacity: 0;
+    opacity: 1;
     &.dragging {
       cursor: pointer;
     }
     &.center {
       transform-origin: center top;
-    }
-    &::after {
-      content: "";
-      display: block;
-      position: fixed;
-      left: 50%;
-      top: 30px;
-      width: 10px;
-      height: 10px;
-      transform: translate(-50%, -50%);
-      background-color: #ffff00;
+      transform: translate(-50%, 0%);
     }
   }
 }

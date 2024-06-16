@@ -1,72 +1,70 @@
 import { isMobile, ELEMENT_STATE } from "../comnFns.js";
 
 // common variable
-export let lastMoveX = {
+export const lastMoveX = {
   value: 0,
-  get getX() {
+  get x() {
     return this.value;
   },
-  set setX(_x) {
+  set x(_x) {
     this.value = _x;
   },
 };
-export let lastMoveY = {
+export const lastMoveY = {
   value: 0,
-  get getY() {
+  get y() {
     return this.value;
   },
-  set setY(_y) {
+  set y(_y) {
     this.value = _y;
   },
 };
-export let ballDistance = {
+export const ballDistance = {
   value: 0,
-  get getDistance() {
+  get getValue() {
     return this.value;
   },
-  set setDistance(_val) {
+  set setValue(_val) {
     this.value = _val;
   },
 };
-export let ballAngleRad = {
+export const ballAngleRad = {
   value: 0,
-  get getAngleRad() {
+  get getValue() {
     return this.value;
   },
-  set setAngleRad(_val) {
+  set setValue(_val) {
     this.value = _val;
   },
 };
-export let distanceFactor = {
+export const distanceFactor = {
   value: 0,
-  get getDistanceFactor() {
+  get getValue() {
     return this.value;
   },
-  set setDistanceFactor(_val) {
+  set setValue(_val) {
     this.value = _val;
   },
 };
-export let velocityX = {
+export const velocityX = {
   value: 0,
-  get getX() {
+  get x() {
     return this.value;
   },
-  set setX(_x) {
+  set x(_x) {
     this.value = _x;
   },
 };
-export let velocityY = {
+export const velocityY = {
   value: 0,
-  get getY() {
+  get y() {
     return this.value;
   },
-  set setY(_y) {
+  set y(_y) {
     this.value = _y;
   },
 };
-export let ballSpeed = 0.1;
-let moveStartHeight = 0;
-let moveStartRadius = 0;
+export const ballSpeed = 0.1;
 let ballX = 0;
 let ballY = 0;
 
@@ -74,23 +72,23 @@ let ballY = 0;
 
 // mobile ===================================
 export function moveBall() {
-  if (ELEMENT_STATE("app", "LEVEL1", ".ball")) return;
+  if (ELEMENT_STATE("#app", "#LEVEL1", ".ball")) return;
   const BALL = document.querySelector(".ball");
 
   function animateBall() {
-    ballX = BALL.offsetLeft + velocityX.value;
-    ballY = BALL.offsetTop + velocity.value;
+    ballX = BALL.offsetLeft + velocityX.x;
+    ballY = BALL.offsetTop + velocityY.y;
 
     if (ballX < 0 || ballX + BALL.clientWidth > window.innerWidth) {
-      velocityX.setX(-velocityX);
-      ballX = BALL.offsetLeft + velocityX.value;
+      velocityX.x = -velocityX.x;
+      ballX = BALL.offsetLeft + velocityX.x;
     }
     if (ballY < 0 || ballY + BALL.clientHeight > window.innerHeight) {
-      velocityY.setY(-velocityY);
-      ballY = BALL.offsetTop + velocityY.value;
+      velocityY.y = -velocityY.y;
+      ballY = BALL.offsetTop + velocityY.y;
     }
-    velocityX.value = velocityX.value * 0.98;
-    velocityY.value = velocityY.value * 0.98;
+    velocityX.x = velocityX.x * 0.98;
+    velocityY.y = velocityY.y * 0.98;
     BALL.style.left = `${Math.max(
       0,
       Math.min(ballX, window.innerWidth - BALL.clientWidth)
@@ -99,7 +97,7 @@ export function moveBall() {
       0,
       Math.min(ballY, window.innerHeight - BALL.clientHeight)
     )}px`;
-    if (Math.abs(velocityX.value) > 0.5 || Math.abs(velocityY.value) > 0.5) {
+    if (Math.abs(velocityX.x) > 0.5 || Math.abs(velocityY.y) > 0.5) {
       requestAnimationFrame(animateBall);
     }
   }

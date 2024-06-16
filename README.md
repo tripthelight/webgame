@@ -15,3 +15,7 @@
 
 1. npm start -> HMR local 작업환경
 2. npm run build -> 서버에 올릴 build 파일
+
+# TODO
+
+1. PC에서 mousemove시 drag-arrow가 끊김
