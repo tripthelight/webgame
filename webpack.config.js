@@ -11,9 +11,9 @@ const __filename = fileURLToPath(import.meta.url);
 export default {
   entry: "./src/js/index.js",
   output: {
-    filename: "js/bundle.js",
+    filename: "js/[name].bundle.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "", // 빈 문자열로 설정하여 상대 경로로 지정
+    publicPath: "/",
   },
   module: {
     rules: [
@@ -42,5 +42,12 @@ export default {
       filename: "index.html",
     }),
   ],
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+      minSize: 0,
+      maxSize: 50000, // 50KB로 설정하여, 특정 크기(라인 수)에 도달하면 분할
+    },
+  },
   mode: "production",
 };

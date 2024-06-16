@@ -1,4 +1,4 @@
 import "../scss/common.scss";
-import { STR } from "./common.js";
+import "./common.js";
 
-console.log("Webpack and SCSS setup with HMR complete!! ", STR);
+console.log("Webpack and SCSS setup with HMR complete!! ");
