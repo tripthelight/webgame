@@ -16,6 +16,7 @@ let arrowElem = new Object();
 let dragType = "default";
 let sPos = { x: 0, y: 0 };
 let mPos = { x: 0, y: 0 };
+let aPos = { x: 0, y: 0 }
 let currentRotation = 0;
 let initialHeight = 50;
 let isDragging = false;
@@ -54,6 +55,17 @@ const TRANSLATE_VALUE = () => {
   };
 };
 
+const TRANSLATE_MOVE_VALUE = (_elem) => {
+  const STYLE = window.getComputedStyle(_elem);
+  const TRANSFORM = STYLE.transform;
+  const VALUES = TRANSFORM.match(/matrix.*\((.+)\)/)[1].split(', ');
+  aPos.x = parseFloat(VALUES[4]);
+  aPos.y = parseFloat(VALUES[5]);
+  if (dragType === "center") {
+    aPos.y = parseFloat(VALUES[5]) + 25;
+  }
+};
+
 // mobile ===================================
 function dragArrowMoStart(_event) {
   _event.target.style.opacity = 1;
@@ -61,6 +73,7 @@ function dragArrowMoStart(_event) {
   const TOUCH = touches[0] ?? changeTouches[0];
   sPos.x = TOUCH.clientX;
   sPos.y = TOUCH.clientY;
+  TRANSLATE_MOVE_VALUE(_event.target);
 }
 
 function dragArrowMoMove(_event) {
@@ -72,9 +85,7 @@ function dragArrowMoMove(_event) {
   let angle = Math.round(Math.atan2(mPos.x, mPos.y) * (180 / Math.PI));
   currentRotation = -angle;
   _event.target.style.transformOrigin = `${TRANSLATE_VALUE().origin}`;
-  _event.target.style.transform = `translate(${
-    TRANSLATE_VALUE().translate
-  }) rotate(${currentRotation}deg)`;
+  _event.target.style.transform = `translate(${ aPos.x }px, ${ aPos.y }px) rotate(${currentRotation}deg)`;
 
   let distance = Math.sqrt(mPos.x * mPos.x + mPos.y * mPos.y);
   finalHeight = Math.round(initialHeight + distance);
@@ -89,10 +100,7 @@ function dragArrowMoMove(_event) {
 function dragArrowMoEnd(_event) {
   // start move ball
   distanceFactor.setValue = finalHeight / initialHeight;
-  ballDistance.setValue =
-    Math.sqrt(lastMoveX.x * lastMoveX.x + lastMoveY.y * lastMoveY.y) *
-    distanceFactor.getValue *
-    ballSpeed;
+  ballDistance.setValue = Math.sqrt(lastMoveX.x * lastMoveX.x + lastMoveY.y * lastMoveY.y) * distanceFactor.getValue * ballSpeed;
   ballAngleRad.setValue = Math.atan2(lastMoveY.y, lastMoveX.x);
   velocityX.x = -ballDistance.getValue * Math.cos(ballAngleRad.getValue);
   velocityY.y = -ballDistance.getValue * Math.sin(ballAngleRad.getValue);
@@ -104,6 +112,10 @@ function dragArrowMoEnd(_event) {
   mPos.x = 0;
   mPos.y = 0;
   removeStyle(_event.target);
+
+  if (!_event.target.classList.contains("moving")) {
+    _event.target.classList.add("moving");
+  }
 }
 
 // PC =======================================
@@ -111,6 +123,7 @@ function startInteraction(_x, _y) {
   isDragging = true;
   sPos.x = _x;
   sPos.y = _y;
+  TRANSLATE_MOVE_VALUE(arrowElem);
 }
 
 function moveInteraction(_x, _y) {
@@ -121,10 +134,9 @@ function moveInteraction(_x, _y) {
   let angle = Math.round(Math.atan2(mPos.x, mPos.y) * (180 / Math.PI));
   currentRotation = -angle;
   arrowElem.style.transformOrigin = `${TRANSLATE_VALUE().origin}`;
-  arrowElem.style.transform = `translate(${
-    TRANSLATE_VALUE().translate
-  }) rotate(${currentRotation}deg)`;
 
+  arrowElem.style.transform = `translate(${ aPos.x }px, ${ aPos.y }px) rotate(${currentRotation}deg)`;
+  
   let distance = Math.sqrt(mPos.x * mPos.x + mPos.y * mPos.y);
   finalHeight = Math.round(initialHeight + distance);
   arrowElem.style.height = `${finalHeight}px`;
@@ -138,10 +150,7 @@ function endInteraction() {
 
   // start move ball
   distanceFactor.setValue = finalHeight / initialHeight;
-  ballDistance.setValue =
-    Math.sqrt(lastMoveX.x * lastMoveX.x + lastMoveY.y * lastMoveY.y) *
-    distanceFactor.getValue *
-    ballSpeed;
+  ballDistance.setValue = Math.sqrt(lastMoveX.x * lastMoveX.x + lastMoveY.y * lastMoveY.y) * distanceFactor.getValue * ballSpeed;
   ballAngleRad.setValue = Math.atan2(lastMoveY.y, lastMoveX.x);
   velocityX.x = -ballDistance.getValue * Math.cos(ballAngleRad.getValue);
   velocityY.y = -ballDistance.getValue * Math.sin(ballAngleRad.getValue);
@@ -156,13 +165,13 @@ function endInteraction() {
 }
 
 function dragArrowPcStart(_event) {
+  const IMG = new Image();
+  IMG.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+  _event.dataTransfer.setDragImage(IMG, 0, 0);
+  _event.dataTransfer.setData("text/plain", "Dragging element");
+  _event.dataTransfer.effectAllowed = "move";
   arrowElem.style.opacity = 1;
-  // const IMG = new Image();
-  // IMG.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
-  // _event.dataTransfer.setDragImage(IMG, 0, 0);
-  // _event.dataTransfer.setData("text/plain", "Dragging element");
-  // _event.dataTransfer.effectAllowed = "move";
-  // arrowElem.classList.add("dragging");
+  arrowElem.classList.add("dragging");
   startInteraction(_event.clientX, _event.clientY);
 }
 
@@ -171,8 +180,11 @@ function dragArrowPcMove(_event) {
 }
 
 function dragArrowPcEnd(_event) {
-  // arrowElem.classList.remove("dragging");
+  arrowElem.classList.remove("dragging");
   endInteraction();
+  if (!arrowElem.classList.contains("moving")) {
+    arrowElem.classList.add("moving");
+  }
 }
 
 function dragArrow(_type) {
@@ -187,9 +199,9 @@ function dragArrow(_type) {
     arrowElem.addEventListener("touchend", dragArrowMoEnd, false);
   } else {
     // PC
-    arrowElem.addEventListener("mousedown", dragArrowPcStart, false);
-    document.addEventListener("mousemove", dragArrowPcMove, false);
-    document.addEventListener("mouseup", dragArrowPcEnd, false);
+    arrowElem.addEventListener("dragstart", dragArrowPcStart, false);
+    arrowElem.addEventListener("dragover", dragArrowPcMove, false);
+    arrowElem.addEventListener("dragend", dragArrowPcEnd, false);
   }
 }
 
@@ -200,9 +212,9 @@ export function dragArrowInit() {
   if (isMobile()) {
     // mobile
     arrowElem.removeAttribute("draggable");
-    arrowElem.removeEventListener("mousedown", dragArrowPcStart, false);
-    document.removeEventListener("mousemove", dragArrowPcMove, false);
-    document.removeEventListener("mouseup", dragArrowPcEnd, false);
+    arrowElem.removeEventListener("dragstart", dragArrowPcStart, false);
+    arrowElem.removeEventListener("dragover", dragArrowPcMove, false);
+    arrowElem.removeEventListener("dragend", dragArrowPcEnd, false);
   } else {
     // PC
     arrowElem.setAttribute("draggable", "true");
@@ -214,3 +226,8 @@ export function dragArrowInit() {
   // init function
   dragArrow("center");
 }
+
+window.addEventListener('resize', () => {
+  // arrow 의 위치 비율
+  dragArrowInit();
+})

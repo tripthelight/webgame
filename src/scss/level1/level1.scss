@@ -1,11 +1,15 @@
+:root {
+  --ball-size: calc(100vw / 10);
+}
+
 #LEVEL1 {
   /* ball */
   .ball {
     position: fixed;
     left: 50%;
     top: 50%;
-    width: 50px;
-    height: 50px;
+    width: var(--ball-size);
+    height: var(--ball-size);
     transform: translate(-50%, -50%);
     background-color: #000;
     border-radius: 100%;
@@ -16,18 +20,21 @@
     position: fixed;
     left: 50%;
     top: 50%;
-    width: 50px;
-    height: 50px;
+    width: var(--ball-size);
+    height: var(--ball-size);
     transform-origin: center center;
     transform: translate(-50%, -50%);
     background-color: #ff0000;
-    opacity: 1;
+    opacity: 0;
     &.dragging {
       cursor: pointer;
     }
-    &.center {
-      transform-origin: center top;
-      transform: translate(-50%, 0%);
+  }
+  .ball,
+  .drag-arrow {
+    &.moving {
+      left: 0;
+      top: 0;
     }
   }
 }
