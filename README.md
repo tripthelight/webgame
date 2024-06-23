@@ -1,21 +1,29 @@
 # webpack
 
-1. npm install webpack webpack-cli --save-dev
-2. npm install babel-loader @babel/core @babel/preset-env sass sass-loader css-loader style-loader --save-dev
-3. npm install webpack-dev-server --save-dev
-4. npm install --save-dev html-webpack-plugin
-5. npm install html-loader --save-dev
-6. npm install html-loader mini-css-extract-plugin clean-webpack-plugin --save-dev
-7. npm install html-loader clean-webpack-plugin html-webpack-plugin --save-dev
-8. npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
-9. npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
-10. npm install mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin sass-loader sass css-loader babel-loader @babel/core @babel/preset-env --save-dev
+- npm install webpack webpack-cli --save-dev
+- npm install babel-loader @babel/core @babel/preset-env sass sass-loader css-loader style-loader --save-dev
+- npm install webpack-dev-server --save-dev
+- npm install --save-dev html-webpack-plugin
+- npm install html-loader --save-dev
+- npm install html-loader mini-css-extract-plugin clean-webpack-plugin --save-dev
+- npm install html-loader clean-webpack-plugin html-webpack-plugin --save-dev
+- npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
+- npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
+- npm install mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin sass-loader sass css-loader babel-loader @babel/core @babel/preset-env --save-dev
+
+# VSCODE EXTENSION
+
+- live server
+- todo highlight
+- Live Sass Compiler
+- Material theme
+- Material icon theme
+- Prettier
+- bracket pair colorizer
+- Indent-rainbow
+- Auto rename tag
 
 # build
 
-1. npm start -> HMR local 작업환경
-2. npm run build -> 서버에 올릴 build 파일
-
-# TODO
-
-1. PC에서 mousemove시 drag-arrow가 끊김
+- npm start -> HMR local 작업환경
+- npm run build -> 서버에 올릴 build 파일
