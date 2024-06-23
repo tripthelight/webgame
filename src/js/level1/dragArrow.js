@@ -1,24 +1,14 @@
-import { isMobile, ELEMENT_STATE } from "../comnFns.js";
-import {
-  lastMoveX,
-  lastMoveY,
-  ballDistance,
-  ballAngleRad,
-  distanceFactor,
-  velocityX,
-  velocityY,
-  ballSpeed,
-  moveBall,
-} from "./movingBall.js";
+import {isMobile, ELEMENT_STATE} from "../comnFns.js";
+import {lastMoveX, lastMoveY, ballDistance, ballAngleRad, distanceFactor, velocityX, velocityY, ballSpeed, moveBall} from "./movingBall.js";
 
 // common variable
-let arrowElem = new Object();
+let arrowElem = document.querySelector(".drag-arrow");
 let dragType = "default";
-let sPos = { x: 0, y: 0 };
-let mPos = { x: 0, y: 0 };
-let aPos = { x: 0, y: 0 }
+let sPos = {x: 0, y: 0};
+let mPos = {x: 0, y: 0};
+let aPos = {x: 0, y: 0};
 let currentRotation = 0;
-let initialHeight = 50;
+let initialHeight = arrowElem.clientHeight;
 let isDragging = false;
 let finalHeight = initialHeight;
 
@@ -55,21 +45,23 @@ const TRANSLATE_VALUE = () => {
   };
 };
 
-const TRANSLATE_MOVE_VALUE = (_elem) => {
+const TRANSLATE_MOVE_VALUE = _elem => {
   const STYLE = window.getComputedStyle(_elem);
   const TRANSFORM = STYLE.transform;
-  const VALUES = TRANSFORM.match(/matrix.*\((.+)\)/)[1].split(', ');
+  const VALUES = TRANSFORM.match(/matrix.*\((.+)\)/)[1].split(", ");
   aPos.x = parseFloat(VALUES[4]);
   aPos.y = parseFloat(VALUES[5]);
   if (dragType === "center") {
-    aPos.y = parseFloat(VALUES[5]) + 25;
+    aPos.y = parseFloat(VALUES[5]) + arrowElem.clientWidth / 2;
   }
 };
 
 // mobile ===================================
 function dragArrowMoStart(_event) {
+  initialHeight = arrowElem.clientHeight;
+  finalHeight = initialHeight;
   _event.target.style.opacity = 1;
-  const { touches, changeTouches } = _event.originalEvent ?? _event;
+  const {touches, changeTouches} = _event.originalEvent ?? _event;
   const TOUCH = touches[0] ?? changeTouches[0];
   sPos.x = TOUCH.clientX;
   sPos.y = TOUCH.clientY;
@@ -77,7 +69,7 @@ function dragArrowMoStart(_event) {
 }
 
 function dragArrowMoMove(_event) {
-  const { touches, changeTouches } = _event.originalEvent ?? _event;
+  const {touches, changeTouches} = _event.originalEvent ?? _event;
   const TOUCH = touches[0] ?? changeTouches[0];
   mPos.x = TOUCH.clientX - sPos.x;
   mPos.y = TOUCH.clientY - sPos.y;
@@ -85,7 +77,7 @@ function dragArrowMoMove(_event) {
   let angle = Math.round(Math.atan2(mPos.x, mPos.y) * (180 / Math.PI));
   currentRotation = -angle;
   _event.target.style.transformOrigin = `${TRANSLATE_VALUE().origin}`;
-  _event.target.style.transform = `translate(${ aPos.x }px, ${ aPos.y }px) rotate(${currentRotation}deg)`;
+  _event.target.style.transform = `translate(${aPos.x}px, ${aPos.y}px) rotate(${currentRotation}deg)`;
 
   let distance = Math.sqrt(mPos.x * mPos.x + mPos.y * mPos.y);
   finalHeight = Math.round(initialHeight + distance);
@@ -135,8 +127,8 @@ function moveInteraction(_x, _y) {
   currentRotation = -angle;
   arrowElem.style.transformOrigin = `${TRANSLATE_VALUE().origin}`;
 
-  arrowElem.style.transform = `translate(${ aPos.x }px, ${ aPos.y }px) rotate(${currentRotation}deg)`;
-  
+  arrowElem.style.transform = `translate(${aPos.x}px, ${aPos.y}px) rotate(${currentRotation}deg)`;
+
   let distance = Math.sqrt(mPos.x * mPos.x + mPos.y * mPos.y);
   finalHeight = Math.round(initialHeight + distance);
   arrowElem.style.height = `${finalHeight}px`;
@@ -207,8 +199,6 @@ function dragArrow(_type) {
 
 // INIT
 export function dragArrowInit() {
-  if (ELEMENT_STATE("#app", "#LEVEL1", ".drag-arrow")) return;
-  arrowElem = document.querySelector(".drag-arrow");
   if (isMobile()) {
     // mobile
     arrowElem.removeAttribute("draggable");
@@ -227,7 +217,7 @@ export function dragArrowInit() {
   dragArrow("center");
 }
 
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   // arrow 의 위치 비율
   dragArrowInit();
-})
+});

@@ -1,21 +1,33 @@
 {
   "powermode.explosions.customCss": {},
   "powermode.explosions.customExplosions": [],
-  "editor.formatOnSave": false,
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false
-  }
+  "prettier.printWidth": 200, // 원하는 줄 길이로 설정합니다.
+  "prettier.proseWrap": "never", // 줄바꿈 방지 설정입니다.
+  "prettier.trailingComma": "es5", // 객체와 배열의 마지막에 쉼표 추가
+  "prettier.bracketSpacing": false, // 객체 리터럴의 중괄호 사이에 공백 없음
+  "prettier.semi": true, // 구문 끝에 세미콜론 추가
+  "prettier.singleQuote": false, // 큰따옴표 대신 작은따옴표 사용
+  "prettier.arrowParens": "avoid", // 단일 매개변수의 화살표 함수 괄호 제거
+  "prettier.endOfLine": "lf", // 줄 끝을 LF로 통일
+  "editor.formatOnSave": true, // 저장 시 자동 포맷팅 설정
+  "files.trimTrailingWhitespace": true, // 불필요한 끝 공백 제거
+  "files.trimFinalNewlines": true, // 파일 끝에 불필요한 줄바꿈 제거
+  "files.insertFinalNewline": true // 파일 끝에 항상 새 줄 추가
+  // "editor.formatOnSave": false,
+  // "[javascript]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  //   "editor.formatOnSave": false
+  // },
+  // "[javascriptreact]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  //   "editor.formatOnSave": false
+  // },
+  // "[typescript]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  //   "editor.formatOnSave": false
+  // },
+  // "[typescriptreact]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  //   "editor.formatOnSave": false
+  // }
 }

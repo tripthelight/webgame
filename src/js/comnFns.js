@@ -14,3 +14,20 @@ export const ELEMENT_STATE = (..._elemObj) => {
   }
   return false;
 };
+
+// element의 transform 값을 find
+export function findTransform(_elem) {
+  const style = window.getComputedStyle(_elem);
+  const transform = style.transform;
+  let translateX = 0;
+  let translateY = 0;
+  if (transform !== "none") {
+    const values = transform.match(/matrix.*\((.+)\)/)[1].split(", ");
+    translateX = parseFloat(values[4]);
+    translateY = parseFloat(values[5]);
+  }
+  return {
+    x: translateX,
+    y: translateY,
+  };
+}
