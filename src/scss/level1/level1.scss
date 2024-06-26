@@ -6,11 +6,11 @@
   /* ball */
   .ball {
     position: fixed;
-    left: 50%;
-    top: 50%;
+    left: 0;
+    top: 0;
     width: var(--ball-size);
     height: var(--ball-size);
-    transform: translate(-50%, -50%);
+    transform: translate(0, 0);
     background-color: #000;
     border-radius: 100%;
   }
@@ -18,12 +18,12 @@
   /* drag-arrow */
   .drag-arrow {
     position: fixed;
-    left: 50%;
-    top: 50%;
+    left: 0;
+    top: 0;
     width: var(--ball-size);
     height: var(--ball-size);
-    transform-origin: center center;
-    transform: translate(-50%, -50%);
+    transform-origin: top center;
+    transform: translate(0, 0);
     background-color: #ff0000;
     opacity: 0;
     &.dragging {

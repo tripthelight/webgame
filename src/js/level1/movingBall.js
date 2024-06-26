@@ -1,4 +1,5 @@
 import {isMobile, ELEMENT_STATE, findTransform} from "../comnFns.js";
+import {ARROW_ELEM, BALLS, VELOCITIES, POSITIONS} from "./variables.js";
 
 // common variable
 export const lastMoveX = {
@@ -65,17 +66,41 @@ export const velocityY = {
   },
 };
 export const ballSpeed = 0.1;
-const LEVEL1_ELEM = document.getElementById("LEVEL1");
-const BALL_ELEM = LEVEL1_ELEM.querySelector(".ball");
-const ARROW_ELEM = LEVEL1_ELEM.querySelector(".drag-arrow");
-let ballX = window.innerWidth / 2 - BALL_ELEM.clientWidth / 2;
-let ballY = window.innerHeight / 2 - BALL_ELEM.clientHeight / 2;
-let ballW = 0;
-let ballH = 0;
+// const LEVEL1_ELEM = document.getElementById("LEVEL1");
+// const BALL_ELEM = LEVEL1_ELEM.querySelector(".ball");
+// const ARROW_ELEM = LEVEL1_ELEM.querySelector(".drag-arrow");
+// let ballX = window.innerWidth / 2 - BALL_ELEM.clientWidth / 2;
+// let ballY = window.innerHeight / 2 - BALL_ELEM.clientHeight / 2;
+// let ballW = 0;
+// let ballH = 0;
 
 // common functions
 
 // mobile ===================================
+export function moveBall() {
+  let animationFrame;
+  let obj = Object.assign([], VELOCITIES.value);
+  function updatePositions() {
+    POSITIONS.value.forEach((pos, index) => {
+      pos.x += obj[index].x;
+      pos.y += obj[index].y;
+
+      obj[index].x *= 0.98;
+      obj[index].y *= 0.98;
+
+      BALLS.balls[index].style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+    });
+    if (obj.some(v => Math.abs(v.x) > 0.5 || Math.abs(v.y) > 0.5)) {
+      animationFrame = requestAnimationFrame(updatePositions);
+    } else {
+      // end move
+      cancelAnimationFrame(animationFrame);
+      VELOCITIES.value = obj;
+    }
+  }
+  updatePositions();
+}
+/*
 export function moveBall() {
   ballW = BALL_ELEM.clientWidth / 2;
   ballH = BALL_ELEM.clientHeight / 2;
@@ -129,8 +154,7 @@ export function moveBall() {
   }
   requestAnimationFrame(animateBall);
 }
-
-// PC =======================================
+  */
 
 // INIT
 export function movingBallInit() {

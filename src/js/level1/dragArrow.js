@@ -1,5 +1,6 @@
 import {isMobile, ELEMENT_STATE} from "../comnFns.js";
 import {lastMoveX, lastMoveY, ballDistance, ballAngleRad, distanceFactor, velocityX, velocityY, ballSpeed, moveBall} from "./movingBall.js";
+import {ARROW_ELEM, BALLS, VELOCITIES, POSITIONS} from "./variables.js";
 
 // common variable
 let arrowElem = document.querySelector(".drag-arrow");
@@ -96,6 +97,8 @@ function dragArrowMoEnd(_event) {
   ballAngleRad.setValue = Math.atan2(lastMoveY.y, lastMoveX.x);
   velocityX.x = -ballDistance.getValue * Math.cos(ballAngleRad.getValue);
   velocityY.y = -ballDistance.getValue * Math.sin(ballAngleRad.getValue);
+
+  VELOCITIES.value[0] = {x: velocityX.x, y: velocityY.y};
   moveBall();
 
   // reset
