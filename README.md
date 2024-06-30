@@ -10,6 +10,8 @@
 - npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
 - npm install html-loader mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin --save-dev
 - npm install mini-css-extract-plugin clean-webpack-plugin html-webpack-plugin sass-loader sass css-loader babel-loader @babel/core @babel/preset-env --save-dev
+- npm install sass-loader sass webpack --save-dev
+- npm audit fix
 
 # VSCODE EXTENSION
 
