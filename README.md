@@ -13,6 +13,8 @@
 - npm install sass-loader sass webpack --save-dev
 - npm audit fix
 
+- npm i -D cluster
+
 # VSCODE EXTENSION
 
 - live server

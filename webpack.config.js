@@ -10,10 +10,13 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const __filename = fileURLToPath(import.meta.url);
 
 export default {
-  // entry: "./src/js/index.js",
+  // entry: "./src/front/js/index.js",
+  // entry: {
+  //   main: "./src/js/index.js",
+  //   angle: "./src/js/test/angle/angle.js",
+  // },
   entry: {
-    main: "./src/js/index.js",
-    angle: "./src/js/test/angle/angle.js",
+    main: "./src/front/index.js",
   },
   output: {
     // filename: "js/[name].bundle.js",
@@ -61,15 +64,15 @@ export default {
       chunkFilename: "[id].css",
     }),
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: "./src/front/index.html",
       chunks: ["main"],
       filename: "index.html",
     }),
-    new HtmlWebpackPlugin({
-      template: "./src/test/angle/angle.html",
-      chunks: ["angle"],
-      filename: "test/angle/angle.html",
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: "./src/index.html",
+    //   chunks: ["angle"],
+    //   filename: "test/index.html",
+    // }),
   ],
   optimization: {
     splitChunks: {

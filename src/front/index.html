@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P2P WebRTC Game</title>
+  </head>
+  <body>
+    <h1>Player 1</h1>
+    <p>Your Score: <span id="myScore">0</span></p>
+    <p>Opponent's Score: <span id="opponentScore">0</span></p>
+    <input type="number" id="scoreInput" placeholder="Enter your score" />
+    <button id="scoreBtn">Send Score</button>
+
+    <h2>Connection Setup</h2>
+    <textarea id="localOffer" placeholder="Local SDP Offer"></textarea>
+    <button id="createOfferBtn">Create Offer</button>
+    <textarea id="remoteAnswer" placeholder="Remote SDP Answer"></textarea>
+    <button id="remoteAnswerBtn">Set Remote Answer</button>
+
+    <textarea id="localICE" placeholder="Local ICE Candidate"></textarea>
+    <button id="addLocalIceBtn">Add Local ICE</button>
+    <textarea id="remoteICE" placeholder="Remote ICE Candidate"></textarea>
+    <button id="remoteICEBtn">Add Remote ICE</button>
+  </body>
+</html>
