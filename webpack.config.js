@@ -10,19 +10,16 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const __filename = fileURLToPath(import.meta.url);
 
 export default {
-  // entry: "./src/front/js/index.js",
-  // entry: {
-  //   main: "./src/js/index.js",
-  //   angle: "./src/js/test/angle/angle.js",
-  // },
+  mode: "production",
   entry: {
-    main: "./src/front/index.js",
+    main: "./src/client/index.js",
   },
   output: {
     // filename: "js/[name].bundle.js",
     filename: "[name].[chunkhash].js",
     path: path.resolve(__dirname, "dist"),
     publicPath: "/",
+    clean: true,
   },
   module: {
     rules: [
@@ -64,15 +61,10 @@ export default {
       chunkFilename: "[id].css",
     }),
     new HtmlWebpackPlugin({
-      template: "./src/front/index.html",
+      template: "./src/client/index.html",
       chunks: ["main"],
       filename: "index.html",
     }),
-    // new HtmlWebpackPlugin({
-    //   template: "./src/index.html",
-    //   chunks: ["angle"],
-    //   filename: "test/index.html",
-    // }),
   ],
   optimization: {
     splitChunks: {
@@ -81,5 +73,4 @@ export default {
       maxSize: 50000, // 50KB로 설정하여, 특정 크기(라인 수)에 도달하면 분할
     },
   },
-  mode: "production",
 };
