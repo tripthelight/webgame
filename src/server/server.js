@@ -1,3 +1,5 @@
+import fs from "fs";
+import https from "https";
 import path from "path";
 import {fileURLToPath} from "url";
 import os from "os";
@@ -11,35 +13,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const __filename = fileURLToPath(import.meta.url);
 
 function onConnected(socket) {
-  socket.on("create or join", room => {
-    console.log("create or join to room: ", room);
-    const myRoom = io.sockets.adapter.rooms[room] || {length: 0};
-    const numClients = myRoom.length;
-    console.log(room, "has", numClients, "clients");
-
-    if (numClients == 0) {
-      socket.join(room);
-      socket.emit("created", room);
-    } else if (numClients == 1) {
-      socket.join(room);
-      socket.emit("joined", room);
-    } else {
-      socket.emit("full", room);
-    }
-  });
-
-  socket.on("ready", room => {
-    socket.broadcast.to(room).emit("ready");
-  });
-  socket.on("candidate", event => {
-    socket.broadcast.to(event.room).emit("candidate", event);
-  });
-  socket.on("offer", event => {
-    socket.broadcast.to(event.room).emit("offer", event.sdp);
-  });
-  socket.on("answer", event => {
-    socket.broadcast.to(event.room).emit("answer", event.sdp);
-  });
+  console.log(socket.id, "has joined");
 }
 
 if (cluster.isPrimary) {
@@ -60,17 +34,23 @@ if (cluster.isPrimary) {
   });
 } else {
   const app = express();
-  const PORT = process.env.PORT || 3000;
-  const httpServer = createServer(app);
+  const PORT = process.env.PORT || 9000;
+  // read in our certs
+  const key = fs.readFileSync("../../certs/server/cert.key");
+  const cert = fs.readFileSync("../../certs/server/cert.crt");
+  const httpServer = https.createServer({key, cert}, app);
+
   const io = new Server(httpServer, {
-    cors: {
-      origin: "*", // 필요한 경우 특정 도메인으로 제한할 수 있습니다.
-      methods: ["GET", "POST"],
-    },
+    cors: [
+      // the domains that are allowed
+      "localhost:3000",
+      "localhost:3001",
+    ],
+    method: ["GET", "POST"],
   });
 
   app.use(cors());
-  app.use(express.static(path.join(__dirname, "../../dist")));
+  // app.use(express.static(path.join(__dirname, "../../dist")));
 
   httpServer.listen(PORT, () => {
     console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);

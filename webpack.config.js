@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 import {fileURLToPath} from "url";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -71,6 +72,21 @@ export default {
       chunks: "all",
       minSize: 0,
       maxSize: 50000, // 50KB로 설정하여, 특정 크기(라인 수)에 도달하면 분할
+    },
+  },
+  devServer: {
+    static: {
+      directory: path.join("dist"), // 정적 파일 제공 디렉터리
+    },
+    port: 3000,
+    hot: true,
+    server: {
+      type: "https", // HTTPS 설정
+      options: {
+        // 기본 인증서를 사용할 경우 주석 처리된 부분을 삭제하세요.
+        key: fs.readFileSync("certs/client/cert.key"), // 자체 서명된 인증서 키
+        cert: fs.readFileSync("certs/client/cert.crt"), // 자체 서명된 인증서
+      },
     },
   },
 };
