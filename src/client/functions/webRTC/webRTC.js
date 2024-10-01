@@ -1,3 +1,6 @@
+import {LOADING_EVENT} from "../common/loading.js";
+import msg_str from "../common/msg_str.js";
+
 let localConnection, remoteConnection;
 let localDataChannel, remoteDataChannel;
 let room;
@@ -45,11 +48,21 @@ async function startConnection() {
 
   localDataChannel.onopen = () => {
     console.log("Local data channel opened.");
+    LOADING_EVENT.hide();
     document.addEventListener("click", sendTapEvent);
   };
 
   localDataChannel.onclose = () => {
     console.log("Local data channel closed.");
+    LOADING_EVENT.show(msg_str("reconnect"));
+  };
+
+  localConnection.oniceconnectionstatechange = () => {
+    if (localConnection.iceConnectionState === "disconnected") {
+      console.log("localConnection has disconnected");
+      // 상대방이 연결을 끊었을 때 처리할 로직을 여기에 작성
+      LOADING_EVENT.show(msg_str("left_user"));
+    }
   };
 
   localDataChannel.onmessage = event => {
@@ -64,11 +77,21 @@ async function startConnection() {
 
     remoteDataChannel.onopen = () => {
       console.log("Remote data channel opened.");
+      LOADING_EVENT.hide();
       document.addEventListener("click", sendTapEvent);
     };
 
     remoteDataChannel.onclose = () => {
       console.log("Remote data channel closed.");
+      LOADING_EVENT.show(msg_str("reconnect"));
+    };
+
+    remoteConnection.oniceconnectionstatechange = () => {
+      if (remoteConnection.iceConnectionState === "disconnected") {
+        console.log("remoteConnection has disconnected");
+        // 상대방이 연결을 끊었을 때 처리할 로직을 여기에 작성
+        LOADING_EVENT.show(msg_str("left_user"));
+      }
     };
 
     remoteDataChannel.onmessage = event => {
@@ -135,3 +158,13 @@ const sendTapEvent = () => {
 
 // 연결 시작 (브라우저 1)
 startConnection();
+
+// index.html에서 접속한 모든 사용자를 표시
+// https://chatgpt.com/c/66fb67fb-d128-800f-98a5-7ac64761dbad
+socket.addEventListener("message", event => {
+  const data = JSON.parse(event.data);
+
+  if (data.type === "userList") {
+    console.log("data.users ::: ", data.users);
+  }
+});

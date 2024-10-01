@@ -31,3 +31,8 @@
 
 - npm start -> HMR local 작업환경
 - npm run build -> 서버에 올릴 build 파일
+
+# 진행상태
+
+- index.html에서 2명만 입장가능한 room을 만듬
+- index.html에서 접속한 모든 사용자를 표시하기 위해 server.js를 수정중
