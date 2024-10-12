@@ -80,13 +80,13 @@ export default {
     },
     port: 3000,
     hot: true,
-    server: {
-      type: "https", // HTTPS 설정
-      options: {
-        // 기본 인증서를 사용할 경우 주석 처리된 부분을 삭제하세요.
-        key: fs.readFileSync("certs/client/cert.key"), // 자체 서명된 인증서 키
-        cert: fs.readFileSync("certs/client/cert.crt"), // 자체 서명된 인증서
-      },
-    },
+    // server: {
+    //   type: "https", // HTTPS 설정
+    //   options: {
+    //     // 기본 인증서를 사용할 경우 주석 처리된 부분을 삭제하세요.
+    //     key: fs.readFileSync("certs/client/cert.key"), // 자체 서명된 인증서 키
+    //     cert: fs.readFileSync("certs/client/cert.crt"), // 자체 서명된 인증서
+    //   },
+    // },
   },
 };

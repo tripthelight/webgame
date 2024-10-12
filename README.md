@@ -26,6 +26,7 @@
 - bracket pair colorizer
 - Indent-rainbow
 - Auto rename tag
+- Markdown Preview Enhanced
 
 # build
 
@@ -36,3 +37,7 @@
 
 - index.html에서 2명만 입장가능한 room을 만듬
 - index.html에서 접속한 모든 사용자를 표시하기 위해 server.js를 수정중
+- 241012:
+  - index.html에서 접속한 모든 사용자를 표시하기 위한 작업 중
+  - 내가 접속 했을 경우 이름을 바꾸기 위한 팝업 작업 중
+  - index에서 접속한 user들을 보여주기 위한 socket server 제작 필요

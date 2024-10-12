@@ -1,11 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- <html lang="en"> -->
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>P2P WebRTC Game</title>
   </head>
   <body>
-    <button>TAP! TAP!</button>
+    <div class="main">
+      <!-- CHANGE USER NAME -->
+      <div class="user-name">
+        <span class="init-name">MY_NAME</span>
+        <button class="btn-change-name" aria-label="change user name"></button>
+      </div>
+      <!-- USER LIST -->
+      <ul class="user-list">
+        <li>
+          <input type="checkbox" name="USER_LIST" id="USER-1" />
+          <label for="USER-1">user1</label>
+        </li>
+        <li>
+          <input type="checkbox" name="USER_LIST" id="USER-2" />
+          <label for="USER-2">user2</label>
+        </li>
+      </ul>
+
+      <!-- GAME LIST -->
+      <div class="game-wrap">
+        <a href="#">TAP! TAP!</a>
+      </div>
+    </div>
   </body>
 </html>
