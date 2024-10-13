@@ -1,3 +1,6 @@
+import fromUnicodePoints from "../../functions/common/unicode/fromUnicodePoints.js";
+import getUnicodePoints from "../../functions/common/unicode/getUnicodePoints.js";
+
 export default function initUserName(_length) {
   const MAIN_ELEM = document.querySelector(".main");
   if (!MAIN_ELEM) return;
@@ -8,10 +11,15 @@ export default function initUserName(_length) {
   const INIT_NAME_ELEM = USER_NAME_ELEM.querySelector(".init-name");
   if (!INIT_NAME_ELEM) return;
 
+  // localStorage의 userName은 string[] 로 저장됨
   const INIT_USER_NAME = window.localStorage.getItem("userName");
 
   if (INIT_USER_NAME) {
-    INIT_NAME_ELEM.innerHTML = INIT_USER_NAME;
+    INIT_NAME_ELEM.innerHTML = fromUnicodePoints(
+      INIT_USER_NAME.replace(/"/g, "")
+        .split(",")
+        .map(s => s.trim())
+    );
   } else {
     const CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let result = "";
@@ -20,7 +28,9 @@ export default function initUserName(_length) {
       result += CHARACTERS[randomIndex];
     }
 
-    INIT_NAME_ELEM.innerHTML = `name-${result}`;
-    window.localStorage.setItem("userName", `name-${result}`);
+    const RESULT = getUnicodePoints(`name-${result}`);
+
+    INIT_NAME_ELEM.innerHTML = fromUnicodePoints(RESULT);
+    window.localStorage.setItem("userName", RESULT);
   }
 }

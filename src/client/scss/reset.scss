@@ -2,6 +2,10 @@
   margin: 0;
   padding: 0;
 }
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
 button {
   border: 0 none;
   border-radius: 0;
