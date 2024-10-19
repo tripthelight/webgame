@@ -42,5 +42,12 @@
   - 내가 접속 했을 경우 이름을 바꾸기 위한 팝업 작업 중
   - index에서 접속한 user들을 보여주기 위한 socket server 제작 필요
 - 241013:
+
   - localstorage에서 username 수정 불가능하게 하고 있었음
   - index에서 접속한 user들을 보여주기 위한 socket server 제작 필요
+
+- 241019:
+  - localstorage에서 setItem, removeItem, clear 변경 수정 중 문제 발생
+  - localStorage.**proto**.setItem.call(localStorage, 'testKey', 'testValue')
+  - 브라우저 Console에서 위 키를 입력 시 localStorage value가 변경됨
+  - 그래서 indexedDB 테스트 중
