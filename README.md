@@ -14,6 +14,8 @@
 - npm audit fix
 
 - npm i -D cluster
+- npm i redux
+- npm install @reduxjs/toolkit
 
 # VSCODE EXTENSION
 
@@ -46,8 +48,13 @@
   - localstorage에서 username 수정 불가능하게 하고 있었음
   - index에서 접속한 user들을 보여주기 위한 socket server 제작 필요
 
-- 241019:
+- 241019 오전:
+
   - localstorage에서 setItem, removeItem, clear 변경 수정 중 문제 발생
-  - localStorage.**proto**.setItem.call(localStorage, 'testKey', 'testValue')
+  - localStorage._proto_.setItem.call(localStorage, 'testKey', 'testValue')
   - 브라우저 Console에서 위 키를 입력 시 localStorage value가 변경됨
   - 그래서 indexedDB 테스트 중
+  - re
+
+- 241019 오후:
+  - redux에서 전역변수를 만들어 storage의 악의적인 수정 시도 문제 해결

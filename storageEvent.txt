@@ -1,0 +1,83 @@
+localStorage.setItem('userName', '111');
+localStorage.__proto__.setItem('userName', '111');
+
+localStorage.removeItem('userName');
+localStorage.__proto__.removeItem('userName');
+
+localStorage.clear();
+localStorage.__proto__.clear(localStorage);
+
+---------------------------------------------------------------------
+
+sessionStorage.setItem('userName', '111');
+sessionStorage.__proto__.setItem('userName', '111');
+
+sessionStorage.removeItem('userName');
+sessionStorage.__proto__.removeItem('userName');
+
+sessionStorage.clear();
+sessionStorage.__proto__.clear(localStorage);
+
+=============================================
+
+** storage의 모든 key, value를 변경할 수 있는 코드
+
+localStorage.setItem('key', 'value');
+
+localStorage.__proto__.setItem.call(localStorage, 'key', 'value');
+
+Reflect.apply(localStorage.setItem, localStorage, ['key', 'value']);
+
+localStorage.setItem.apply(localStorage, ['key', 'value']);
+
+localStorage.setItem.call(localStorage, 'key', 'value');
+
+const descriptor = Object.getOwnPropertyDescriptor(Storage.prototype, 'setItem');
+descriptor.value.call(localStorage, 'key', 'value');
+
+Object.defineProperty(localStorage, 'setItem', {
+    value: localStorage.__proto__.setItem
+});
+localStorage.setItem('key', 'value');
+
+const storage = new Storage();
+storage.setItem('key', 'value');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
