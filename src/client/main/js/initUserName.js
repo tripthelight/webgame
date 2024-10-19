@@ -1,5 +1,6 @@
 import fromUnicodePoints from "../../functions/common/unicode/fromUnicodePoints.js";
 import getUnicodePoints from "../../functions/common/unicode/getUnicodePoints.js";
+import storageMethod from "../../functions/common/storage/storageMethod.js";
 
 export default function initUserName(_length) {
   const MAIN_ELEM = document.querySelector(".main");
@@ -31,6 +32,6 @@ export default function initUserName(_length) {
     const RESULT = getUnicodePoints(`name-${result}`);
 
     INIT_NAME_ELEM.innerHTML = fromUnicodePoints(RESULT);
-    window.localStorage.setItem("userName", RESULT);
+    storageMethod("SET_ITEM", "userName", RESULT);
   }
 }

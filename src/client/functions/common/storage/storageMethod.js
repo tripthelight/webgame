@@ -1,4 +1,4 @@
-import store, {updateStorageEvent} from "../../../store/store.js";
+import store, {updateStorageEvent} from "../../../store/storageEvent.js";
 
 export default function storageMethod(_method, _key, _value) {
   store.dispatch(updateStorageEvent({value: false}));

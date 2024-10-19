@@ -2,7 +2,6 @@ import createModal from "../../functions/common/popup/createModal.js";
 import msg_str from "../../functions/common/msg_str.js";
 import fromUnicodePoints from "../../functions/common/unicode/fromUnicodePoints.js";
 import getUnicodePoints from "../../functions/common/unicode/getUnicodePoints.js";
-import store, {updateLocalStorageEvent} from "../../store/store.js";
 import storageMethod from "../../functions/common/storage/storageMethod.js";
 
 export default function changeUserName() {

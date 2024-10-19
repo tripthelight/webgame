@@ -1,4 +1,4 @@
-import store from "../../../../store/store.js";
+import store from "../../../../store/storageEvent.js";
 
 export default function consoleLocalStorage() {
   // 원래의 메서드를 저장

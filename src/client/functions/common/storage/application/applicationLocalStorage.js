@@ -1,4 +1,4 @@
-import store, {updateStorageEvent} from "../../../../store/store.js";
+import store, {updateStorageEvent} from "../../../../store/storageEvent.js";
 
 export default function applicationLocalStorage() {
   window.addEventListener("storage", event => {
@@ -18,8 +18,6 @@ export default function applicationLocalStorage() {
           window.localStorage.removeItem(key);
         }
       }
-
-      store.dispatch(updateStorageEvent({value: true}));
     } else if (event.storageArea === sessionStorage) {
       // 브라우저의 Application 탭에서 sessionStorage 변경
       store.dispatch(updateStorageEvent({value: false}));
@@ -36,8 +34,8 @@ export default function applicationLocalStorage() {
           window.sessionStorage.removeItem(key);
         }
       }
-
-      store.dispatch(updateStorageEvent({value: true}));
     }
+
+    store.dispatch(updateStorageEvent({value: true}));
   });
 }
