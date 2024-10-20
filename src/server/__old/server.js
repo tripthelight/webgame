@@ -26,35 +26,17 @@ if (cluster.isPrimary) {
   let users = {}; // 접속한 사용자 목록
 
   wss.on("connection", ws => {
-    let userName = null;
-    ws.on("message", message => {
-      const data = JSON.parse(message);
-      console.log("data :: ", data);
+    let userId = Math.random().toString(36).slice(2, 11); // 간단한 사용자 ID 생성
+    users[userId] = ws;
 
-      if (data.type === "setUserName") {
-        userName = data.userName;
-        console.log("userName :: ", userName);
-        // users.push(userName);
-        users[userName] = ws;
-        broadcastUsers();
-        console.log(`User connected: ${userName}`);
-      }
-    });
-
-    // let userId = Math.random().toString(36).slice(2, 11); // 간단한 사용자 ID 생성
-    // users[userId] = ws;
-
-    // console.log(`User connected: ${userId}`);
+    console.log(`User connected: ${userId}`);
 
     // 현재 접속한 모든 사용자에게 사용자 목록 전송
-    // broadcastUsers();
+    broadcastUsers();
 
     ws.on("close", () => {
-      // console.log(`User disconnected: ${userId}`);
-      // delete users[userId];
-      console.log(`User disconnected: ${userName}`);
-      delete users[userName];
-
+      console.log(`User disconnected: ${userId}`);
+      delete users[userId];
       broadcastUsers();
     });
   });

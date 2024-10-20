@@ -54,7 +54,11 @@
   - localStorage._proto_.setItem.call(localStorage, 'testKey', 'testValue')
   - 브라우저 Console에서 위 키를 입력 시 localStorage value가 변경됨
   - 그래서 indexedDB 테스트 중
-  - re
 
 - 241019 오후:
+
   - redux에서 전역변수를 만들어 storage의 악의적인 수정 시도 문제 해결
+
+- 241020 오전:
+
+  - 브라우저를 2개 띄우면 2번째 접속자의 정보를 server에서 못받는 오류 발생중

@@ -1,8 +1,9 @@
-import createModal from "../../functions/common/popup/createModal.js";
-import msg_str from "../../functions/common/msg_str.js";
-import fromUnicodePoints from "../../functions/common/unicode/fromUnicodePoints.js";
-import getUnicodePoints from "../../functions/common/unicode/getUnicodePoints.js";
-import storageMethod from "../../functions/common/storage/storageMethod.js";
+import createModal from "../../../../functions/common/popup/createModal.js";
+import msg_str from "../../../../functions/common/msg_str.js";
+import errorNameEvent from "../errorNameEvent.js";
+import fromUnicodePoints from "../../../../functions/common/unicode/fromUnicodePoints.js";
+import getUnicodePoints from "../../../../functions/common/unicode/getUnicodePoints.js";
+import storageMethod from "../../../../functions/common/storage/storageMethod.js";
 
 export default function changeUserName() {
   const MAIN_ELEM = document.querySelector(".main");
@@ -17,22 +18,11 @@ export default function changeUserName() {
   const CHANGE_NAME_BTN = USER_NAME_ELEM.querySelector(".btn-change-name");
   if (!CHANGE_NAME_BTN) return;
 
-  const ERROR_NAME_EVENT = (_bodyElem, _txt) => {
-    const INFO_TEXT_EL = document.querySelector(".info-change-name");
-    if (INFO_TEXT_EL) return;
-
-    const INFO_EL = document.createElement("div");
-    INFO_EL.classList.add("info-change-name");
-    INFO_EL.classList.add("error");
-    INFO_EL.innerHTML = msg_str(_txt);
-    _bodyElem.appendChild(INFO_EL);
-  };
-
   CHANGE_NAME_BTN.addEventListener("click", () => {
     const MODAL_POPUP = document.querySelector(".change-user-name");
     if (MODAL_POPUP) return;
 
-    const {CHANGE_NAME_POP, POPUP_BG_EL, CONTAINER_EL, HEADER_EL, TITLE_EL, CLOSE_BTN_EL, BODY_EL, FOOTER_EL, MODAL_OK, MODAL_CANCLE} = createModal("ok_cancle", "change-user-name");
+    const {MODAL_POP_WRAP, POPUP_BG_EL, CONTAINER_EL, HEADER_EL, TITLE_EL, CLOSE_BTN_EL, BODY_EL, FOOTER_EL, MODAL_OK, MODAL_CANCLE} = createModal("ok_cancle", "change-user-name");
 
     const MODAL_FROM_WRAP = document.createElement("div");
     const BTN_DEL = document.createElement("button");
@@ -73,7 +63,7 @@ export default function changeUserName() {
         // 20글자 이상 입력 시 입력 방지
         if (TARGET.value.length > 20) {
           TARGET.value = TARGET.value.slice(0, 20);
-          ERROR_NAME_EVENT(BODY_EL, "change_name_error_full");
+          errorNameEvent(BODY_EL, "change_name_error_full");
         }
 
         BTN_DEL.classList.remove("hide");
@@ -90,7 +80,7 @@ export default function changeUserName() {
 
     MODAL_OK.addEventListener("click", () => {
       if (IPT_EL.value === "") {
-        ERROR_NAME_EVENT(BODY_EL, "change_name_error_null");
+        errorNameEvent(BODY_EL, "change_name_error_null");
       } else {
         const NAME_EL = document.querySelector(".init-name");
         if (!NAME_EL) return;
@@ -101,15 +91,15 @@ export default function changeUserName() {
 
         storageMethod("SET_ITEM", "userName", RESULT);
 
-        CHANGE_NAME_POP.remove();
+        MODAL_POP_WRAP.remove();
       }
     });
 
     MODAL_CANCLE.addEventListener("click", () => {
-      CHANGE_NAME_POP.remove();
+      MODAL_POP_WRAP.remove();
     });
     CLOSE_BTN_EL.addEventListener("click", () => {
-      CHANGE_NAME_POP.remove();
+      MODAL_POP_WRAP.remove();
     });
   });
 }
