@@ -1,3 +1,4 @@
+import {ws} from "../../webSocket/webSocketHost.js";
 import createModal from "../../../../functions/common/popup/createModal.js";
 import msg_str from "../../../../functions/common/msg_str.js";
 import errorNameEvent from "../errorNameEvent.js";
@@ -86,12 +87,27 @@ export default function changeUserName() {
         if (!NAME_EL) return;
 
         const RESULT = getUnicodePoints(IPT_EL.value.replace(/\s+/g, ""));
+        const DE_RESULT = fromUnicodePoints(RESULT);
 
-        NAME_EL.innerHTML = fromUnicodePoints(RESULT);
+        NAME_EL.innerHTML = DE_RESULT;
 
         storageMethod("SET_ITEM", "userName", RESULT);
 
         MODAL_POP_WRAP.remove();
+
+        if (ws.readyState === WebSocket.OPEN) {
+          // WebSocket이 이미 열린 경우 바로 전송
+          ws.send(JSON.stringify({type: "setUserName", userId: DE_RESULT}));
+        } else {
+          // WebSocket이 열려 있지 않은 경우 open 이벤트 기다리기
+          ws.addEventListener(
+            "open",
+            () => {
+              ws.send(JSON.stringify({type: "setUserName", userId: DE_RESULT}));
+            },
+            {once: true}
+          ); // 한 번만 실행되도록 이벤트 리스너 설정
+        }
       }
     });
 

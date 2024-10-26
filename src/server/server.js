@@ -1,6 +1,6 @@
 import cluster from "cluster";
 import os from "os";
-import {WebSocket, WebSocketServer} from "ws";
+import {WebSocketServer} from "ws";
 import {v4 as uuidv4} from "uuid";
 
 const numCPUs = os.cpus().length;
@@ -23,21 +23,18 @@ if (cluster.isPrimary) {
    * index 화면 webSocket
    */
   const wss = new WebSocketServer({port: 8080});
-  let users = {}; // 접속한 사용자 목록
+  const users = new Map(); // 접속 사용자 관리
 
   wss.on("connection", ws => {
-    let userName = null;
     ws.on("message", message => {
       const data = JSON.parse(message);
-      console.log("data :: ", data);
 
       if (data.type === "setUserName") {
-        userName = data.userName;
-        console.log("userName :: ", userName);
-        // users.push(userName);
-        users[userName] = ws;
-        broadcastUsers();
-        console.log(`User connected: ${userName}`);
+        const userId = data.userId;
+        console.log("userId : ", userId);
+
+        users.set(userId, ws);
+        broadcastUserList(); // 사용자 목록 갱신
       }
     });
 
@@ -50,24 +47,24 @@ if (cluster.isPrimary) {
     // broadcastUsers();
 
     ws.on("close", () => {
-      // console.log(`User disconnected: ${userId}`);
-      // delete users[userId];
-      console.log(`User disconnected: ${userName}`);
-      delete users[userName];
-
-      broadcastUsers();
+      for (let [userId, socket] of users.entries()) {
+        if (socket === ws) {
+          users.delete(userId);
+          broadcastUserList(); // 사용자 목록 갱신
+          break;
+        }
+      }
     });
   });
 
   // 모든 클라이언트에게 사용자 목록을 전송
-  function broadcastUsers() {
-    const userList = Object.keys(users);
-    const userListMessage = JSON.stringify({type: "userList", users: userList});
-    wss.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(userListMessage);
-      }
-    });
+  function broadcastUserList() {
+    const userList = Array.from(users.keys());
+    const message = JSON.stringify({type: "userList", users: userList});
+
+    for (let ws of users.values()) {
+      ws.send(message);
+    }
   }
 
   /** ======================================================================================================

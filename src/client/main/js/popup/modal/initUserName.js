@@ -1,4 +1,4 @@
-import {ws} from "../../webSocket.js";
+import {ws} from "../../webSocket/webSocketHost.js";
 import createModal from "../../../../functions/common/popup/createModal.js";
 import msg_str from "../../../../functions/common/msg_str.js";
 import errorNameEvent from "../errorNameEvent.js";
@@ -6,7 +6,7 @@ import fromUnicodePoints from "../../../../functions/common/unicode/fromUnicodeP
 import getUnicodePoints from "../../../../functions/common/unicode/getUnicodePoints.js";
 import storageMethod from "../../../../functions/common/storage/storageMethod.js";
 
-export default function initUserName(_length) {
+export default function initUserName() {
   const MAIN_ELEM = document.querySelector(".main");
   if (!MAIN_ELEM) return;
 
@@ -26,14 +26,25 @@ export default function initUserName(_length) {
         .map(s => s.trim())
     );
     INIT_NAME_ELEM.innerHTML = userName;
-    console.log("userName ::::::::: ", userName);
 
-    ws.send(JSON.stringify({type: "setUserName", userName}));
+    if (ws.readyState === WebSocket.OPEN) {
+      // WebSocket이 이미 열린 경우 바로 전송
+      ws.send(JSON.stringify({type: "setUserName", userId: userName}));
+    } else {
+      // WebSocket이 열려 있지 않은 경우 open 이벤트 기다리기
+      ws.addEventListener(
+        "open",
+        () => {
+          ws.send(JSON.stringify({type: "setUserName", userId: userName}));
+        },
+        {once: true}
+      ); // 한 번만 실행되도록 이벤트 리스너 설정
+    }
   } else {
     const MODAL_POPUP = document.querySelector(".init-user-name");
     if (MODAL_POPUP) return;
 
-    const {MODAL_POP_WRAP, TITLE_EL, CLOSE_BTN_EL, BODY_EL, MODAL_OK} = createModal("default", "init-user-name");
+    const {MODAL_POP_WRAP, TITLE_EL, BODY_EL, MODAL_OK} = createModal("default", "init-user-name");
 
     const MODAL_FROM_WRAP = document.createElement("div");
     const BTN_DEL = document.createElement("button");
@@ -103,12 +114,20 @@ export default function initUserName(_length) {
 
         MODAL_POP_WRAP.remove();
 
-        ws.send(JSON.stringify({type: "setUserName", userName: DE_RESULT}));
+        if (ws.readyState === WebSocket.OPEN) {
+          // WebSocket이 이미 열린 경우 바로 전송
+          ws.send(JSON.stringify({type: "setUserName", userId: DE_RESULT}));
+        } else {
+          // WebSocket이 열려 있지 않은 경우 open 이벤트 기다리기
+          ws.addEventListener(
+            "open",
+            () => {
+              ws.send(JSON.stringify({type: "setUserName", userId: DE_RESULT}));
+            },
+            {once: true}
+          ); // 한 번만 실행되도록 이벤트 리스너 설정
+        }
       }
-    });
-
-    CLOSE_BTN_EL.addEventListener("click", () => {
-      MODAL_POP_WRAP.remove();
     });
   }
 

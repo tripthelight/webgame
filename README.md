@@ -62,3 +62,9 @@
 - 241020 오전:
 
   - 브라우저를 2개 띄우면 2번째 접속자의 정보를 server에서 못받는 오류 발생중
+
+- 241026 오전:
+  - 브라우저에서 새로고침 시 websocket 연결이 끊기는 문제가 발생
+  - socket.io와 reconnecting-websocket 두 모듈 중 고민하다가
+  - reconnecting-websocket 을 사용함
+  - change name을 하면, 이전에 바꾸기 전 이름이 사라지지 않는 문제발생\*\*\*\*\*
