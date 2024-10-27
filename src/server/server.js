@@ -1,7 +1,7 @@
-import cluster from "cluster";
-import os from "os";
-import {WebSocketServer} from "ws";
-import {v4 as uuidv4} from "uuid";
+import cluster from 'cluster';
+import os from 'os';
+import { WebSocketServer } from 'ws';
+import { v4 as uuidv4 } from 'uuid';
 
 const numCPUs = os.cpus().length;
 
@@ -13,44 +13,61 @@ if (cluster.isPrimary) {
     cluster.fork();
   }
 
-  cluster.on("exit", (worker, code, signal) => {
+  cluster.on('exit', (worker, code, signal) => {
     console.log(`Worker ${worker.process.pid} died with code ${code} and signal ${signal}`);
-    console.log("Starting a new worker");
+    console.log('Starting a new worker');
     cluster.fork();
   });
 } else {
   /** ======================================================================================================
    * index 화면 webSocket
    */
-  const wss = new WebSocketServer({port: 8080});
-  const users = new Map(); // 접속 사용자 관리
+  const wss = new WebSocketServer({ port: 8080 });
+  const users = new Map(); // clientId를 key로 사용자 WebSocket 및 userId 정보 저장
+  const previousStates = new Map(); // clientId를 key로 이전 userId 상태 저장
 
-  wss.on("connection", ws => {
-    ws.on("message", message => {
+  wss.on('connection', (ws) => {
+    ws.on('message', (message) => {
       const data = JSON.parse(message);
 
-      if (data.type === "setUserName") {
-        const userId = data.userId;
-        console.log("userId : ", userId);
+      if (data.type === 'join') {
+        const { clientId, userId } = data;
 
-        users.set(userId, ws);
-        broadcastUserList(); // 사용자 목록 갱신
+        // 이전 상태와 현재 상태 비교
+        const previousUserId = previousStates.get(clientId);
+
+        if (previousUserId !== userId) {
+          // 상태 변화가 있을 때만 업데이트 및 브로드캐스트
+          users.set(clientId, { userId, ws });
+          previousStates.set(clientId, userId); // 상태 갱신
+          broadcastUserList();
+        } else {
+          console.log(`No state change for clientId: ${clientId}. Broadcast skipped.`);
+        }
+      }
+
+      if (data.type === 'setUserName') {
+        const { clientId, newUserId } = data;
+        const user = users.get(clientId);
+
+        if (user && user.userId !== newUserId) {
+          // 상태가 변경될 때만 업데이트 및 브로드캐스트
+          user.userId = newUserId; // 기존 userId 업데이트
+          previousStates.set(clientId, newUserId); // 상태 갱신
+          broadcastUserList();
+        } else {
+          console.log(`No userId change for clientId: ${clientId}. Broadcast skipped.`);
+        }
       }
     });
 
-    // let userId = Math.random().toString(36).slice(2, 11); // 간단한 사용자 ID 생성
-    // users[userId] = ws;
-
-    // console.log(`User connected: ${userId}`);
-
-    // 현재 접속한 모든 사용자에게 사용자 목록 전송
-    // broadcastUsers();
-
-    ws.on("close", () => {
-      for (let [userId, socket] of users.entries()) {
-        if (socket === ws) {
-          users.delete(userId);
-          broadcastUserList(); // 사용자 목록 갱신
+    ws.on('close', () => {
+      // 연결 해제 시 사용자 목록에서 제거하고 브로드캐스트
+      for (let [clientId, user] of users.entries()) {
+        if (user.ws === ws) {
+          users.delete(clientId);
+          previousStates.delete(clientId); // 상태 추적에서 삭제
+          broadcastUserList();
           break;
         }
       }
@@ -59,11 +76,15 @@ if (cluster.isPrimary) {
 
   // 모든 클라이언트에게 사용자 목록을 전송
   function broadcastUserList() {
-    const userList = Array.from(users.keys());
-    const message = JSON.stringify({type: "userList", users: userList});
+    const userList = Array.from(users.entries()).map(([clientId, user]) => ({
+      clientId,
+      userId: user.userId,
+    }));
 
-    for (let ws of users.values()) {
-      ws.send(message);
+    const message = JSON.stringify({ type: 'userList', users: userList });
+
+    for (let user of users.values()) {
+      user.ws.send(message);
     }
   }
 

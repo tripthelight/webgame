@@ -16,6 +16,7 @@
 - npm i -D cluster
 - npm i redux
 - npm install @reduxjs/toolkit
+- npm install -g nodemon
 
 # VSCODE EXTENSION
 
@@ -64,7 +65,13 @@
   - 브라우저를 2개 띄우면 2번째 접속자의 정보를 server에서 못받는 오류 발생중
 
 - 241026 오전:
+
   - 브라우저에서 새로고침 시 websocket 연결이 끊기는 문제가 발생
   - socket.io와 reconnecting-websocket 두 모듈 중 고민하다가
   - reconnecting-websocket 을 사용함
   - change name을 하면, 이전에 바꾸기 전 이름이 사라지지 않는 문제발생\*\*\*\*\*
+
+- 241027 오전:
+  - 브라우저에서 연속 새로고침 시 socket에 접속된 다른 브라우저에 불필요한 요청과 응답이 발생
+  - main.js에서 beforeunload를 사용해 봤지만 ios 사파리 브라우저에서 적용 안됨
+  - server의 "ws.on('close', () => {}" 이 부분을 활용할 필요가 있음
