@@ -72,6 +72,11 @@
   - change name을 하면, 이전에 바꾸기 전 이름이 사라지지 않는 문제발생\*\*\*\*\*
 
 - 241027 오전:
+
   - 브라우저에서 연속 새로고침 시 socket에 접속된 다른 브라우저에 불필요한 요청과 응답이 발생
   - main.js에서 beforeunload를 사용해 봤지만 ios 사파리 브라우저에서 적용 안됨
   - server의 "ws.on('close', () => {})" 이 부분을 활용할 필요가 있음
+
+- 2411102 오전:
+  - window.addEventListener('pagehide', (event) => {}) 로 모든 브라우저에서 새로고침 여부 확인 가능해짐
+  - init() 함수내의 함수 순서를 재조정해서 ul.user-list 를 다시 그릴지 말지 여부 판단 필요

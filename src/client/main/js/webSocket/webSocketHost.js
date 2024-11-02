@@ -2,7 +2,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { LOADING_EVENT } from '../../../functions/common/loading.js';
 
 // export const ws = new ReconnectingWebSocket('ws://localhost:8080', [], {
-export const ws = new ReconnectingWebSocket('ws://61.36.169.93:8080', [], {
+export const ws = new ReconnectingWebSocket('ws://61.36.169.20:8080', [], {
   reconnectInterval: 1000, // 1초 간격으로 재연결 시도
   maxRetries: 10, // 최대 재연결 시도 횟수
 });

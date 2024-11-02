@@ -27,6 +27,7 @@ if (cluster.isPrimary) {
   const previousStates = new Map(); // clientId를 key로 이전 userId 상태 저장
 
   wss.on('connection', (ws) => {
+    // message
     ws.on('message', (message) => {
       const data = JSON.parse(message);
 
@@ -61,6 +62,7 @@ if (cluster.isPrimary) {
       }
     });
 
+    // close
     ws.on('close', () => {
       // 연결 해제 시 사용자 목록에서 제거하고 브로드캐스트
       for (let [clientId, user] of users.entries()) {
