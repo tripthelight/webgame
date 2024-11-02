@@ -32,7 +32,11 @@ export default function initUserName() {
     );
     INIT_NAME_ELEM.innerHTML = userName;
 
-    if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') return;
+    // 브라우저 새로고침 일 경우 return
+    if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {
+      storageMethod('s', 'REMOVE_ITEM', 'reloaded');
+      return;
+    }
 
     if (ws.readyState === WebSocket.OPEN) {
       // WebSocket이 이미 열린 경우 바로 전송
