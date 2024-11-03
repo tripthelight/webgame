@@ -1,6 +1,7 @@
 import { ws } from './webSocketHost.js';
 import displayUsers from '../displayUsers.js';
-import store, { updateUserList } from '../../../store/userList.js';
+import storageEventStore, { updateStorageEvent } from '../../../store/storageEvent.js';
+import storageMethod from '../../../functions/common/storage/storageMethod.js';
 
 export const userList = () => {
   ws.onmessage = (event) => {
@@ -11,7 +12,7 @@ export const userList = () => {
     if (data.users) {
       if (data.type === 'userList') {
         // displayUsers(data.users);
-        store.dispatch(updateUserList({ userList: data.users }));
+        storageMethod('s', 'SET_ITEM', 'userList', JSON.stringify(data.users));
       }
     } else {
       // socket에 접속한 사용자가 아무도 없을 경우

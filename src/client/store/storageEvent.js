@@ -1,8 +1,8 @@
-import {configureStore, combineReducers, createSlice} from "@reduxjs/toolkit";
+import { configureStore, combineReducers, createSlice } from '@reduxjs/toolkit';
 
 // 슬라이스(slice) 생성: age와 location 상태 관리
 const storageEventSlice = createSlice({
-  name: "storageEvent",
+  name: 'storageEvent',
   initialState: {
     preventSetItemExecution: true, // storage.setItem 실행 | 미실행
     preventRemoveItemExecution: true, // storage.removeItem 실행 | 미실행
@@ -18,16 +18,16 @@ const storageEventSlice = createSlice({
 });
 
 // 액션과 리듀서 추출
-export const {updateStorageEvent} = storageEventSlice.actions;
+export const { updateStorageEvent } = storageEventSlice.actions;
 
 // 스토어 생성
-const store = configureStore({
+const storageEventStore = configureStore({
   reducer: {
     storageEvent: storageEventSlice.reducer,
   },
 });
 
-export default store;
+export default storageEventStore;
 
 // // 초기 상태
 // const initialStorageVariables = {

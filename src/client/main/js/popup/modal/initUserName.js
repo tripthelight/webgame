@@ -6,6 +6,10 @@ import errorNameEvent from '../errorNameEvent.js';
 import fromUnicodePoints from '../../../../functions/common/unicode/fromUnicodePoints.js';
 import getUnicodePoints from '../../../../functions/common/unicode/getUnicodePoints.js';
 import storageMethod from '../../../../functions/common/storage/storageMethod.js';
+import displayUsers from '../../displayUsers.js';
+import storageDataStore, { updateLocalStorageData, updateSessionStorageData } from '../../../../store/storageData.js';
+import saveLocalStorage from '../../../../functions/common/storage/save/saveLocalStorage.js';
+import saveSessionStorage from '../../../../functions/common/storage/save/saveSessionStorage.js';
 
 export default function initUserName() {
   const MAIN_ELEM = document.querySelector('.main');
@@ -34,6 +38,12 @@ export default function initUserName() {
 
     // 브라우저 새로고침 일 경우 return
     if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {
+      // 새로고침 하기 전 localStorage 복원
+      saveLocalStorage();
+      // 새로고침 하기 전 sessionStorage 복원
+      saveSessionStorage();
+
+      // 새로고침을 인식하기 위해 sessionStorage에 추가했던 reloaded 삭제
       storageMethod('s', 'REMOVE_ITEM', 'reloaded');
       return;
     }

@@ -78,5 +78,10 @@
   - server의 "ws.on('close', () => {})" 이 부분을 활용할 필요가 있음
 
 - 2411102 오전:
+
   - window.addEventListener('pagehide', (event) => {}) 로 모든 브라우저에서 새로고침 여부 확인 가능해짐
   - init() 함수내의 함수 순서를 재조정해서 ul.user-list 를 다시 그릴지 말지 여부 판단 필요
+
+- 2411103 오전:
+  - 브라우저에서 새로고침 하면 socket 통신이 끊김
+  - initUserName.js 의 if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {} 이 부분을 다시 확인해 볼 것

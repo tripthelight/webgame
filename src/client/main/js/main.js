@@ -10,11 +10,11 @@ import displayUsers from './displayUsers.js';
 
 function init() {
   console.log('main init...');
-  initUserName();
   userList();
-  displayUsers();
+  initUserName();
+  // displayUsers();
   changeUserName();
-  // storageEvent(); // storage event는 마지막에 실행
+  storageEvent(); // storage event는 마지막에 실행
 
   // window.localStorage.clear();
   // window.sessionStorage.clear();

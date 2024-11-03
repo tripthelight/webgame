@@ -1,5 +1,4 @@
 import onlyOneCheckbox from '../../functions/common/onlyOneCheckbox.js';
-import store from '../../store/userList.js';
 
 export default function displayUsers() {
   console.log('111');
@@ -9,9 +8,6 @@ export default function displayUsers() {
 
   const CLIENT_ID = window.localStorage.getItem('clientId');
   if (!CLIENT_ID) return;
-
-  const USER_LIST = store.getState().userListState.userList;
-  console.log('USER_LIST :: ', USER_LIST);
 
   userList.innerHTML = ''; // 기존 사용자 목록 제거
   // USER_LIST.forEach((_user, _index) => {
