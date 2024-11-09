@@ -36,6 +36,7 @@ export default function initUserName() {
     );
     INIT_NAME_ELEM.innerHTML = userName;
 
+    // ===============================================================
     // 브라우저 새로고침 일 경우 return
     if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {
       // 새로고침 하기 전 localStorage 복원
@@ -45,8 +46,9 @@ export default function initUserName() {
 
       // 새로고침을 인식하기 위해 sessionStorage에 추가했던 reloaded 삭제
       storageMethod('s', 'REMOVE_ITEM', 'reloaded');
-      return;
+      // return;
     }
+    // ===============================================================
 
     if (ws.readyState === WebSocket.OPEN) {
       // WebSocket이 이미 열린 경우 바로 전송
@@ -152,38 +154,4 @@ export default function initUserName() {
       }
     });
   }
-
-  /*
-  const MAIN_ELEM = document.querySelector(".main");
-  if (!MAIN_ELEM) return;
-
-  const USER_NAME_ELEM = MAIN_ELEM.querySelector(".user-name");
-  if (!USER_NAME_ELEM) return;
-
-  const INIT_NAME_ELEM = USER_NAME_ELEM.querySelector(".init-name");
-  if (!INIT_NAME_ELEM) return;
-
-  // localStorage의 userName은 string[] 로 저장됨
-  const INIT_USER_NAME = window.localStorage.getItem("userName");
-
-  if (INIT_USER_NAME) {
-    INIT_NAME_ELEM.innerHTML = fromUnicodePoints(
-      INIT_USER_NAME.replace(/"/g, "")
-        .split(",")
-        .map(s => s.trim())
-    );
-  } else {
-    const CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < _length; i++) {
-      const randomIndex = Math.floor(Math.random() * CHARACTERS.length);
-      result += CHARACTERS[randomIndex];
-    }
-
-    const RESULT = getUnicodePoints(`name-${result}`);
-
-    INIT_NAME_ELEM.innerHTML = fromUnicodePoints(RESULT);
-    storageMethod("SET_ITEM", "userName", RESULT);
-  }
-  */
 }

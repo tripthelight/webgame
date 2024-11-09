@@ -33,6 +33,7 @@ if (cluster.isPrimary) {
 
       if (data.type === 'join') {
         const { clientId, userId } = data;
+        console.log(`${userId} join`);
 
         // 이전 상태와 현재 상태 비교
         const previousUserId = previousStates.get(clientId);
@@ -53,6 +54,7 @@ if (cluster.isPrimary) {
 
         if (user && user.userId !== newUserId) {
           // 상태가 변경될 때만 업데이트 및 브로드캐스트
+          console.log(`${user.userId} is changed new name: ${newUserId}`);
           user.userId = newUserId; // 기존 userId 업데이트
           previousStates.set(clientId, newUserId); // 상태 갱신
           broadcastUserList();
@@ -63,10 +65,12 @@ if (cluster.isPrimary) {
     });
 
     // close
-    ws.on('close', () => {
+    ws.on('close', (_event) => {
       // 연결 해제 시 사용자 목록에서 제거하고 브로드캐스트
       for (let [clientId, user] of users.entries()) {
         if (user.ws === ws) {
+          console.log(`${user.userId} disconnected`);
+
           users.delete(clientId);
           previousStates.delete(clientId); // 상태 추적에서 삭제
           broadcastUserList();

@@ -13,6 +13,7 @@ export const userList = () => {
       if (data.type === 'userList') {
         // displayUsers(data.users);
         storageMethod('s', 'SET_ITEM', 'userList', JSON.stringify(data.users));
+        displayUsers();
       }
     } else {
       // socket에 접속한 사용자가 아무도 없을 경우

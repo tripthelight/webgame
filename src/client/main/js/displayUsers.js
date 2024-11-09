@@ -1,34 +1,54 @@
 import onlyOneCheckbox from '../../functions/common/onlyOneCheckbox.js';
 
 export default function displayUsers() {
-  console.log('111');
-
-  const userList = document.querySelector('.user-list');
-  if (!userList) return;
-
   const CLIENT_ID = window.localStorage.getItem('clientId');
   if (!CLIENT_ID) return;
+  const USER_LIST = window.sessionStorage.getItem('userList');
+  if (!USER_LIST) return;
 
-  userList.innerHTML = ''; // 기존 사용자 목록 제거
-  // USER_LIST.forEach((_user, _index) => {
-  //   if (CLIENT_ID !== _user.clientId) {
-  //     const userItem = document.createElement('li');
-  //     const userItemCheckbox = document.createElement('input');
-  //     const userId = 'USER-' + _index;
-  //     userItemCheckbox.type = 'checkbox';
-  //     userItemCheckbox.name = 'USER_LIST';
-  //     userItemCheckbox.id = userId;
+  const userListEl = document.querySelector('.user-list');
+  if (!userListEl) return;
 
-  //     const userItemLabel = document.createElement('label');
-  //     userItemLabel.setAttribute('for', userId);
+  const USER_LIST_ARR = JSON.parse(USER_LIST);
+  const currentClientIds = Array.from(userListEl.querySelectorAll('input[type="checkbox"]')).map((input) => input.id);
 
-  //     userItemLabel.innerHTML = _user.userId;
+  // USER_LIST_ARR에 있는 항목 중 자신을 제외하고 새로 추가할 항목 찾기
+  USER_LIST_ARR.forEach((_user) => {
+    if (_user.clientId !== CLIENT_ID) {
+      const existingLi = userListEl.querySelector(`input[id="${_user.clientId}"]`);
 
-  //     userItem.appendChild(userItemCheckbox);
-  //     userItem.appendChild(userItemLabel);
-  //     userList.appendChild(userItem);
-  //   }
-  // });
+      if (existingLi) {
+        // 이미 존재하는 항목의 userId 업데이트
+        const label = existingLi.nextElementSibling;
+        if (label && label.innerHTML !== _user.userId) {
+          label.innerHTML = _user.userId;
+        }
+      } else {
+        // 새 항목 추가
+        const li = document.createElement('li');
+
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.id = _user.clientId;
+
+        const label = document.createElement('label');
+        label.setAttribute('for', _user.clientId);
+        label.innerHTML = _user.userId;
+
+        li.appendChild(input);
+        li.appendChild(label);
+        userListEl.appendChild(li);
+      }
+    }
+  });
+
+  // DOM에 있는 항목 중 USER_LIST_ARR에 없거나, 자신인 항목 제거
+  currentClientIds.forEach((_clientId) => {
+    if (!USER_LIST_ARR.some((_user) => _user.clientId === _clientId && _user.clientId !== CLIENT_ID)) {
+      const liToRemove = userListEl.querySelector(`input[id="${_clientId}"]`).closest('li');
+      userListEl.removeChild(liToRemove);
+    }
+  });
 
   // 유저리스트 checkbox 중 하나만 체크
   onlyOneCheckbox('.main .user-list');

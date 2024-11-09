@@ -25,6 +25,14 @@ export default function changeUserName() {
 
     const CLIENT_ID = window.localStorage.getItem('clientId');
     if (!CLIENT_ID) return;
+    const BEFORE_USER_NAME = window.localStorage.getItem('userName');
+    if (!BEFORE_USER_NAME) return;
+
+    const beforeUserName = fromUnicodePoints(
+      BEFORE_USER_NAME.replace(/"/g, '')
+        .split(',')
+        .map((s) => s.trim()),
+    );
 
     const { MODAL_POP_WRAP, POPUP_BG_EL, CONTAINER_EL, HEADER_EL, TITLE_EL, CLOSE_BTN_EL, BODY_EL, FOOTER_EL, MODAL_OK, MODAL_CANCLE } = createModal('ok_cancle', 'change-user-name');
 
@@ -91,6 +99,9 @@ export default function changeUserName() {
 
         const RESULT = getUnicodePoints(IPT_EL.value.replace(/\s+/g, ''));
         const DE_RESULT = fromUnicodePoints(RESULT);
+
+        // 바꾼 이름이 이전 이름과 같은면 return
+        if (beforeUserName === DE_RESULT) return MODAL_POP_WRAP.remove();
 
         NAME_EL.innerHTML = DE_RESULT;
 

@@ -29,7 +29,7 @@
 - bracket pair colorizer
 - Indent-rainbow
 - Auto rename tag
-- Markdown Preview Enhanced
+- Markdown All in One
 
 # build
 
@@ -83,5 +83,10 @@
   - init() 함수내의 함수 순서를 재조정해서 ul.user-list 를 다시 그릴지 말지 여부 판단 필요
 
 - 2411103 오전:
+
   - 브라우저에서 새로고침 하면 socket 통신이 끊김
   - initUserName.js 의 if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {} 이 부분을 다시 확인해 볼 것
+
+- 2411109 오전:
+  - 브라우저에서 새로고침 시 서버에 connect/disconnect를 컨트롤 하는 것을 불가능 한 것으로 결론
+  - 우선 socket 기능은 구현했으니, 메인화면부터 만들 것

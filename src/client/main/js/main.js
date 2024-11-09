@@ -12,7 +12,7 @@ function init() {
   console.log('main init...');
   userList();
   initUserName();
-  // displayUsers();
+  displayUsers();
   changeUserName();
   storageEvent(); // storage event는 마지막에 실행
 
@@ -34,7 +34,7 @@ document.onreadystatechange = () => {
 
 // 브라우저 새로고침 시 새로고침 여부 확인
 // pagehide는 beforeunload와 달리 모든 브라우저(모바일 포함)를 지원
-window.addEventListener('pagehide', (event) => {
+window.addEventListener('pagehide', (_event) => {
   console.log('unload or hidden.');
   storageMethod('s', 'SET_ITEM', 'reloaded', 'true');
 });
