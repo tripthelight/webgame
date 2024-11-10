@@ -88,5 +88,10 @@
   - initUserName.js 의 if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {} 이 부분을 다시 확인해 볼 것
 
 - 2411109 오전:
+
   - 브라우저에서 새로고침 시 서버에 connect/disconnect를 컨트롤 하는 것을 불가능 한 것으로 결론
   - 우선 socket 기능은 구현했으니, 메인화면부터 만들 것
+
+- 2411110 오전:
+  - 브라우저에서 새로 고침 시 'close' 된 후 3초가 전에 'join' 할 경우, broadcast 안하게 구현함
+  - 브라우저 새로 고침이든, 새로 접속이든 후 3초 초과 후 에만 'close'를 broadcast 함

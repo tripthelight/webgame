@@ -4,6 +4,8 @@ import { WebSocketServer } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 
 const numCPUs = os.cpus().length;
+const DISCONNECT_DELAY = 3000; // 3초 지연 (3000ms)
+let shouldBroadcast = true; // 브로드캐스트 가능 여부를 제어하는 플래그
 
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
@@ -13,6 +15,25 @@ if (cluster.isPrimary) {
     cluster.fork();
   }
 
+  // Primary가 모든 워커에 사용자 목록 업데이트 전송
+  function syncUserList(users) {
+    console.log('Primary: Syncing user list to all workers', users);
+    for (const id in cluster.workers) {
+      cluster.workers[id].send({ type: 'syncUserList', users });
+    }
+  }
+
+  // 워커가 사용자 상태 변경을 요청할 때 처리
+  for (const id in cluster.workers) {
+    cluster.workers[id].on('message', (message) => {
+      if (message.type === 'updateUserList') {
+        console.log('Primary: Received updateUserList from worker');
+        syncUserList(message.users);
+      }
+    });
+  }
+
+  // 워커가 종료되면 새 워커 생성
   cluster.on('exit', (worker, code, signal) => {
     console.log(`Worker ${worker.process.pid} died with code ${code} and signal ${signal}`);
     console.log('Starting a new worker');
@@ -24,7 +45,7 @@ if (cluster.isPrimary) {
    */
   const wss = new WebSocketServer({ port: 8080 });
   const users = new Map(); // clientId를 key로 사용자 WebSocket 및 userId 정보 저장
-  const previousStates = new Map(); // clientId를 key로 이전 userId 상태 저장
+  const recentlyDisconnected = new Map(); // 각 사용자별로 타이머 관리하여 완전 연결 해제 상태 추적
 
   wss.on('connection', (ws) => {
     // message
@@ -33,19 +54,28 @@ if (cluster.isPrimary) {
 
       if (data.type === 'join') {
         const { clientId, userId } = data;
-        console.log(`${userId} join`);
 
-        // 이전 상태와 현재 상태 비교
-        const previousUserId = previousStates.get(clientId);
+        // join 메시지가 오면, 최근에 close 발생한 타이머 제거 및 생략 상태 설정
+        if (recentlyDisconnected.has(clientId)) {
+          clearTimeout(recentlyDisconnected.get(clientId));
+          recentlyDisconnected.delete(clientId);
 
-        if (previousUserId !== userId) {
-          // 상태 변화가 있을 때만 업데이트 및 브로드캐스트
-          users.set(clientId, { userId, ws });
-          previousStates.set(clientId, userId); // 상태 갱신
-          broadcastUserList();
-        } else {
-          console.log(`No state change for clientId: ${clientId}. Broadcast skipped.`);
+          // 새로고침으로 인해 3초 전에 join이 발생한 경우
+          shouldBroadcast = false; // 모든 사용자에 대한 브로드캐스트 비활성화
+          console.log(`Worker ${process.pid}: Broadcast disabled temporarily due to quick reconnect by ${userId}`);
+
+          // 3초 후에 다시 브로드캐스트 활성화
+          setTimeout(() => {
+            shouldBroadcast = true;
+            console.log(`Worker ${process.pid}: Broadcast re-enabled after delay`);
+          }, DISCONNECT_DELAY);
         }
+
+        console.log(`Worker ${process.pid}: ${userId} joined`);
+
+        // 사용자 목록 업데이트 및 Primary에 전송
+        users.set(clientId, { userId, ws });
+        updateUserList();
       }
 
       if (data.type === 'setUserName') {
@@ -53,11 +83,9 @@ if (cluster.isPrimary) {
         const user = users.get(clientId);
 
         if (user && user.userId !== newUserId) {
-          // 상태가 변경될 때만 업데이트 및 브로드캐스트
-          console.log(`${user.userId} is changed new name: ${newUserId}`);
+          console.log(`Worker ${process.pid}: ${user.userId} changed name to ${newUserId}`);
           user.userId = newUserId; // 기존 userId 업데이트
-          previousStates.set(clientId, newUserId); // 상태 갱신
-          broadcastUserList();
+          updateUserList();
         } else {
           console.log(`No userId change for clientId: ${clientId}. Broadcast skipped.`);
         }
@@ -65,15 +93,19 @@ if (cluster.isPrimary) {
     });
 
     // close
-    ws.on('close', (_event) => {
-      // 연결 해제 시 사용자 목록에서 제거하고 브로드캐스트
-      for (let [clientId, user] of users.entries()) {
+    ws.on('close', () => {
+      for (const [clientId, user] of users.entries()) {
         if (user.ws === ws) {
-          console.log(`${user.userId} disconnected`);
+          // close 이벤트 발생 시 3초 타이머 시작
+          const timeoutId = setTimeout(() => {
+            // 타이머 만료 시, 해당 사용자는 완전 연결 해제 상태로 간주
+            recentlyDisconnected.delete(clientId);
+            users.delete(clientId);
+            broadcastUserList();
+            console.log(`Client ${clientId} fully disconnected after delay.`);
+          }, DISCONNECT_DELAY);
 
-          users.delete(clientId);
-          previousStates.delete(clientId); // 상태 추적에서 삭제
-          broadcastUserList();
+          recentlyDisconnected.set(clientId, timeoutId); // 타이머 저장
           break;
         }
       }
@@ -82,6 +114,12 @@ if (cluster.isPrimary) {
 
   // 모든 클라이언트에게 사용자 목록을 전송
   function broadcastUserList() {
+    // 브로드캐스트가 가능한 경우에만 수행
+    if (!shouldBroadcast) {
+      console.log('Broadcasting skipped due to quick reconnect');
+      return;
+    }
+
     const userList = Array.from(users.entries()).map(([clientId, user]) => ({
       clientId,
       userId: user.userId,
@@ -89,10 +127,34 @@ if (cluster.isPrimary) {
 
     const message = JSON.stringify({ type: 'userList', users: userList });
 
-    for (let user of users.values()) {
-      user.ws.send(message);
+    for (const [clientId, user] of users.entries()) {
+      if (user.ws.readyState === user.ws.OPEN) {
+        console.log(`Worker ${process.pid}: Broadcasting user list to client ${user.userId}`);
+        user.ws.send(message);
+      }
     }
   }
+
+  // 사용자 목록을 Primary에 전송
+  function updateUserList() {
+    const userList = Array.from(users.entries()).map(([clientId, user]) => ({
+      clientId,
+      userId: user.userId,
+    }));
+
+    process.send({ type: 'updateUserList', users: userList });
+  }
+
+  // Primary로부터 사용자 목록 동기화 메시지를 수신할 때
+  process.on('message', (message) => {
+    if (message.type === 'syncUserList') {
+      console.log(`Worker ${process.pid}: Received syncUserList from Primary`, message.users);
+      // 모든 클라이언트에게 동기화된 사용자 목록 전송
+      broadcastUserList();
+    }
+  });
+
+  console.log(`Worker ${process.pid} started and WebSocket server is running on ws://localhost:8080`);
 
   /** ======================================================================================================
    * 2인용 webSocket
