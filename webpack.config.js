@@ -1,25 +1,26 @@
-import fs from "fs";
-import path from "path";
-import {fileURLToPath} from "url";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import {CleanWebpackPlugin} from "clean-webpack-plugin";
-import sass from "sass";
-import webpack from "webpack";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import sass from 'sass';
+import webpack from 'webpack';
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const __filename = fileURLToPath(import.meta.url);
 
 export default {
-  mode: "production",
+  mode: 'production',
   entry: {
-    main: "./src/client/index.js",
+    main: './src/client/index.js',
+    selectGame: './src/client/js/selectGame/selectGame.js',
   },
   output: {
     // filename: "js/[name].bundle.js",
-    filename: "[name].[chunkhash].js",
-    path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
+    filename: '[name].[chunkhash].js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
     clean: true,
   },
   module: {
@@ -27,22 +28,22 @@ export default {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: ["babel-loader"],
+        use: ['babel-loader'],
       },
       {
         test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
+          'css-loader',
           {
-            loader: "sass-loader",
+            loader: 'sass-loader',
             options: {
               // implementation: sass, // Dart Sass 사용
               // SCSS 문법이 올바르게 인식되도록 sassOptions 설정
               sassOptions: {
-                outputStyle: "compressed",
+                outputStyle: 'compressed',
                 // Dart Sass 사용 시 syntax 옵션 설정
-                syntax: "scss",
+                syntax: 'scss',
               },
             },
           },
@@ -50,7 +51,7 @@ export default {
       },
       {
         test: /\.html$/,
-        use: ["html-loader"],
+        use: ['html-loader'],
       },
     ],
   },
@@ -58,25 +59,33 @@ export default {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       // filename: "css/common.css",
-      filename: "[name].[contenthash].css",
-      chunkFilename: "[id].css",
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
-      template: "./src/client/index.html",
-      chunks: ["main"],
-      filename: "index.html",
+      template: './src/client/index.html',
+      chunks: ['main'],
+      filename: 'index.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/client/views/selectGame.html',
+      chunks: ['selectGame'],
+      filename: 'views/selectGame.html',
     }),
   ],
   optimization: {
     splitChunks: {
-      chunks: "all",
+      chunks: 'all',
       minSize: 0,
       maxSize: 50000, // 50KB로 설정하여, 특정 크기(라인 수)에 도달하면 분할
     },
   },
   devServer: {
     static: {
-      directory: path.join("dist"), // 정적 파일 제공 디렉터리
+      directory: path.join('dist'), // 정적 파일 제공 디렉터리
+    },
+    historyApiFallback: {
+      rewrites: [{ from: /^\/views\/selectGame$/, to: '/views/selectGame.html' }],
     },
     port: 3000,
     hot: true,

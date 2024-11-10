@@ -1,14 +1,24 @@
 * {
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 a,
 button {
   -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
 }
 button {
   border: 0 none;
   border-radius: 0;
   background-color: transparent;
   cursor: pointer;
+}
+ul,
+ol,
+li,
+dl,
+dt,
+dd {
+  list-style: none;
 }
