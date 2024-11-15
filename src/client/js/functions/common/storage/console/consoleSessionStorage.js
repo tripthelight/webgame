@@ -1,4 +1,4 @@
-import storageEventStore from '../../../../store/storageEvent.js';
+import storageEventStore from '../../../../../store/storageEvent.js';
 
 export default function consoleSessionStorage() {
   // 원래의 메서드를 저장

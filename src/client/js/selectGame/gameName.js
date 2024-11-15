@@ -1,4 +1,4 @@
-import msg_str from '../../functions/common/msg_str.js';
+import msg_str from '../functions/common/msg_str.js';
 
 export default function gameName() {
   const GAME_LIST_EL = document.querySelector('.select-game');

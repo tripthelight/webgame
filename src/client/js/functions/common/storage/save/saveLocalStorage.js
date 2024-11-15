@@ -1,4 +1,4 @@
-import storageDataStore, { updateLocalStorageData } from '../../../../store/storageData.js';
+import storageDataStore, { updateLocalStorageData } from '../../../../../store/storageData.js';
 
 export default function saveLocalStorage() {
   // localStorage의 모든 키-값 쌍을 저장할 객체 생성

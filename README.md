@@ -98,5 +98,17 @@
   - 브라우저 새로 고침이든, 새로 접속이든 후 3초 초과 후 에만 'close'를 broadcast 함
 
 - 2411110 오후:
+
   - main ui 진행 중
   - src/client에서 main만 폴더를 따로 뺐는데, views, js, scss폴더 안에 넣는 방식으로 폴더 정리 필요
+
+- 2411115 오후:
+  - 메인화면 > SELECT GAME > 뒤로가기 시
+  ```
+  Uncaught runtime errors:
+  ERROR
+  Script error.
+  handleError@
+  @
+  ```
+  - 위와 같은 오류 발생

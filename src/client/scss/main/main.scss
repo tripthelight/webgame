@@ -1,0 +1,53 @@
+.main {
+  position: relative;
+  ul {
+    width: 100%;
+    height: 100%;
+    height: 100vh;
+    height: var(--app-height);
+    &.choice-game-state {
+      display: flex;
+      align-items: stretch;
+      flex-direction: column;
+      li {
+        flex-grow: 1;
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          color: #000;
+          span {
+            font-size: 20px;
+            color: rgba(0, 0, 0, 0.8);
+          }
+          &:hover,
+          &:active {
+            span {
+              color: rgba(0, 0, 0, 1);
+            }
+          }
+        }
+        &:nth-child(1) {
+          a {
+            background-color: rgba(241, 221, 212, 0.8);
+            &:hover,
+            &:active {
+              background-color: rgba(241, 221, 212, 1);
+            }
+          }
+        }
+        &:nth-child(2) {
+          a {
+            background-color: rgba(250, 153, 124, 0.8);
+            &:hover,
+            &:active {
+              background-color: rgba(250, 153, 124, 1);
+            }
+          }
+        }
+      }
+    }
+  }
+}

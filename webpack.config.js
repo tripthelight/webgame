@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 export default {
   mode: 'production',
   entry: {
-    main: './src/client/index.js',
+    main: './src/client/js/main/main.js',
     selectGame: './src/client/js/selectGame/selectGame.js',
   },
   output: {

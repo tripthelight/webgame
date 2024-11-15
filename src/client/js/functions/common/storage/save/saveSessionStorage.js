@@ -1,4 +1,4 @@
-import storageDataStore, { updateSessionStorageData } from '../../../../store/storageData.js';
+import storageDataStore, { updateSessionStorageData } from '../../../../../store/storageData.js';
 
 export default function saveSessionStorage() {
   // sessionStorage의 모든 키-값 쌍을 저장할 객체 생성

@@ -1,4 +1,4 @@
-import storageEventStore, { updateStorageEvent } from '../../../store/storageEvent.js';
+import storageEventStore, { updateStorageEvent } from '../../../../store/storageEvent.js';
 import saveLocalStorage from './save/saveLocalStorage.js';
 import saveSessionStorage from './save/saveSessionStorage.js';
 
