@@ -1,32 +1,19 @@
 import '../../../scss/common.scss';
 import { LOADING_EVENT } from './loading.js';
 import storageEvent from '../../functions/common/storage/storageEvent.js';
-import storageMethod from '../../functions/common/storage/storageMethod.js';
-import saveLocalStorage from './storage/save/saveLocalStorage.js';
-import saveSessionStorage from './storage/save/saveSessionStorage.js';
+import refreshEvent from './refreshEvent.js';
 import appHeight from './appHeight.js';
 
-storageEvent();
-LOADING_EVENT.show();
 console.log('common js ... ');
 
-const BROWSER_RELOAD = window.sessionStorage.getItem('reloaded');
-if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {
-  // 새로고침 하기 전의 localStorage 값 복원
-  saveLocalStorage();
-  // 새로고침 하기 전의 sessionStorage 값 복원
-  saveSessionStorage();
+// 로딩화면 먼저 노출 - 로딩화면은 접속한 화면의 main evnet에서 제거
+LOADING_EVENT.show();
 
-  // 새로고침을 인식하기 위해 sessionStorage에 추가했던 reloaded 삭제
-  storageMethod('s', 'REMOVE_ITEM', 'reloaded');
-}
+// 사용자가 localSotrage, sessionSotrage 값 변경 방지
+storageEvent();
 
-// 브라우저 새로고침 시 새로고침 여부 확인
-// pagehide는 beforeunload와 달리 모든 브라우저(모바일 포함)를 지원
-window.addEventListener('pagehide', (_event) => {
-  console.log('unload or hidden.');
-  storageMethod('s', 'SET_ITEM', 'reloaded', 'true');
-});
+// 브라우저 새로고침 이벤트
+refreshEvent();
 
 // 아이폰 사파리 하단 주소표시줄 대응
 appHeight();

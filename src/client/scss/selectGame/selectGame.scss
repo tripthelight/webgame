@@ -1,23 +1,33 @@
 .select-game {
-  ul {
-    width: 100%;
-    height: 100%;
-    height: 100vh;
-    height: var(--app-height);
+  width: 100%;
+  height: 100%;
+  height: 100vh;
+  height: var(--app-height);
+  display: flex;
+  flex-direction: column;
+  a {
+    position: relative;
+    flex-grow: 1;
     display: flex;
-    flex-direction: column;
-    li {
-      flex-grow: 1;
-      display: flex;
-      a {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        span {
-          font-size: 20px;
-          color: rgba(0, 0, 0, 1);
-        }
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 1);
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 1px;
+      background-color: #ddd;
+    }
+    &:first-child {
+      &::after {
+        display: none;
+        width: 0;
+        height: 0;
+        background-color: none;
       }
     }
   }

@@ -18,6 +18,8 @@ const countryMsg = {
     change_name_placeholder: 'Enter the name to change.',
     change_name_error_null: 'Please enter your name.',
     change_name_error_full: 'Please enter within 20 characters.',
+    error_title: 'Error',
+    error_text: 'An unknown error occurred.',
   },
   KR: {
     gameName: {
@@ -36,6 +38,8 @@ const countryMsg = {
     change_name_placeholder: '바꾸고 싶은 이름을 입력하세요.',
     change_name_error_null: '이름을 입력해 주세요.',
     change_name_error_full: '20글자 이내로 입력해주세요.',
+    error_title: '에러',
+    error_text: '알 수 없는 오류가 발생했습니다.',
   },
 };
 

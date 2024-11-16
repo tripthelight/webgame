@@ -1,0 +1,20 @@
+.modal-popup {
+  &.error-modal {
+    .modal-container {
+      .modal-body {
+        .modal-form-wrap {
+          div {
+            font-size: 14px;
+            padding: 14px 0;
+          }
+        }
+      }
+
+      .modal-footer {
+        .modal-ok {
+          background-color: #ff0000;
+        }
+      }
+    }
+  }
+}

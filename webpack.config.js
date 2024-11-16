@@ -15,6 +15,10 @@ export default {
   entry: {
     main: './src/client/js/main/main.js',
     selectGame: './src/client/js/selectGame/selectGame.js',
+    taptap: './src/client/js/game/taptap/taptap.js',
+    indianPocker: './src/client/js/game/indianPocker/indianPocker.js',
+    blackAndWhite: './src/client/js/game/blackAndWhite/blackAndWhite.js',
+    findTheSamePicture: './src/client/js/game/findTheSamePicture/findTheSamePicture.js',
   },
   output: {
     // filename: "js/[name].bundle.js",
@@ -72,6 +76,26 @@ export default {
       chunks: ['selectGame'],
       filename: 'views/selectGame.html',
     }),
+    new HtmlWebpackPlugin({
+      template: './src/client/views/game/taptap.html',
+      chunks: ['taptap'],
+      filename: 'views/game/taptap.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/client/views/game/indianPocker.html',
+      chunks: ['indianPocker'],
+      filename: 'views/game/indianPocker.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/client/views/game/blackAndWhite.html',
+      chunks: ['blackAndWhite'],
+      filename: 'views/game/blackAndWhite.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/client/views/game/findTheSamePicture.html',
+      chunks: ['findTheSamePicture'],
+      filename: 'views/game/findTheSamePicture.html',
+    }),
   ],
   optimization: {
     splitChunks: {
@@ -85,7 +109,13 @@ export default {
       directory: path.join('dist'), // 정적 파일 제공 디렉터리
     },
     historyApiFallback: {
-      rewrites: [{ from: /^\/views\/selectGame$/, to: '/views/selectGame.html' }],
+      rewrites: [
+        { from: /^\/views\/selectGame$/, to: '/views/selectGame.html' },
+        { from: /^\/views\/game\/taptap$/, to: '/views/game/taptap.html' },
+        { from: /^\/views\/game\/indianPocker$/, to: '/views/game/indianPocker.html' },
+        { from: /^\/views\/game\/blackAndWhite$/, to: '/views/game/blackAndWhite.html' },
+        { from: /^\/views\/game\/findTheSamePicture$/, to: '/views/game/findTheSamePicture.html' },
+      ],
     },
     port: 3000,
     hot: true,
