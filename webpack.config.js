@@ -110,11 +110,11 @@ export default {
     },
     historyApiFallback: {
       rewrites: [
-        { from: /^\/views\/selectGame$/, to: '/views/selectGame.html' },
-        { from: /^\/views\/game\/taptap$/, to: '/views/game/taptap.html' },
-        { from: /^\/views\/game\/indianPocker$/, to: '/views/game/indianPocker.html' },
-        { from: /^\/views\/game\/blackAndWhite$/, to: '/views/game/blackAndWhite.html' },
-        { from: /^\/views\/game\/findTheSamePicture$/, to: '/views/game/findTheSamePicture.html' },
+        { from: /^\/selectGame$/, to: '/views/selectGame.html' },
+        { from: /^\/game\/taptap$/, to: '/views/game/taptap.html' },
+        { from: /^\/game\/indianPocker$/, to: '/views/game/indianPocker.html' },
+        { from: /^\/game\/blackAndWhite$/, to: '/views/game/blackAndWhite.html' },
+        { from: /^\/game\/findTheSamePicture$/, to: '/views/game/findTheSamePicture.html' },
       ],
     },
     port: 3000,

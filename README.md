@@ -77,33 +77,35 @@
   - main.js에서 beforeunload를 사용해 봤지만 ios 사파리 브라우저에서 적용 안됨
   - server의 "ws.on('close', () => {})" 이 부분을 활용할 필요가 있음
 
-- 2411102 오전:
+- 241102 오전:
 
   - window.addEventListener('pagehide', (event) => {}) 로 모든 브라우저에서 새로고침 여부 확인 가능해짐
   - init() 함수내의 함수 순서를 재조정해서 ul.user-list 를 다시 그릴지 말지 여부 판단 필요
 
-- 2411103 오전:
+- 241103 오전:
 
   - 브라우저에서 새로고침 하면 socket 통신이 끊김
   - initUserName.js 의 if (BROWSER_RELOAD && BROWSER_RELOAD === 'true') {} 이 부분을 다시 확인해 볼 것
 
-- 2411109 오전:
+- 241109 오전:
 
   - 브라우저에서 새로고침 시 서버에 connect/disconnect를 컨트롤 하는 것을 불가능 한 것으로 결론
   - 우선 socket 기능은 구현했으니, 메인화면부터 만들 것
 
-- 2411110 오전:
+- 241110 오전:
 
   - 브라우저에서 새로 고침 시 'close' 된 후 3초가 전에 'join' 할 경우, broadcast 안하게 구현함
   - 브라우저 새로 고침이든, 새로 접속이든 후 3초 초과 후 에만 'close'를 broadcast 함
 
-- 2411110 오후:
+- 241110 오후:
 
   - main ui 진행 중
   - src/client에서 main만 폴더를 따로 뺐는데, views, js, scss폴더 안에 넣는 방식으로 폴더 정리 필요
 
-- 2411115 오후:
+- 241115 오후:
+
   - 메인화면 > SELECT GAME > 뒤로가기 시
+
   ```
   Uncaught runtime errors:
   ERROR
@@ -111,4 +113,10 @@
   handleError@
   @
   ```
+
   - 위와 같은 오류 발생
+
+- 241123 오전:
+
+  - taptap으로 webRTC 연결 테스트 중
+  - pc와 pc는 연결 되는데, pc와 mobile은 연결 안됨 - 수정 필요

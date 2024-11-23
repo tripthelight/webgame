@@ -1,0 +1,14 @@
+1) select game > taptap > 내 nickname을 server에 보냄
+* 대기중인 user가 있을 경우:
+ - 2인용 게임 시작
+* 대기중인 user가 없을 경우:
+ - 2인용 게임 대기
+
+2) select user > server 에 있는, 대기중인 user 목록을 받음 > 브라우저 user list 의 user 중 한 명을 선택
+* 선택받은 user는 게임시작 팝업을 받음
+ - 팝업의 확인을 누르면 게임 시작
+ - 팝업의 취소를 누르면 계속 대기
+
+3) 선택한 user가 선택을 취소하거나, 브라우저를 뒤로가기 했거나, 브라우저를 나갔을 경우
+* 선택받은 user가 수락해서 방에 들어가있는 상태로 대기
+ - select game으로 들어올 user를 기다림
