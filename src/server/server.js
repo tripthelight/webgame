@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 const numCPUs = os.cpus().length;
 
 if (cluster.isPrimary) {
-  console.log(`Primary ${process.pid} is running`);
+  // console.log(`Primary ${process.pid} is running`);
 
   // 워커 프로세스 생성
   for (let i = 0; i < numCPUs; i++) {
@@ -15,7 +15,7 @@ if (cluster.isPrimary) {
 
   // Primary가 모든 워커에 사용자 목록 업데이트 전송
   function syncUserList(users) {
-    console.log('Primary: Syncing user list to all workers', users);
+    // console.log('Primary: Syncing user list to all workers', users);
     for (const id in cluster.workers) {
       cluster.workers[id].send({ type: 'syncUserList', users });
     }
@@ -25,7 +25,7 @@ if (cluster.isPrimary) {
   for (const id in cluster.workers) {
     cluster.workers[id].on('message', (message) => {
       if (message.type === 'updateUserList') {
-        console.log('Primary: Received updateUserList from worker');
+        // console.log('Primary: Received updateUserList from worker');
         syncUserList(message.users);
       }
     });
@@ -40,39 +40,65 @@ if (cluster.isPrimary) {
 } else {
   const WSS = new WebSocketServer({ port: 8080 });
   const GAMES = ['taptap', 'indianPocker', 'blackAndWhite', 'findTheSamePicture'];
-  const ROOMS = {}; // 방을 관리할 객체
+  const ROOMS = []; // 방을 관리할 객체
 
-  WSS.on('connection', (ws) => {
-    let assignedRoom;
+  WSS.on('connection', (websocket) => {
+    websocket.on('message', (_message) => {
+      const data = JSON.parse(_message);
 
-    // 방 할당 로직
-    for (const [room, clients] of Object.entries(ROOMS)) {
-      if (clients.length < 2) {
-        assignedRoom = room;
-        ROOMS[room].push(ws);
-        break;
-      }
-    }
+      if (data.type === 'game') {
+        if (ROOMS.some((item) => data.gameName in item)) {
+          // 받은 gameName의 방이 있음
 
-    if (!assignedRoom) {
-      // roomCounter++;
-      // assignedRoom = `room-${roomCounter}`;
-      assignedRoom = `room-${uuidv4()}`;
-      ROOMS[assignedRoom] = [ws];
-    }
+          /*
+          ROOMS: [
+            {
+              taptap: [
+                {
+                  roomName: '',
+                  users: []
+                },
+                {
+                  roomName: '',
+                  users: []
+                }
+              ]
+            }
+          ]
+          */
 
-    ws.room = assignedRoom;
-    console.log(`Client connected to ${assignedRoom} in worker ${process.pid}`);
+          // 게임명 방에 몇명이 있는지 체크
+          /*
+          ROOMS.flatMap(room => room[data.gameName] || []).forEach(game => {
+            console.log('user length:', game.users.length);
+          });
+          */
 
-    ws.on('message', (message) => {
-      const data = JSON.parse(message);
-
-      const ROOMS_CLIENTS = ROOMS[ws.room];
-      ROOMS_CLIENTS.forEach((client) => {
-        if (client !== ws) {
-          client.send(message); // 같은 방에 있는 다른 클라이언트에게 메시지 전송
+          for (const room of ROOMS) {
+            const gameArray = room[data.gameName];
+            if (gameArray) {
+              for (const game of gameArray) {
+                if (game.users.length === 1) {
+                  game.users.push(data.nickname + '_' + data.clientId);
+                  break;
+                }
+              }
+            }
+          }
+        } else {
+          // 받은 gameName의 방이 없음
+          ROOMS.push({
+            [data.gameName]: [
+              {
+                roomName: `room-${uuidv4()}`,
+                users: [data.nickname + '_' + data.clientId],
+              },
+            ],
+          });
         }
-      });
+
+        console.log('ROOMS : ', ROOMS);
+      }
 
       if (data.type === 'join') {
         //
@@ -83,14 +109,10 @@ if (cluster.isPrimary) {
       }
     });
 
-    ws.on('close', () => {
-      ROOMS[ws.room] = ROOMS[ws.room].filter((client) => client !== ws);
-      if (ROOMS[ws.room].length === 0) {
-        delete ROOMS[ws.room]; // 방이 비어 있으면 삭제
-      }
-      console.log(`Client disconnected from ${ws.room} in worker ${process.pid}`);
+    websocket.on('close', () => {
+      // console.log(`Client disconnected from ${websocket.room} in worker ${process.pid}`);
     });
   });
 
-  console.log(`Worker ${process.pid} started and WebSocket server is running on ws://localhost:8080`);
+  // console.log(`Worker ${process.pid} started and WebSocket server is running on ws://localhost:8080`);
 }

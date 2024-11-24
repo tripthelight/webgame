@@ -120,3 +120,10 @@
 
   - taptap으로 webRTC 연결 테스트 중
   - pc와 pc는 연결 되는데, pc와 mobile은 연결 안됨 - 수정 필요
+
+- 241124 오전:
+
+  - taptap webRTC 분석 중, server에서 방을 만들고
+  - 만든 방에 2명씩 push 하는 작업 중
+  - server_241123.js 파일을 보면서, server.js 작업 필요
+  - webRTC_original.js 파일을 보면서, webRTC.js 작업 필요

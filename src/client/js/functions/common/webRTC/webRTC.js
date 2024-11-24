@@ -1,41 +1,77 @@
-import { ws } from '../webSocket/webSocketHost.js'; // WebSocket 연결 설정
+// import { ws } from '../webSocket/webSocketHost.js'; // WebSocket 연결 설정
+import errorModal from '../popup/errorModal.js';
+import getUnicodePoints from '../unicode/getUnicodePoints.js';
+import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
 
 export default function webRTC() {
+  /**
+   * WebSocket event
+   */
+  const SOCKET = new WebSocket('ws://61.36.169.20:8080');
+
+  const CLIENT_ID = window.localStorage.getItem('clientId');
+  if (!CLIENT_ID) return errorModal();
+  const NICK_NAME = window.localStorage.getItem('nickName');
+  if (!NICK_NAME) return errorModal();
+
+  const DECODE_NICK_NAME = fromUnicodePoints(NICK_NAME.split(',').map(Number));
+
+  if (SOCKET.readyState === WebSocket.OPEN) {
+    // WebSocket이 이미 열린 경우 바로 전송
+    SOCKET.send(
+      JSON.stringify({
+        type: 'game',
+        gameName: 'taptap',
+        clientId: CLIENT_ID,
+        nickname: DECODE_NICK_NAME,
+      }),
+    );
+  } else {
+    // WebSocket이 열려 있지 않은 경우 open 이벤트 기다리기
+    SOCKET.addEventListener(
+      'open',
+      () => {
+        SOCKET.send(
+          JSON.stringify({
+            type: 'game',
+            gameName: 'taptap',
+            clientId: CLIENT_ID,
+            nickname: DECODE_NICK_NAME,
+          }),
+        );
+      },
+      { once: true },
+    ); // 한 번만 실행되도록 이벤트 리스너 설정
+  }
+
+  /**
+   * webRCT event
+   */
   let localConnection, remoteConnection;
   let localDataChannel, remoteDataChannel;
 
-  // WebSocket 메시지 수신 핸들러
-  ws.onmessage = async (event) => {
-    console.log('on message...');
-
-    let messageData;
-    if (typeof event.data === 'string') {
-      messageData = event.data;
-    } else if (event.data instanceof Blob) {
-      messageData = await event.data.text();
+  // websocket 연결 종료하기
+  function disconnectedWebSocket() {
+    if (SOCKET.readyState === WebSocket.OPEN || SOCKET.readyState === WebSocket.CONNECTING) {
+      SOCKET.close(); // WebSocket 연결 종료
+      console.log('WebSocket 연결 종료됨');
+    } else {
+      console.log('WebSocket이 이미 종료됨');
     }
-
-    handleMessageFromRemote(messageData);
-  };
-
-  // Offer를 다른 브라우저로 전송
-  function sendOfferToRemoteBrowser(offer) {
-    ws.send(JSON.stringify({ offer }));
   }
 
-  // Answer를 다른 브라우저로 전송
-  function sendAnswerToLocalBrowser(answer) {
-    ws.send(JSON.stringify({ answer }));
+  // 메시지 전송 함수
+  function sendMessageEvent() {
+    if (localDataChannel && localDataChannel.readyState === 'open') {
+      // Sending message from local
+      console.log('Sending tap from local');
+      localDataChannel.send('rtc btn click...');
+    }
   }
 
   // ICE 후보를 다른 브라우저로 전송 (같은 방 안에서만 전송)
-  function sendCandidateToRemoteBrowser(candidate) {
-    ws.send(JSON.stringify({ candidate }));
-  }
-
-  // ICE 후보를 같은 방 안의 다른 브라우저로 전송
-  function sendCandidateToLocalBrowser(candidate) {
-    ws.send(JSON.stringify({ candidate }));
+  function sendCandidateToRemoteBrowser(_candidate) {
+    SOCKET.send(JSON.stringify({ _candidate }));
   }
 
   // 양쪽 브라우저에서 P2P 연결을 초기화
@@ -45,98 +81,56 @@ export default function webRTC() {
     localDataChannel = localConnection.createDataChannel('sendChannel');
 
     localDataChannel.onopen = () => {
+      // Local data channel opened.
       console.log('Local data channel opened.');
-      // document.addEventListener('click', sendTapEvent);
-      const RTC_BTN = document.querySelector('.rtc-btn');
-      RTC_BTN.addEventListener('click', sendTapEvent);
+      const RTC_BRN = document.querySelector('rtc-btn');
+      RTC_BRN.addEventListener('click', sendMessageEvent);
     };
-
     localDataChannel.onclose = () => {
-      console.log('Local data channel closed.');
+      // Local data channel colsed...
+      console.log('Local data channel colsed...');
     };
-
     localDataChannel.onmessage = (event) => {
+      // Received message on local data channel: event.data
       console.log('Received message on local data channel:', event.data);
     };
 
     // 원격 데이터 채널 처리
     remoteConnection = new RTCPeerConnection();
 
-    remoteConnection.ondatachannel = (event) => {
-      remoteDataChannel = event.channel;
+    remoteConnection.ondatachannel = (_event) => {
+      remoteDataChannel = _event.channel;
 
       remoteDataChannel.onopen = () => {
+        // Remote data channel opened.
         console.log('Remote data channel opened.');
-        // document.addEventListener('click', sendTapEvent);
-        const RTC_BTN = document.querySelector('.rtc-btn');
-        RTC_BTN.addEventListener('click', sendTapEvent);
+        const RTC_BRN = document.querySelector('rtc-btn');
+        RTC_BRN.addEventListener('click', sendMessageEvent);
       };
-
       remoteDataChannel.onclose = () => {
-        console.log('Remote data channel closed.');
+        // Remote data channel colsed...
+        console.log('Remote data channel colsed...');
       };
-
       remoteDataChannel.onmessage = (event) => {
+        // Received message on remote data channel: event.data
         console.log('Received message on remote data channel:', event.data);
       };
     };
 
     // ICE 후보 처리 및 신호 전송
-    localConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        sendCandidateToRemoteBrowser(event.candidate);
+    /*
+    localConnection.onicecandidate = (_event) => {
+      if (_event.candidate) {
+        sendCandidateToRemoteBrowser(_event.candidate);
       }
     };
-
-    remoteConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        sendCandidateToLocalBrowser(event.candidate);
+    remoteConnection.onicecandidate = (_event) => {
+      if (_event.candidate) {
+        sendCandidateToLocalBrowser(_event.candidate);
       }
     };
-
-    // Offer 생성 및 전송 (양쪽 브라우저에서 연결을 시도)
-    const offer = await localConnection.createOffer();
-    await localConnection.setLocalDescription(offer);
-    sendOfferToRemoteBrowser(offer);
+    */
   }
-
-  // 신호 메시지 처리
-  const handleMessageFromRemote = async (message) => {
-    const parsedMessage = JSON.parse(message);
-
-    if (parsedMessage.offer) {
-      await remoteConnection.setRemoteDescription(new RTCSessionDescription(parsedMessage.offer));
-      const answer = await remoteConnection.createAnswer();
-      await remoteConnection.setLocalDescription(answer);
-      sendAnswerToLocalBrowser(answer);
-    } else if (parsedMessage.answer) {
-      await localConnection.setRemoteDescription(new RTCSessionDescription(parsedMessage.answer));
-    } else if (parsedMessage.candidate) {
-      const candidate = new RTCIceCandidate(parsedMessage.candidate);
-      if (remoteConnection.remoteDescription) {
-        await remoteConnection.addIceCandidate(candidate);
-      } else {
-        await localConnection.addIceCandidate(candidate);
-      }
-    }
-  };
-
-  // 메시지 전송 함수
-  const sendTapEvent = () => {
-    if (localDataChannel && localDataChannel.readyState === 'open') {
-      localDataChannel.send('tap from local');
-      console.log('Sending tap from local');
-    } else {
-      console.error('Local data channel is not open. Current state:', localDataChannel.readyState);
-    }
-
-    if (remoteDataChannel && remoteDataChannel.readyState === 'open') {
-      remoteDataChannel.send('tap from remote');
-      console.log('Sending tap from remote');
-    } else {
-      // console.error('Remote data channel is not open or undefined.');
-    }
-  };
 
   // 연결 시작 (브라우저 1)
   startConnection();
