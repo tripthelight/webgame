@@ -38,67 +38,18 @@ if (cluster.isPrimary) {
     cluster.fork();
   });
 } else {
-  const WSS = new WebSocketServer({ port: 8080 });
+  const WSS_RTC = new WebSocketServer({ port: 8080 });
+  const WSS_USR = new WebSocketServer({ port: 8081 });
   const GAMES = ['taptap', 'indianPocker', 'blackAndWhite', 'findTheSamePicture'];
-  const ROOMS = []; // 방을 관리할 객체
+  const ROOMS = {}; // 방을 관리할 객체
 
-  WSS.on('connection', (websocket) => {
+  // webRTC 연결을 위한 WebSocketServer
+  WSS_RTC.on('connection', (websocket) => {});
+
+  // 전체 사용자 리스트를 위한 WebSocketServer
+  WSS_USR.on('connection', (websocket) => {
     websocket.on('message', (_message) => {
       const data = JSON.parse(_message);
-
-      if (data.type === 'game') {
-        if (ROOMS.some((item) => data.gameName in item)) {
-          // 받은 gameName의 방이 있음
-
-          /*
-          ROOMS: [
-            {
-              taptap: [
-                {
-                  roomName: '',
-                  users: []
-                },
-                {
-                  roomName: '',
-                  users: []
-                }
-              ]
-            }
-          ]
-          */
-
-          // 게임명 방에 몇명이 있는지 체크
-          /*
-          ROOMS.flatMap(room => room[data.gameName] || []).forEach(game => {
-            console.log('user length:', game.users.length);
-          });
-          */
-
-          for (const room of ROOMS) {
-            const gameArray = room[data.gameName];
-            if (gameArray) {
-              for (const game of gameArray) {
-                if (game.users.length === 1) {
-                  game.users.push(data.nickname + '_' + data.clientId);
-                  break;
-                }
-              }
-            }
-          }
-        } else {
-          // 받은 gameName의 방이 없음
-          ROOMS.push({
-            [data.gameName]: [
-              {
-                roomName: `room-${uuidv4()}`,
-                users: [data.nickname + '_' + data.clientId],
-              },
-            ],
-          });
-        }
-
-        console.log('ROOMS : ', ROOMS);
-      }
 
       if (data.type === 'join') {
         //
