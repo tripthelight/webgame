@@ -1,7 +1,9 @@
 import cluster from 'cluster';
 import os from 'os';
+import Redis from 'ioredis';
 
 const numCPUs = os.cpus().length; // 시스템에서 사용할 수 있는 CPU 코어 수
+const redis = new Redis();
 
 if (cluster.isPrimary) {
   console.log(`Primary process is running. Forking ${numCPUs} workers...`);
@@ -15,7 +17,6 @@ if (cluster.isPrimary) {
   // 워커 간 통신을 위한 메시지 핸들링
   cluster.on('message', (worker, message) => {
     console.log(`Message from worker ${worker.process.pid}:`, message);
-
     // 메시지에 따라 다른 워커에게 전달
     // 예: WebSocket 서버끼리 연결, WebRTC 서버끼리 연결
     if (message.type === 'websocket') {
