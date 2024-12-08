@@ -20,7 +20,8 @@ export default function webRTC() {
    * webRCT event
    */
   let signalingSocket;
-  signalingSocket = new WebSocket('ws://61.36.169.20:8081');
+  // signalingSocket = new WebSocket('ws://61.36.169.20:8081');
+  signalingSocket = new WebSocket('ws://61.36.169.5:8081');
 
   const servers = {
     iceServers: [
@@ -153,9 +154,6 @@ export default function webRTC() {
   signalingSocket.onopen = () => {
     const initOnopen = () => {
       document.querySelector('.my-nickname').innerText = DECODE_NICK_NAME;
-
-      // JSON.stringify({ type: "entryOrder" });
-
       const roomName = window.sessionStorage.getItem('roomName');
       const yourName = window.sessionStorage.getItem('yourName');
       if (roomName) {
@@ -200,10 +198,12 @@ export default function webRTC() {
       if (peerConnection) {
         peerConnection.close();
         peerConnection = null; // 연결 객체 제거
+        console.log('너도 타냐 1 peerConnection :::::::::: ');
       }
       if (signalingSocket) {
         signalingSocket.close(); // WebSocket 연결 닫기
         signalingSocket = null; // 소켓 객체 제거
+        console.log('너도 타냐 2 signalingSocket :::::::::: ');
       }
     }
 

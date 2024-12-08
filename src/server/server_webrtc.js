@@ -158,22 +158,23 @@ WSS.on('connection', async (socket) => {
 
   // 클라이언트 연결 종료 시
   socket.on('close', async () => {
-    const roomExists = await REDIS.hexists(NAMESPACE, socket.room);
+    const ROOM_NAME = socket.room;
+    const roomExists = await REDIS.hexists(NAMESPACE, ROOM_NAME);
     if (roomExists) {
-      const roomName = await REDIS.hget(NAMESPACE, socket.room);
-      const roomArray = JSON.parse(roomName);
-      const index = roomArray.indexOf(socket.socketId);
+      const roomName = await REDIS.hget(NAMESPACE, ROOM_NAME);
+      const socketIdsRoom = JSON.parse(roomName);
+      const index = socketIdsRoom.indexOf(socket.socketId);
       if (index !== -1) {
-        // 내 socket이 없으면
-        roomArray.splice(index, 1);
+        // 내 socket이 있으면 삭제
+        socketIdsRoom.splice(index, 1);
       }
 
-      await REDIS.hset(NAMESPACE, socket.room, JSON.stringify(roomArray));
+      await REDIS.hset(NAMESPACE, ROOM_NAME, JSON.stringify(socketIdsRoom));
 
       // 방에 연결된 클라이언트가 없으면 방 삭제
       const roomClientsSockets = await REDIS.hgetall(NAMESPACE);
-      if (Object.keys(JSON.parse(roomClientsSockets[socket.room])).length === 0) {
-        await REDIS.del(NAMESPACE, socket.room); // 방 삭제
+      if (Object.keys(JSON.parse(roomClientsSockets[ROOM_NAME])).length === 0) {
+        await REDIS.hdel(NAMESPACE, ROOM_NAME); // 방 삭제
       }
     }
   });
