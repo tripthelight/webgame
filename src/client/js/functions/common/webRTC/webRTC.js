@@ -116,14 +116,14 @@ export default function webRTC() {
 
       peerConnection.oniceconnectionstatechange = (event) => {
         // console.log("ICE Connection State: ", peerConnection.iceConnectionState);
-        if (peerConnection.iceConnectionState === 'connected') {
+        if (peerConnection && peerConnection.iceConnectionState === 'connected') {
           // console.log("Bridges are successfully connected!");
         }
       };
 
       peerConnection.onconnectionstatechange = (event) => {
         // console.log("Peer connection state: ", peerConnection.connectionState);
-        if (dataChannel.readyState === 'open') {
+        if (dataChannel && dataChannel.readyState === 'open') {
           // console.log("Data channel is open, communication can begin!");
         }
       };
@@ -151,25 +151,28 @@ export default function webRTC() {
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = () => {
-    document.querySelector('.my-nickname').innerText = DECODE_NICK_NAME;
+    const initOnopen = () => {
+      document.querySelector('.my-nickname').innerText = DECODE_NICK_NAME;
 
-    // JSON.stringify({ type: "entryOrder" });
+      // JSON.stringify({ type: "entryOrder" });
 
-    const roomName = window.sessionStorage.getItem('roomName');
-    const yourName = window.sessionStorage.getItem('yourName');
-    if (roomName) {
-      // 이전에 입장한 room이 있음
-      signalingSocket.send(
-        JSON.stringify({
-          type: 'entryOrder',
-          room: roomName,
-          yourName: yourName ?? '',
-        }),
-      );
-    } else {
-      // 새로 입장
-      signalingSocket.send(JSON.stringify({ type: 'entryOrder', room: '', yourName: '' }));
-    }
+      const roomName = window.sessionStorage.getItem('roomName');
+      const yourName = window.sessionStorage.getItem('yourName');
+      if (roomName) {
+        // 이전에 입장한 room이 있음
+        signalingSocket.send(
+          JSON.stringify({
+            type: 'entryOrder',
+            room: roomName,
+            yourName: yourName ?? '',
+          }),
+        );
+      } else {
+        // 새로 입장
+        signalingSocket.send(JSON.stringify({ type: 'entryOrder', room: '', yourName: '' }));
+      }
+    };
+    initOnopen();
   };
 
   // signalingServer 응답

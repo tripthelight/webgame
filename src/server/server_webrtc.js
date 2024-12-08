@@ -10,10 +10,13 @@ const NAMESPACE = 'ROOMS';
 
 // WebSocket 인스턴스를 메모리에서 찾는 예시 함수
 function getRealWebSocket(socketId) {
-  // 예시: socketId를 사용하여 WebSocket 인스턴스를 찾는 방법 구현
-  // 실제로는 WebSocket 서버의 상태나 메모리에서 WebSocket을 추적해야 함
-  const client = Array.from(WSS.clients).find((client) => client.socketId === socketId);
-  return client || null;
+  return new Promise((resolve, rejcet) => {
+    // 예시: socketId를 사용하여 WebSocket 인스턴스를 찾는 방법 구현
+    // 실제로는 WebSocket 서버의 상태나 메모리에서 WebSocket을 추적해야 함
+    const client = Array.from(WSS.clients).find((client) => client.socketId === socketId);
+    // return client || null;
+    resolve(client || null);
+  });
 }
 
 /**
@@ -35,7 +38,7 @@ async function offerAnserCandidateDataProcess(msgData, socket) {
   const diffSocketId = socketIdArr.filter((socketId) => socketId !== socket.socketId).join('');
   if (!diffSocketId) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
 
-  const diffSocket = getRealWebSocket(diffSocketId);
+  const diffSocket = await getRealWebSocket(diffSocketId);
   if (!diffSocket) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
 
   diffSocket.send(JSON.stringify({ type, data }));
