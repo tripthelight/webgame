@@ -45,5 +45,5 @@ const countryMsg = {
 
 export default function msg_str(str) {
   if (countryCode) return countryMsg[countryCode][str];
-  return countryMsg[US][str];
+  return countryMsg['US'][str];
 }

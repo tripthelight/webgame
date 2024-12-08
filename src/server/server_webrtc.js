@@ -3,9 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 
 // WebSocket 서버 생성
-const port = process.env.PORT || 8081;
-const WSS = new WebSocketServer({ port });
-const redis = new Redis();
+const PORT = process.env.PORT || 8081;
+const WSS = new WebSocketServer({ port: PORT });
+const REDIS = new Redis();
+const NAMESPACE = 'ROOMS';
 
 // WebSocket 인스턴스를 메모리에서 찾는 예시 함수
 function getRealWebSocket(socketId) {
@@ -22,73 +23,54 @@ function getRealWebSocket(socketId) {
  */
 async function offerAnserCandidateDataProcess(msgData, socket) {
   const { type, data } = msgData;
-  if (type && data) {
-    console.log(`${process.pid} ${type} message on port ${port}`);
-    // Redis에서 해당 room에 연결된 모든 클라이언트 정보 가져오기
-    const roomClientsSockets = await redis.hgetall(socket.room);
+  if (!type || !data) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
 
-    for (const key in roomClientsSockets) {
-      const clientSocketId = JSON.parse(roomClientsSockets[key]).socketId;
-      const clientSocketData = await redis.hget(socket.room, clientSocketId);
-      const clientSocket = JSON.parse(clientSocketData); // WebSocket 메타정보에서 데이터를 가져옴
+  // Redis에서 해당 room에 연결된 모든 클라이언트 정보 가져오기
+  const allRooms = await REDIS.hgetall(NAMESPACE);
+  if (!allRooms) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
 
-      // 나 자신을 제외한 다른 클라이언트에게 메시지 보내기
-      if (clientSocket.socketId !== socket.socketId) {
-        const realSocket = getRealWebSocket(clientSocket.socketId); // 메모리나 다른 방식으로 WebSocket 인스턴스 찾기
-        if (realSocket) {
-          realSocket.send(JSON.stringify({ type, data }));
-          break;
-        } else {
-          socket.send(JSON.stringify({ type: 'otherLeaves' }));
-          break;
-        }
-      }
-    }
-  } else {
-    socket.send(JSON.stringify({ type: 'otherLeaves' }));
-  }
+  const socketIdArr = JSON.parse(allRooms[socket.room]);
+  if (!socketIdArr) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
+
+  const diffSocketId = socketIdArr.filter((socketId) => socketId !== socket.socketId).join('');
+  if (!diffSocketId) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
+
+  const diffSocket = getRealWebSocket(diffSocketId);
+  if (!diffSocket) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
+
+  diffSocket.send(JSON.stringify({ type, data }));
 }
 
 // 연결된 클라이언트 처리
 WSS.on('connection', async (socket) => {
-  console.log(`${process.pid} connection on port ${port}`);
   // 새로 입장했을 때, socket에 고유한 socketId 부여
   if (!socket.socketId) {
     socket.socketId = `socketId-${uuidv4()}`;
   }
 
   // 클라이언트의 socketId와 접속한 워커 pid 저장
-  // await redis.hset('clients', socket.socketId, process.pid);
+  // await REDIS.hset('clients', socket.socketId, process.pid);
 
   socket.on('message', async (message) => {
     const msgData = JSON.parse(message);
 
     if (msgData.type === 'entryOrder') {
-      console.log(`${process.pid} entryOrder message on port ${port}`);
       const recevedRoom = msgData.room;
 
       if (recevedRoom === '') {
         // Redis에서 모든 방을 조회하고, 1명 이하가 있는 방을 찾는다
-        // const allRooms = await redis.keys('*'); // 모든 방 이름을 가져옴
-        const allRooms = await redis.hgetall('ROOMS');
+        // const allRooms = await REDIS.keys('*'); // 모든 방 이름을 가져옴
+        const allRooms = await REDIS.hgetall(NAMESPACE);
         let roomFound = false;
 
-        for (const room of Object.keys(allRooms)) {
-          // const sockets = await redis.hgetall(room); // 해당 방에 연결된 클라이언트 정보 가져오기
-
-          if (Object.keys(JSON.parse(allRooms[room])).length < 2) {
-            socket.room = room; // 방에 1명이 있다면 그 방으로 입장
-            // await redis.hset(room, socket.socketId, JSON.stringify({ socketId: socket.socketId, socket }));
-            await redis.hset(
-              'ROOMS', // 해시 이름
-              room, // 방 이름 (예: 'room-123')
-              JSON.stringify({
-                // 해당 방에 대한 정보
-                [socket.socketId]: { socketId: socket.socketId, socket },
-              }),
-            );
+        for (const [roomName, roomData] of Object.entries(allRooms)) {
+          const socketIds = JSON.parse(roomData); // 문자열을 객체로 파싱
+          if (socketIds.length === 1) {
+            socket.room = roomName;
+            socketIds.push(socket.socketId);
+            await REDIS.hset(NAMESPACE, roomName, JSON.stringify(socketIds));
             roomFound = true;
-            break; // 방을 찾으면 루프 종료
+            break;
           }
         }
 
@@ -96,19 +78,10 @@ WSS.on('connection', async (socket) => {
         if (!roomFound) {
           const newRoomName = `room-${uuidv4()}`;
           socket.room = newRoomName;
-
-          // await redis.hset('ROOMS', newRoomName, socket.socketId, JSON.stringify({ socketId: socket.socketId, socket }));
-          await redis.hset(
-            'ROOMS', // 해시 이름
-            newRoomName, // 방 이름 (예: 'room-123')
-            JSON.stringify({
-              // 해당 방에 대한 정보
-              [socket.socketId]: { socketId: socket.socketId, socket },
-            }),
-          );
+          await REDIS.hset(NAMESPACE, newRoomName, JSON.stringify([socket.socketId]));
         }
 
-        const roomClientsSockets = await redis.hgetall('ROOMS');
+        const roomClientsSockets = await REDIS.hgetall(NAMESPACE);
 
         socket.send(
           JSON.stringify({
@@ -123,7 +96,7 @@ WSS.on('connection', async (socket) => {
          * recevedRoom이 Redis에 있는지 확인
          * 있으면 1, 없으면 0을 return
          */
-        const roomExists = await redis.exists(recevedRoom);
+        const roomExists = await REDIS.hexists(NAMESPACE, recevedRoom);
 
         if (roomExists) {
           // 내가 원래있던 방에 WebSocket이 있으면
@@ -131,14 +104,19 @@ WSS.on('connection', async (socket) => {
           socket.room = recevedRoom;
           const socketId = `socketId-${uuidv4()}`;
           socket.socketId = socketId;
-          await redis.hset(recevedRoom, socket.socketId, JSON.stringify({ socketId: socket.socketId, socket }));
 
-          const roomClientsSockets = await redis.hgetall(socket.room);
+          const sockets = await REDIS.hget(NAMESPACE, recevedRoom);
+          const socketIds = JSON.parse(sockets);
+          socketIds.push(socket.socketId);
+
+          await REDIS.hset(NAMESPACE, recevedRoom, JSON.stringify(socketIds));
+
+          const roomClientsSockets = await REDIS.hgetall(NAMESPACE);
 
           socket.send(
             JSON.stringify({
               type: 'entryOrder',
-              userLength: Object.keys(roomClientsSockets).length,
+              userLength: Object.keys(JSON.parse(roomClientsSockets[socket.room])).length,
               room: socket.room,
             }),
           );
@@ -153,14 +131,14 @@ WSS.on('connection', async (socket) => {
             const newRoomName = `room-${uuidv4()}`;
             socket.room = newRoomName;
 
-            await redis.hset(newRoomName, socket.socketId, JSON.stringify({ socketId: socket.socketId, socket }));
+            await REDIS.hset(NAMESPACE, newRoomName, JSON.stringify([socket.socketId]));
 
-            const roomClientsSockets = await redis.hgetall(socket.room);
+            const roomClientsSockets = await REDIS.hgetall(NAMESPACE);
 
             socket.send(
               JSON.stringify({
                 type: 'entryOrder',
-                userLength: Object.keys(roomClientsSockets).length,
+                userLength: Object.keys(JSON.parse(roomClientsSockets[socket.room])).length,
                 room: socket.room,
               }),
             );
@@ -177,18 +155,25 @@ WSS.on('connection', async (socket) => {
 
   // 클라이언트 연결 종료 시
   socket.on('close', async () => {
-    const roomExists = await redis.exists(socket.room);
+    const roomExists = await REDIS.hexists(NAMESPACE, socket.room);
     if (roomExists) {
-      // 클라이언트가 연결을 종료하면, 해당 room에서 WebSocket 연결 제거
-      await redis.hdel(socket.room, socket.socketId);
+      const roomName = await REDIS.hget(NAMESPACE, socket.room);
+      const roomArray = JSON.parse(roomName);
+      const index = roomArray.indexOf(socket.socketId);
+      if (index !== -1) {
+        // 내 socket이 없으면
+        roomArray.splice(index, 1);
+      }
+
+      await REDIS.hset(NAMESPACE, socket.room, JSON.stringify(roomArray));
 
       // 방에 연결된 클라이언트가 없으면 방 삭제
-      const sockets = await redis.hgetall(socket.room);
-      if (Object.keys(sockets).length === 0) {
-        await redis.del(socket.room); // 방 삭제
+      const roomClientsSockets = await REDIS.hgetall(NAMESPACE);
+      if (Object.keys(JSON.parse(roomClientsSockets[socket.room])).length === 0) {
+        await REDIS.del(NAMESPACE, socket.room); // 방 삭제
       }
     }
   });
 });
 
-console.log(`WebRTC server ${process.pid} running on port ${port}`);
+console.log(`WebRTC server ${process.pid} running on port ${PORT}`);
