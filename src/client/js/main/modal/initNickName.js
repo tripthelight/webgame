@@ -7,10 +7,10 @@ import getUnicodePoints from '../../functions/common/unicode/getUnicodePoints.js
 import msg_str from '../../functions/common/msg_str.js';
 
 export default function initNickName() {
-  const CLIENT_ID = window.localStorage.getItem('clientId') ? window.localStorage.getItem('clientId') : uuidv4();
+  const CLIENT_ID = localStorage.getItem('clientId') ? localStorage.getItem('clientId') : uuidv4();
 
   // localStorage의 nickname은 string[] 로 저장됨
-  const NICK_NAME = window.localStorage.getItem('nickName');
+  const NICK_NAME = localStorage.getItem('nickName');
 
   if (NICK_NAME) {
     // nick이 있는 경우

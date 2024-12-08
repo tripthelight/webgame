@@ -16,8 +16,8 @@ function init() {
   changeUserName();
   storageEvent(); // storage event는 마지막에 실행
 
-  // window.localStorage.clear();
-  // window.sessionStorage.clear();
+  // localStorage.clear();
+  // sessionStorage.clear();
   LOADING_EVENT.hide();
 }
 

@@ -23,9 +23,9 @@ export default function changeUserName() {
     const MODAL_POPUP = document.querySelector('.change-user-name');
     if (MODAL_POPUP) return;
 
-    const CLIENT_ID = window.localStorage.getItem('clientId');
+    const CLIENT_ID = localStorage.getItem('clientId');
     if (!CLIENT_ID) return;
-    const BEFORE_USER_NAME = window.localStorage.getItem('userName');
+    const BEFORE_USER_NAME = localStorage.getItem('userName');
     if (!BEFORE_USER_NAME) return;
 
     const beforeUserName = fromUnicodePoints(

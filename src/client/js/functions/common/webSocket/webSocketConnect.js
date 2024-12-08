@@ -8,9 +8,9 @@ export default function webSocketConnect() {
   ws.addEventListener('open', () => {
     console.log('Connection open.');
 
-    const CLIENT_ID = window.localStorage.getItem('clientId');
+    const CLIENT_ID = localStorage.getItem('clientId');
     if (!CLIENT_ID) return errorModal();
-    const NICK_NAME = window.localStorage.getItem('nickName');
+    const NICK_NAME = localStorage.getItem('nickName');
     if (!NICK_NAME) return errorModal();
 
     const DECODE_NICK_NAME = fromUnicodePoints(NICK_NAME.split(',').map(Number));

@@ -3,6 +3,8 @@ import { LOADING_EVENT } from './loading.js';
 import storageEvent from '../../functions/common/storage/storageEvent.js';
 import refreshEvent from './refreshEvent.js';
 import appHeight from './appHeight.js';
+import storageMethod from './storage/storageMethod.js';
+import storageInit from '../../selectGame/storageInit.js';
 
 console.log('common js ... ');
 
@@ -30,3 +32,17 @@ document.addEventListener('gesturechange', (event) => {
 document.addEventListener('gestureend', (event) => {
   event.preventDefault();
 });
+
+// game 페이지가 아니면 roomName, yourName 삭제 필요
+function checkRoute(currentUrl) {
+  const ROUTES = {
+    taptap: '/game/taptap',
+    indianPocker: '/game/indianPocker',
+    blackAndWhite: '/game/blackAndWhite',
+    findTheSamePicture: '/game/findTheSamePicture',
+  };
+  const routeKey = currentUrl.split('/').pop(); // '/game/...' 게임명을 추출
+  if (ROUTES.hasOwnProperty(routeKey)) return;
+  storageInit(); // roomName, yourName
+}
+checkRoute(window.location.pathname);

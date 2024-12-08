@@ -14,6 +14,8 @@ document.onreadystatechange = () => {
     // webSocketConnect();
     webRTC();
 
+    // setTimeout(webRTC, 1000);
+
     LOADING_EVENT.hide();
   }
 };

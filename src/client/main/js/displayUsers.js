@@ -1,9 +1,9 @@
 import onlyOneCheckbox from '../../functions/common/onlyOneCheckbox.js';
 
 export default function displayUsers() {
-  const CLIENT_ID = window.localStorage.getItem('clientId');
+  const CLIENT_ID = localStorage.getItem('clientId');
   if (!CLIENT_ID) return;
-  const USER_LIST = window.sessionStorage.getItem('userList');
+  const USER_LIST = sessionStorage.getItem('userList');
   if (!USER_LIST) return;
 
   const userListEl = document.querySelector('.user-list');

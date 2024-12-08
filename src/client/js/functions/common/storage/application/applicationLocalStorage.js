@@ -25,8 +25,8 @@ export default function applicationLocalStorage() {
         return;
       }
 
-      window.localStorage.removeItem(event.key);
-      window.localStorage.setItem(event.key, event.oldValue);
+      localStorage.removeItem(event.key);
+      localStorage.setItem(event.key, event.oldValue);
 
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -34,7 +34,7 @@ export default function applicationLocalStorage() {
 
         // 새로 생성되는 key는 값이 'null'이기 때문에 삭제 필요
         if (value === 'null') {
-          window.localStorage.removeItem(key);
+          localStorage.removeItem(key);
         }
       }
       storageEventStore.dispatch(updateStorageEvent({ value: true }));
@@ -56,8 +56,8 @@ export default function applicationLocalStorage() {
         return;
       }
 
-      window.sessionStorage.removeItem(event.key);
-      window.sessionStorage.setItem(event.key, event.oldValue);
+      sessionStorage.removeItem(event.key);
+      sessionStorage.setItem(event.key, event.oldValue);
 
       for (let i = 0; i < sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
@@ -65,7 +65,7 @@ export default function applicationLocalStorage() {
 
         // 새로 생성되는 key는 값이 'null'이기 때문에 삭제 필요
         if (value === 'null') {
-          window.sessionStorage.removeItem(key);
+          sessionStorage.removeItem(key);
         }
       }
       storageEventStore.dispatch(updateStorageEvent({ value: true }));

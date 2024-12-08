@@ -1,7 +1,6 @@
 // import { ws } from '../webSocket/webSocketHost.js'; // WebSocket 연결 설정
 import storageMethod from '../storage/storageMethod.js';
 import errorModal from '../popup/errorModal.js';
-import getUnicodePoints from '../unicode/getUnicodePoints.js';
 import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
 
 export default function webRTC() {
@@ -9,12 +8,16 @@ export default function webRTC() {
    * WebSocket event
    */
 
-  const CLIENT_ID = window.localStorage.getItem('clientId');
+  const CLIENT_ID = localStorage.getItem('clientId');
   if (!CLIENT_ID) return errorModal();
-  const NICK_NAME = window.localStorage.getItem('nickName');
+  const NICK_NAME = localStorage.getItem('nickName');
   if (!NICK_NAME) return errorModal();
-
-  const DECODE_NICK_NAME = fromUnicodePoints(NICK_NAME.split(',').map(Number));
+  const DECODE_NICK_NAME = fromUnicodePoints(
+    NICK_NAME.replace(/"/g, '')
+      .split(',')
+      .map((s) => s.trim()),
+  );
+  document.querySelector('.my-nickname').innerHTML = DECODE_NICK_NAME;
 
   /**
    * webRCT event
@@ -47,11 +50,12 @@ export default function webRTC() {
           onDataChannel.send(
             JSON.stringify({
               type: 'nickName',
-              data: window.localStorage.getItem('nickName'),
+              data: localStorage.getItem('nickName'),
             }),
           );
         }
 
+        // TODO: 각 게임의 send 처리 필요
         const RTC_BTN = document.querySelector('.rtc-btn');
         RTC_BTN.onclick = () => {
           if (onDataChannel && onDataChannel.readyState === 'open') {
@@ -75,7 +79,7 @@ export default function webRTC() {
         const message = JSON.parse(event.data);
         if (message.type === 'nickName') {
           storageMethod('s', 'SET_ITEM', 'yourName', message.data);
-          const YOUR_NAME = window.sessionStorage.getItem('yourName');
+          const YOUR_NAME = sessionStorage.getItem('yourName');
           const DECODE_YOUR_NAME = fromUnicodePoints(
             YOUR_NAME.replace(/"/g, '')
               .split(',')
@@ -84,8 +88,11 @@ export default function webRTC() {
 
           document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
         }
+
+        // TODO: 각 게임의 onmessage 처리 필요
         if (message.type === 'clickMessage') {
           console.log('click message : ', message.data);
+          document.querySelector('.message').innerText = message.data;
         }
       };
 
@@ -152,10 +159,12 @@ export default function webRTC() {
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = () => {
+    const reloaded = sessionStorage.getItem('reloaded');
+
     const initOnopen = () => {
-      document.querySelector('.my-nickname').innerText = DECODE_NICK_NAME;
-      const roomName = window.sessionStorage.getItem('roomName');
-      const yourName = window.sessionStorage.getItem('yourName');
+      const roomName = sessionStorage.getItem('roomName');
+      const yourName = sessionStorage.getItem('yourName');
+
       if (roomName) {
         // 이전에 입장한 room이 있음
         signalingSocket.send(
@@ -170,7 +179,12 @@ export default function webRTC() {
         signalingSocket.send(JSON.stringify({ type: 'entryOrder', room: '', yourName: '' }));
       }
     };
-    initOnopen();
+
+    if (reloaded && reloaded === 'true') {
+      setTimeout(initOnopen, 1000);
+    } else {
+      initOnopen();
+    }
   };
 
   // signalingServer 응답
@@ -181,10 +195,10 @@ export default function webRTC() {
       console.log('msgData.userLength ::: ', msgData.userLength);
 
       // 내가 입장한 rooom name을 sessionStorage에 저장
-      if (!window.sessionStorage.getItem('roomName')) {
+      if (!sessionStorage.getItem('roomName')) {
         storageMethod('s', 'SET_ITEM', 'roomName', msgData.room);
       } else {
-        if (!window.sessionStorage.getItem('yourName')) {
+        if (!sessionStorage.getItem('yourName')) {
           storageMethod('s', 'SET_ITEM', 'roomName', msgData.room);
         }
       }
@@ -198,12 +212,10 @@ export default function webRTC() {
       if (peerConnection) {
         peerConnection.close();
         peerConnection = null; // 연결 객체 제거
-        console.log('너도 타냐 1 peerConnection :::::::::: ');
       }
       if (signalingSocket) {
         signalingSocket.close(); // WebSocket 연결 닫기
         signalingSocket = null; // 소켓 객체 제거
-        console.log('너도 타냐 2 signalingSocket :::::::::: ');
       }
     }
 

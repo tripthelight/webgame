@@ -21,12 +21,12 @@ export default function initUserName() {
   const INIT_NAME_ELEM = USER_NAME_ELEM.querySelector('.init-name');
   if (!INIT_NAME_ELEM) return;
 
-  const CLIENT_ID = window.localStorage.getItem('clientId') ? window.localStorage.getItem('clientId') : uuidv4();
+  const CLIENT_ID = localStorage.getItem('clientId') ? localStorage.getItem('clientId') : uuidv4();
 
   // localStorage의 userName은 string[] 로 저장됨
-  const INIT_USER_NAME = window.localStorage.getItem('userName');
+  const INIT_USER_NAME = localStorage.getItem('userName');
 
-  const BROWSER_RELOAD = window.sessionStorage.getItem('reloaded');
+  const BROWSER_RELOAD = sessionStorage.getItem('reloaded');
 
   if (INIT_USER_NAME) {
     const userName = fromUnicodePoints(
