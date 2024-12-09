@@ -27,24 +27,9 @@ function getRealWebSocket(socketId) {
 async function offerAnserCandidateDataProcess(msgData, socket) {
   const { type, data } = msgData;
   if (!type || !data) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
-
-  const playingRoomsData = await REDIS.hget('ROOMS', 'playing');
-  const playingRooms = playingRoomsData ? JSON.parse(playingRoomsData) : {};
-  const socketIds = playingRooms[socket.room];
-  const otherSocketIds = socketIds.filter((id) => id !== socket.socketId).join('');
-  const diffSocket = await getRealWebSocket(otherSocketIds);
+  const diffSocket = await getRealWebSocket(socket.socketIdDiff);
+  if (!diffSocket) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
   diffSocket.send(JSON.stringify({ type, data }));
-
-  // // Redis에서 해당 room에 연결된 모든 클라이언트 정보 가져오기
-  // const allRooms = await REDIS.hgetall(NAMESPACE);
-  // if (!allRooms) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
-  // const socketIdArr = JSON.parse(allRooms[socket.room])?.sockets;
-  // if (!socketIdArr) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
-  // const diffSocketId = socketIdArr.filter((socketId) => socketId !== socket.socketId).join('');
-  // if (!diffSocketId) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
-  // const diffSocket = await getRealWebSocket(diffSocketId);
-  // if (!diffSocket) return socket.send(JSON.stringify({ type: 'otherLeaves' }));
-  // diffSocket.send(JSON.stringify({ type, data }));
 }
 
 async function roomInit(socket) {
@@ -57,6 +42,12 @@ async function roomInit(socket) {
     const roomNameToUpdate = Object.entries(standbyRooms).find(([roomName, socketIds]) => socketIds.length === 1)?.[0];
 
     if (roomNameToUpdate) {
+      socket.socketIdDiff = standbyRooms[roomNameToUpdate].join('');
+      const diffSocket = await getRealWebSocket(socket.socketIdDiff);
+      diffSocket.socketIdDiff = socket.socketId;
+      socket.gameState = 'playing';
+      diffSocket.gameState = 'playing';
+
       // 해당 roomName의 socketId 배열에 socket.socketId 추가
       standbyRooms[roomNameToUpdate].push(socket.socketId);
 
@@ -67,7 +58,7 @@ async function roomInit(socket) {
       const playingRooms = playingRoomsData ? JSON.parse(playingRoomsData) : {};
       playingRooms[roomNameToUpdate] = standbyRooms[roomNameToUpdate];
 
-      socket.room = Object.keys(playingRooms)[0];
+      socket.room = roomNameToUpdate;
 
       // 'ROOMS'에 'playing' 데이터를 업데이트
       multi.hset(NAMESPACE, 'playing', JSON.stringify(playingRooms));
@@ -96,6 +87,7 @@ async function roomInit(socket) {
     // 'standby'에 방이 없으면 새로운 방을 생성하여 추가
     const newRoomName = `room-${uuidv4()}`;
     socket.room = newRoomName;
+    socket.gameState = 'standby';
     await REDIS.hset(NAMESPACE, 'standby', JSON.stringify({ [socket.room]: [socket.socketId] }));
 
     socket.send(
@@ -135,6 +127,7 @@ WSS.on('connection', async (socket) => {
     const socketId = uuidv4();
     // base64로 인코딩 후 6자만 사용
     socket.socketId = `socketId-${Buffer.from(socketId).toString('base64').substring(0, 6)}`;
+    // socket.socketIds = [socket.socketId]; // type: Array<string>
   }
 
   // 게임중 > 뒤로가기 > 같은 게임 진입 : msgData.room 없음
@@ -160,20 +153,21 @@ WSS.on('connection', async (socket) => {
 
           // JSON으로 파싱합니다.
           const playingRooms = playingRoomsData ? JSON.parse(playingRoomsData) : {};
-          // 내가 있던 roomName 찾기 (roomName5부터 roomName9까지)
+          // 내가 있던 roomName 찾기
           const roomNameToUpdate = Object.keys(playingRooms).find((roomName) => roomName.startsWith(recevedRoom));
+
           if (roomNameToUpdate) {
-            console.log('playingRooms[roomNameToUpdate] ::::::: ', playingRooms[roomNameToUpdate]);
+            socket.socketIdDiff = playingRooms[roomNameToUpdate].join('');
+            const diffSocket = await getRealWebSocket(socket.socketIdDiff);
+            diffSocket.socketIdDiff = socket.socketId;
+            socket.room = roomNameToUpdate;
+            socket.gameState = 'playing';
 
             // 해당 roomName에 socketId 추가
             playingRooms[roomNameToUpdate].push(socket.socketId);
 
             // Redis에 업데이트
-            await REDIS.hset(NAMESPACE, 'playing', roomNameToUpdate, JSON.stringify(playingRooms[roomNameToUpdate]));
-
-            console.log('새로고침 room name ::: ', roomNameToUpdate);
-
-            socket.room = roomNameToUpdate;
+            await REDIS.hset(NAMESPACE, 'playing', JSON.stringify(playingRooms));
 
             socket.send(
               JSON.stringify({
@@ -195,58 +189,20 @@ WSS.on('connection', async (socket) => {
 
   // 클라이언트 연결 종료 시
   socket.on('close', async () => {
-    const socketId = socket.socketId; // 현재 사용자의 socketId
+    if (!socket.room || !socket.socketId || !socket.gameState) return;
 
-    // Redis에서 'standby'와 'playing' 데이터를 가져옵니다.
-    const standbyRoomsData = await REDIS.hget(NAMESPACE, 'standby');
-    const playingRoomsData = await REDIS.hget(NAMESPACE, 'playing');
-
-    // JSON으로 파싱합니다.
-    const standbyRooms = standbyRoomsData ? JSON.parse(standbyRoomsData) : {};
-    const playingRooms = playingRoomsData ? JSON.parse(playingRoomsData) : {};
-
-    // multi 명령어 시작
-    const multi = REDIS.multi();
-
-    // 'standby'에서 socketId를 제거
-    Object.entries(standbyRooms).forEach(([roomName, socketIds]) => {
-      const index = socketIds.indexOf(socketId);
-      if (index !== -1) {
-        // socketId를 제거
-        socketIds.splice(index, 1);
-        if (socketIds.length === 0) {
-          // 만약 방에 남은 socketId가 없다면 해당 방을 삭제
-          multi.hdel(NAMESPACE, 'standby', roomName);
-        } else {
-          // socketId가 남아있다면 해당 방만 업데이트
-          multi.hset(NAMESPACE, 'standby', roomName, JSON.stringify(socketIds));
-        }
+    const roomData = await REDIS.hget(NAMESPACE, socket.gameState);
+    const rooms = JSON.parse(roomData);
+    const socketIds = rooms[socket.room];
+    if (socketIds.includes(socket.socketId)) {
+      const updatedSocketIds = socketIds.filter((id) => id !== socket.socketId);
+      if (updatedSocketIds.length === 0) {
+        delete rooms[socket.room];
+      } else {
+        rooms[socket.room] = updatedSocketIds;
       }
-    });
-
-    // 'playing'에서 socketId를 제거
-    Object.entries(playingRooms).forEach(([roomName, socketIds]) => {
-      const index = socketIds.indexOf(socketId);
-      if (index !== -1) {
-        // socketId를 제거
-        socketIds.splice(index, 1);
-        if (socketIds.length === 0) {
-          // 만약 방에 남은 socketId가 없다면 해당 방을 삭제
-          multi.hdel(NAMESPACE, 'playing', roomName);
-        } else {
-          // socketId가 남아있다면 해당 방만 업데이트
-          multi.hset(NAMESPACE, 'playing', roomName, JSON.stringify(socketIds));
-        }
-      }
-    });
-
-    // 모든 Redis 명령어 실행
-    await multi.exec();
-
-    // TODO: 2명이 있는 room 에서 한 명이 새로고침 하면 내 socketId를 안지움
-    const playingRoomsData2 = await REDIS.hget(NAMESPACE, 'playing');
-    const playingRooms2 = playingRoomsData2 ? JSON.parse(playingRoomsData2) : {};
-    console.log('playingRooms2 ::::::::: ', playingRooms2);
+      await REDIS.hset(NAMESPACE, socket.gameState, JSON.stringify(rooms));
+    }
   });
 });
 
