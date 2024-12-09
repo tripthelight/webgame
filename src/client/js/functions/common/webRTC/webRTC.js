@@ -23,8 +23,7 @@ export default function webRTC() {
    * webRCT event
    */
   let signalingSocket;
-  // signalingSocket = new WebSocket('ws://61.36.169.20:8081');
-  signalingSocket = new WebSocket('ws://61.36.169.5:8081');
+  signalingSocket = new WebSocket('ws://61.36.169.20:8081');
 
   const servers = {
     iceServers: [
