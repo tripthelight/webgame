@@ -1,0 +1,24 @@
+6079, 6380 redis cluster 서버 띄우는 방법
+
+1. redis.windows.conf에서, # cluster-enabled yes 주석 제거
+2. redis.windows.conf를 복사해서 redis-6380.conf 사본 파일 생성
+3. redis-6380.conf을 메모장으로 열어서 port 6379를 port 6380으로 수정
+
+redis-server.exe redis.windows.conf // 6079 서버 실행
+
+redis-cli -h 127.0.0.1 -p 6379 // 127.0.0.1:6379 cli 진입
+redis-cli -p 6379
+
+redis-server.exe redis.6380.conf // 6080 서버 실행
+
+redis-cli -h 127.0.0.1 -p 6380 // 127.0.0.1:6380 cli 진입
+redis-cli -p 6380
+
+
+4. 6379 서버 종료 방법
+첫번째 방법:
+redis-cli -h 127.0.0.1 -p 6379 shutdown
+
+두번째 방법:
+ps aux | grep redis
+kill <PID>
