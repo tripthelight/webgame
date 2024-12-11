@@ -3,7 +3,7 @@ import storageMethod from '../storage/storageMethod.js';
 import errorModal from '../popup/errorModal.js';
 import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
 
-export default function webRTC(gameName) {
+export default function webRTC() {
   /**
    * WebSocket event
    */
@@ -23,7 +23,7 @@ export default function webRTC(gameName) {
    * webRCT event
    */
   let signalingSocket;
-  signalingSocket = new WebSocket('ws://61.36.169.31:8081');
+  signalingSocket = new WebSocket('ws://61.36.169.20:8081');
 
   const servers = {
     iceServers: [
@@ -161,20 +161,21 @@ export default function webRTC(gameName) {
     const reloaded = sessionStorage.getItem('reloaded');
 
     const initOnopen = () => {
+      const roomName = sessionStorage.getItem('roomName');
       const yourName = sessionStorage.getItem('yourName');
 
-      if (yourName) {
+      if (roomName) {
         // 이전에 입장한 room이 있음
         signalingSocket.send(
           JSON.stringify({
             type: 'entryOrder',
-            gameName: gameName,
-            yourName: yourName,
+            room: roomName,
+            yourName: yourName ?? '',
           }),
         );
       } else {
         // 새로 입장
-        signalingSocket.send(JSON.stringify({ type: 'entryOrder', gameName: gameName }));
+        signalingSocket.send(JSON.stringify({ type: 'entryOrder', room: '', yourName: '' }));
       }
     };
 
@@ -190,9 +191,17 @@ export default function webRTC(gameName) {
     const msgData = JSON.parse(message.data);
 
     if (msgData.type === 'entryOrder') {
-      // 나와 매칭된 user를 sessionStorage에 저장
-      // storageMethod('s', 'SET_ITEM', 'orderUser', msgData.orderUser);
-      if (msgData.hasOffer && msgData.hasOffer === 'true') {
+      console.log('msgData.userLength ::: ', msgData.userLength);
+
+      // 내가 입장한 rooom name을 sessionStorage에 저장
+      if (!sessionStorage.getItem('roomName')) {
+        storageMethod('s', 'SET_ITEM', 'roomName', msgData.room);
+      } else {
+        if (!sessionStorage.getItem('yourName')) {
+          storageMethod('s', 'SET_ITEM', 'roomName', msgData.room);
+        }
+      }
+      if (msgData.userLength === 2) {
         await createOffer(); // 두번째 접속한 사람만 offer를 보내야함
       }
     }

@@ -12,7 +12,7 @@ document.onreadystatechange = () => {
 
     // webSocketMessage();
     // webSocketConnect();
-    webRTC();
+    webRTC('taptap');
 
     // setTimeout(webRTC, 1000);
 
