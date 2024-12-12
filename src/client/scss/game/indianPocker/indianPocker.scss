@@ -1,0 +1,39 @@
+#app {
+  height: 100%;
+  #gameBlock {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .other-block,
+    .my-block {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      .card-block {
+        span {
+          display: block;
+          width: calc(100vw - 100px);
+          height: 200px;
+          background-color: rgba(0, 0, 0, 1);
+        }
+      }
+      .coin-block {
+        display: flex;
+        box-sizing: border-box;
+        button {
+          width: calc(100vw / 10);
+          height: calc(100vw / 10);
+          border-radius: 100%;
+          background-color: #000;
+        }
+      }
+    }
+    .other-block {
+      align-items: flex-end;
+      background-color: aqua;
+    }
+    .my-block {
+      background-color: bisque;
+    }
+  }
+}

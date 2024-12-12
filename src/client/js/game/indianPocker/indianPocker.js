@@ -1,5 +1,6 @@
 import '../../functions/common/common.js';
 import { LOADING_EVENT } from '../../functions/common/loading.js';
+import webRTC from '../../functions/common/webRTC/webRTC.js';
 
 document.onreadystatechange = () => {
   const state = document.readyState;
@@ -7,6 +8,8 @@ document.onreadystatechange = () => {
   } else if (state === 'complete') {
     console.log('indianPocker init..');
 
-    LOADING_EVENT.hide();
+    webRTC('indianPocker');
+
+    // LOADING_EVENT.hide();
   }
 };

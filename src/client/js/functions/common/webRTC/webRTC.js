@@ -2,6 +2,8 @@
 import storageMethod from '../storage/storageMethod.js';
 import errorModal from '../popup/errorModal.js';
 import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
+import { LOADING_EVENT } from '../loading.js';
+import msg_str from '../msg_str.js';
 
 export default function webRTC(gameName) {
   /**
@@ -17,7 +19,9 @@ export default function webRTC(gameName) {
       .split(',')
       .map((s) => s.trim()),
   );
-  document.querySelector('.my-nickname').innerHTML = DECODE_NICK_NAME;
+  if (document.querySelector('.my-nickname')) {
+    document.querySelector('.my-nickname').innerHTML = DECODE_NICK_NAME;
+  }
 
   /**
    * webRCT event
@@ -37,6 +41,7 @@ export default function webRTC(gameName) {
   let dataChannel;
 
   function otherLeavesComn() {
+    LOADING_EVENT.show(msg_str('left_user'));
     if (peerConnection) {
       peerConnection.close();
       peerConnection = null; // 연결 객체 제거
@@ -66,10 +71,13 @@ export default function webRTC(gameName) {
               },
             }),
           );
+
+          LOADING_EVENT.hide();
         }
 
         // TODO: 각 게임의 send 처리 필요
         const RTC_BTN = document.querySelector('.rtc-btn');
+        if (!RTC_BTN) return;
         RTC_BTN.onclick = () => {
           if (onDataChannel && onDataChannel.readyState === 'open') {
             onDataChannel.send(
@@ -99,7 +107,9 @@ export default function webRTC(gameName) {
               .split(',')
               .map((s) => s.trim()),
           );
-          document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
+          if (document.querySelector('.ur-nickname')) {
+            document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
+          }
 
           if (message.data.clientId === '') {
             // storageMethod('s', 'SET_ITEM', 'clientId', JSON.parse(sessionStorage.getItem('clientId')).us);
@@ -143,16 +153,18 @@ export default function webRTC(gameName) {
       };
 
       peerConnection.oniceconnectionstatechange = (event) => {
-        // console.log("ICE Connection State: ", peerConnection.iceConnectionState);
-        if (peerConnection && peerConnection.iceConnectionState === 'connected') {
-          // console.log("Bridges are successfully connected!");
+        if (peerConnection) {
+          if (peerConnection.iceConnectionState === 'disconnected') {
+            LOADING_EVENT.show(msg_str('left_user'));
+          }
         }
       };
 
       peerConnection.onconnectionstatechange = (event) => {
-        // console.log("Peer connection state: ", peerConnection.connectionState);
-        if (dataChannel && dataChannel.readyState === 'open') {
-          // console.log("Data channel is open, communication can begin!");
+        if (peerConnection) {
+          if (peerConnection.connectionState === 'disconnected' || peerConnection.connectionState === 'failed') {
+            LOADING_EVENT.show(msg_str('left_user'));
+          }
         }
       };
 

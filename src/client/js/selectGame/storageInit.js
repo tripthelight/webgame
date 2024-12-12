@@ -5,5 +5,6 @@ import storageMethod from '../functions/common/storage/storageMethod.js';
 export default function storageInit() {
   storageMethod('s', 'REMOVE_ITEM', 'roomName');
   storageMethod('s', 'REMOVE_ITEM', 'yourName');
+  storageMethod('s', 'REMOVE_ITEM', 'ms');
   storageMethod('s', 'REMOVE_ITEM', 'clientId');
 }
