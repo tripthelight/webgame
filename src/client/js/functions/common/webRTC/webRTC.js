@@ -23,7 +23,7 @@ export default function webRTC(gameName) {
    * webRCT event
    */
   let signalingSocket;
-  signalingSocket = new WebSocket('ws://61.36.169.31:8081');
+  signalingSocket = new WebSocket('ws://61.36.169.20:8081');
 
   const servers = {
     iceServers: [
@@ -36,6 +36,17 @@ export default function webRTC(gameName) {
   let peerConnection;
   let dataChannel;
 
+  function otherLeavesComn() {
+    if (peerConnection) {
+      peerConnection.close();
+      peerConnection = null; // 연결 객체 제거
+    }
+    if (signalingSocket) {
+      signalingSocket.close(); // WebSocket 연결 닫기
+      signalingSocket = null; // 소켓 객체 제거
+    }
+  }
+
   function initConnect() {
     return new Promise((resolve) => {
       peerConnection = new RTCPeerConnection(servers);
@@ -43,13 +54,16 @@ export default function webRTC(gameName) {
 
       peerConnection.ondatachannel = (event) => {
         const onDataChannel = event.channel;
-        // 내 nickName을 상대방에게 전송
 
+        // 내 nickName을 상대방에게 전송
         if (onDataChannel && onDataChannel.readyState === 'open') {
           onDataChannel.send(
             JSON.stringify({
-              type: 'nickName',
-              data: localStorage.getItem('nickName'),
+              type: 'sharedData',
+              data: {
+                nickname: localStorage.getItem('nickName'),
+                clientId: sessionStorage.getItem('ms') ? sessionStorage.getItem('ms') : '',
+              },
             }),
           );
         }
@@ -66,6 +80,7 @@ export default function webRTC(gameName) {
             );
           } else {
             console.log('상대방이 방을 나감');
+            otherLeavesComn();
           }
         };
       };
@@ -76,16 +91,22 @@ export default function webRTC(gameName) {
 
       dataChannel.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        if (message.type === 'nickName') {
-          storageMethod('s', 'SET_ITEM', 'yourName', message.data);
+        if (message.type === 'sharedData') {
+          storageMethod('s', 'SET_ITEM', 'yourName', message.data.nickname);
           const YOUR_NAME = sessionStorage.getItem('yourName');
           const DECODE_YOUR_NAME = fromUnicodePoints(
             YOUR_NAME.replace(/"/g, '')
               .split(',')
               .map((s) => s.trim()),
           );
-
           document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
+
+          if (message.data.clientId === '') {
+            // storageMethod('s', 'SET_ITEM', 'clientId', JSON.parse(sessionStorage.getItem('clientId')).us);
+            storageMethod('s', 'REMOVE_ITEM', 'ms');
+          } else {
+            storageMethod('s', 'SET_ITEM', 'clientId', message.data.clientId);
+          }
         }
 
         // TODO: 각 게임의 onmessage 처리 필요
@@ -161,20 +182,20 @@ export default function webRTC(gameName) {
     const reloaded = sessionStorage.getItem('reloaded');
 
     const initOnopen = () => {
-      const yourName = sessionStorage.getItem('yourName');
+      const clientId = sessionStorage.getItem('clientId');
 
-      if (yourName) {
+      if (clientId) {
         // 이전에 입장한 room이 있음
         signalingSocket.send(
           JSON.stringify({
             type: 'entryOrder',
             gameName: gameName,
-            yourName: yourName,
+            clientId: clientId ?? '',
           }),
         );
       } else {
         // 새로 입장
-        signalingSocket.send(JSON.stringify({ type: 'entryOrder', gameName: gameName }));
+        signalingSocket.send(JSON.stringify({ type: 'entryOrder', gameName: gameName, clientId: '' }));
       }
     };
 
@@ -191,22 +212,22 @@ export default function webRTC(gameName) {
 
     if (msgData.type === 'entryOrder') {
       // 나와 매칭된 user를 sessionStorage에 저장
-      // storageMethod('s', 'SET_ITEM', 'orderUser', msgData.orderUser);
-      if (msgData.hasOffer && msgData.hasOffer === 'true') {
+      if (msgData.setOffer && msgData.setOffer === 'true') {
+        // storageMethod('s', 'SET_ITEM', 'clientId', JSON.stringify(msgData.clientId));
+        storageMethod('s', 'SET_ITEM', 'ms', msgData.clientId.ms);
+        storageMethod('s', 'SET_ITEM', 'clientId', msgData.clientId.us);
         await createOffer(); // 두번째 접속한 사람만 offer를 보내야함
       }
     }
 
+    if (msgData.type === 'networkError') {
+      console.log('Network Error');
+      //
+    }
+
     if (msgData.type === 'otherLeaves') {
       console.log('상대방이 방을 나감');
-      if (peerConnection) {
-        peerConnection.close();
-        peerConnection = null; // 연결 객체 제거
-      }
-      if (signalingSocket) {
-        signalingSocket.close(); // WebSocket 연결 닫기
-        signalingSocket = null; // 소켓 객체 제거
-      }
+      otherLeavesComn();
     }
 
     if (msgData.type === 'offer') {
