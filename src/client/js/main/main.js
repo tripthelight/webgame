@@ -1,3 +1,4 @@
+import '../../scss/main/common.scss';
 import '../functions/common/common.js';
 import { LOADING_EVENT } from '../functions/common/loading.js';
 import initNickName from './modal/initNickName.js';

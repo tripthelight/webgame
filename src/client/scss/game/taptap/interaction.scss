@@ -1,0 +1,38 @@
+.interaction {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  top: 50%;
+  width: 600px;
+  height: 600px;
+  border-radius: 600px;
+  margin: -300px 0 0 -300px;
+  text-align: center;
+  background-color: rgba(255, 0, 0, 0.5);
+  animation-name: interactionAnimation;
+  animation-duration: leaner;
+  animation-iteration-count: 1;
+  animation-duration: 0.6s;
+  span {
+    display: inline-block;
+    font-size: 100px;
+    line-height: 100px;
+    color: #fff;
+  }
+  @keyframes interactionAnimation {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    80% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2);
+    }
+  }
+}

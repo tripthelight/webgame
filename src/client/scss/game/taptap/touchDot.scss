@@ -1,0 +1,64 @@
+.touch-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  span {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    animation-duration: leaner;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+    &:nth-child(1) {
+      left: 0;
+      top: 0;
+      animation-name: circleAnimation;
+      animation-duration: 0.1s;
+    }
+    &:nth-child(2) {
+      left: 20px;
+      top: 20px;
+      width: 60px;
+      height: 60px;
+      animation-name: circleAnimation;
+      animation-duration: 0.2s;
+    }
+    &:nth-child(3) {
+      left: 40px;
+      top: 40px;
+      width: 20px;
+      height: 20px;
+      animation-name: circleAnimation;
+      animation-duration: 0.3s;
+    }
+  }
+  &.tap-dot-top {
+    span {
+      background-color: #fff;
+    }
+  }
+  &.tap-dot-bottom {
+    span {
+      background-color: #000;
+    }
+  }
+  @keyframes circleAnimation {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.5);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1);
+    }
+  }
+}

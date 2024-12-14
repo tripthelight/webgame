@@ -1,4 +1,4 @@
-import '../../../scss/common.scss';
+// import '../../../scss/common.scss';
 import { LOADING_EVENT } from './loading.js';
 import storageEvent from '../../functions/common/storage/storageEvent.js';
 import refreshEvent from './refreshEvent.js';

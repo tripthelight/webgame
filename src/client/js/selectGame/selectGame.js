@@ -1,3 +1,4 @@
+import '../../scss/selectGame/common.scss';
 import '../functions/common/common.js';
 import gameName from './gameName.js';
 import storageInit from './storageInit.js';

@@ -1,15 +1,92 @@
-// import { ws } from '../webSocket/webSocketHost.js'; // WebSocket 연결 설정
+import { timeInterval_1 } from '../variable.js';
 import storageMethod from '../storage/storageMethod.js';
 import errorModal from '../popup/errorModal.js';
 import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
 import { LOADING_EVENT } from '../loading.js';
 import msg_str from '../msg_str.js';
 
+let dotAni;
+let matching = true;
+// ENEMY DOT ANIMATION
+const enemyDotAni = () => {
+  const ENEMY_DOT_L = document.querySelector('.wait .enemy .dot-l');
+  const ENEMY_DOT_R = document.querySelector('.wait .enemy .dot-r');
+  if (!ENEMY_DOT_L || !ENEMY_DOT_R) return;
+  dotAni = setInterval(function () {
+    ENEMY_DOT_L.innerText += '.';
+    ENEMY_DOT_R.innerText += '.';
+    if (ENEMY_DOT_L.innerText.length == 4) ENEMY_DOT_L.innerText = '';
+    if (ENEMY_DOT_R.innerText.length == 4) ENEMY_DOT_R.innerText = '';
+    if (!matching) clearInterval(dotAni);
+  }, 500);
+};
+// WAIT ENEMY SHOW/HIDE
+const WAIT_ENEMY = {
+  show: (player) => {
+    const CONTAINER = document.getElementById('container');
+    const WAIT = document.querySelector('.wait');
+    if (!WAIT && CONTAINER) {
+      let waitEl = document.createElement('div');
+      let playerEl = document.createElement('span');
+      let enemyEl = document.createElement('span');
+      let enemyName = document.createElement('en');
+      let enemyDotL = document.createElement('em');
+      let enemyDotR = document.createElement('em');
+      playerEl.classList.add('player');
+      enemyEl.classList.add('enemy');
+      enemyName.classList.add('enemy-name');
+      enemyDotL.classList.add('dot-l');
+      enemyDotR.classList.add('dot-r');
+      enemyEl.appendChild(enemyName);
+      enemyEl.insertBefore(enemyDotL, enemyEl.firstChild);
+      enemyEl.appendChild(enemyDotR);
+      playerEl.innerText = player;
+      enemyName.innerText = 'OPPONENT';
+      waitEl.classList.add('wait');
+      waitEl.appendChild(playerEl);
+      waitEl.appendChild(enemyEl);
+      CONTAINER.appendChild(waitEl);
+      setTimeout(() => {
+        LOADING_EVENT.hide();
+      }, timeInterval_1);
+    }
+  },
+  hide: () => {
+    if (document.querySelector('.wait')) {
+      document.querySelector('.wait').remove();
+      setTimeout(() => {
+        // LOADING_EVENT.hide();
+      }, timeInterval_1);
+    }
+  },
+};
+// WAIT ENEMY
+const waitEnemy = (len, nickName) => {
+  switch (len) {
+    case 1:
+      // wait Enemy
+      WAIT_ENEMY.show(nickName);
+      enemyDotAni();
+      break;
+    case 2:
+      // wait end Enemy
+      clearInterval(dotAni);
+      matching = false;
+      WAIT_ENEMY.hide();
+      break;
+    default:
+      // error
+      alert(text.err);
+      // socket.disconnect();
+      window.location.href = '/';
+      break;
+  }
+};
+
 export default function webRTC(gameName) {
   /**
    * WebSocket event
    */
-
   const CLIENT_ID = localStorage.getItem('clientId');
   if (!CLIENT_ID) return errorModal();
   const NICK_NAME = localStorage.getItem('nickName');
@@ -19,9 +96,6 @@ export default function webRTC(gameName) {
       .split(',')
       .map((s) => s.trim()),
   );
-  if (document.querySelector('.my-nickname')) {
-    document.querySelector('.my-nickname').innerHTML = DECODE_NICK_NAME;
-  }
 
   /**
    * webRCT event
@@ -53,14 +127,14 @@ export default function webRTC(gameName) {
   }
 
   function initConnect() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       peerConnection = new RTCPeerConnection(servers);
-      dataChannel = peerConnection.createDataChannel('sendChannel');
 
       peerConnection.ondatachannel = (event) => {
         const onDataChannel = event.channel;
 
         // 내 nickName을 상대방에게 전송
+        // 두 번째로 접속해서 offer를 보낸 user는 sessionStorage에 ms가 있음
         if (onDataChannel && onDataChannel.readyState === 'open') {
           onDataChannel.send(
             JSON.stringify({
@@ -72,7 +146,8 @@ export default function webRTC(gameName) {
             }),
           );
 
-          LOADING_EVENT.hide();
+          // LOADING_EVENT.hide();
+          waitEnemy(2);
         }
 
         // TODO: 각 게임의 send 처리 필요
@@ -92,6 +167,42 @@ export default function webRTC(gameName) {
           }
         };
       };
+
+      // ICE 후보를 다른 브라우저로 전송 (같은 방 안에서만 전송)
+      function sendCandidate(candidate) {
+        console.log('candidate 보냄');
+        // signalingSocket.send(JSON.stringify({ candidate }));
+        signalingSocket.send(
+          JSON.stringify({
+            type: 'candidate',
+            data: JSON.stringify({ candidate }),
+          }),
+        );
+      }
+
+      peerConnection.onicecandidate = async (event) => {
+        if (event.candidate) {
+          sendCandidate(event.candidate);
+        }
+      };
+
+      peerConnection.oniceconnectionstatechange = (event) => {
+        if (peerConnection) {
+          if (peerConnection.iceConnectionState === 'disconnected') {
+            LOADING_EVENT.show(msg_str('left_user'));
+          }
+        }
+      };
+
+      peerConnection.onconnectionstatechange = (event) => {
+        if (peerConnection) {
+          if (peerConnection.connectionState === 'disconnected' || peerConnection.connectionState === 'failed') {
+            LOADING_EVENT.show(msg_str('left_user'));
+          }
+        }
+      };
+
+      dataChannel = peerConnection.createDataChannel('sendChannel');
 
       dataChannel.onopen = () => {
         // console.log("dataChannel is open!");
@@ -134,40 +245,6 @@ export default function webRTC(gameName) {
         // console.log("DataChannel error: ", error);
       };
 
-      // ICE 후보를 다른 브라우저로 전송 (같은 방 안에서만 전송)
-      function sendCandidate(candidate) {
-        console.log('candidate 보냄');
-        // signalingSocket.send(JSON.stringify({ candidate }));
-        signalingSocket.send(
-          JSON.stringify({
-            type: 'candidate',
-            data: JSON.stringify({ candidate }),
-          }),
-        );
-      }
-
-      peerConnection.onicecandidate = async (event) => {
-        if (event.candidate) {
-          sendCandidate(event.candidate);
-        }
-      };
-
-      peerConnection.oniceconnectionstatechange = (event) => {
-        if (peerConnection) {
-          if (peerConnection.iceConnectionState === 'disconnected') {
-            LOADING_EVENT.show(msg_str('left_user'));
-          }
-        }
-      };
-
-      peerConnection.onconnectionstatechange = (event) => {
-        if (peerConnection) {
-          if (peerConnection.connectionState === 'disconnected' || peerConnection.connectionState === 'failed') {
-            LOADING_EVENT.show(msg_str('left_user'));
-          }
-        }
-      };
-
       resolve();
     });
   }
@@ -191,6 +268,9 @@ export default function webRTC(gameName) {
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = () => {
+    LOADING_EVENT.hide();
+    waitEnemy(1, DECODE_NICK_NAME);
+
     const reloaded = sessionStorage.getItem('reloaded');
 
     const initOnopen = () => {

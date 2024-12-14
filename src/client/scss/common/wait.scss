@@ -1,0 +1,48 @@
+.wait {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  span {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    display: flex;
+    width: 100%;
+    min-height: 30px;
+    font-size: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #fff;
+    font-family: "NanumBarunGothic", "Malgun Gothic", "dotum", sans-serif;
+    font-weight: 400;
+    &.player {
+      margin-top: 15px;
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    &.enemy {
+      margin-top: -45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      em {
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        line-height: 15px;
+        color: #fff;
+        &.dot-l {
+          text-align: right;
+        }
+        &.dot-r {
+          text-align: left;
+        }
+      }
+    }
+  }
+}
