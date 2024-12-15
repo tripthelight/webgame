@@ -182,17 +182,17 @@ WSS.on('connection', async (socket) => {
 
     if (msgData.roomName) {
       socket.roomName = msgData.roomName;
-    }
-    if (msgData.gameName) {
-      socket.gameName = msgData.gameName;
-      if (ROOMS_MAP[socket.gameName]) {
-        if (ROOMS_MAP[socket.gameName].get(socket.roomName)) {
-          ROOMS_MAP[socket.gameName].get(socket.roomName).push(socket);
+      if (msgData.gameName) {
+        socket.gameName = msgData.gameName;
+        if (ROOMS_MAP[socket.gameName]) {
+          if (ROOMS_MAP[socket.gameName].get(socket.roomName)) {
+            ROOMS_MAP[socket.gameName].get(socket.roomName).push(socket);
+          } else {
+            ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
+          }
         } else {
           ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
         }
-      } else {
-        ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
       }
     }
 
