@@ -180,21 +180,19 @@ WSS.on('connection', async (socket) => {
   socket.on('message', async (message) => {
     const msgData = JSON.parse(message);
 
-    if (msgData.gameName) {
-      socket.gameName = msgData.gameName;
-    }
     if (msgData.roomName) {
       socket.roomName = msgData.roomName;
-      if (socket.gameName) {
-        if (ROOMS_MAP[socket.gameName]) {
-          if (ROOMS_MAP[socket.gameName].get(socket.roomName)) {
-            ROOMS_MAP[socket.gameName].get(socket.roomName).push(socket);
-          } else {
-            ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
-          }
+    }
+    if (msgData.gameName) {
+      socket.gameName = msgData.gameName;
+      if (ROOMS_MAP[socket.gameName]) {
+        if (ROOMS_MAP[socket.gameName].get(socket.roomName)) {
+          ROOMS_MAP[socket.gameName].get(socket.roomName).push(socket);
         } else {
           ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
         }
+      } else {
+        ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
       }
     }
 
