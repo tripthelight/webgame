@@ -172,6 +172,27 @@ async function handleMessageStepStart(message, socket) {
 }
 */
 
+async function offerAnserCandidateDataProcess(resData) {
+  return new Promise((resolve, reject) => {
+    const { msgData, socket } = resData;
+    if (msgData && socket) {
+      // console.log('11 :: ', socket.gameName);
+      // console.log('22 :: ', socket.roomName);
+      // console.log('33 :: ', ROOMS_MAP[socket.gameName]);
+      // console.log('44 :: ', ROOMS_MAP[socket.gameName].get(socket.roomName));
+      // console.log('55 :: ', ROOMS_MAP[socket.gameName].get(socket.roomName).length);
+
+      if (socket.gameName && socket.roomName && ROOMS_MAP[socket.gameName] && ROOMS_MAP[socket.gameName].get(socket.roomName) && ROOMS_MAP[socket.gameName].get(socket.roomName).length === 2) {
+        const DIFF_SOCKET = ROOMS_MAP[socket.gameName].get(socket.roomName).find((ws) => ws !== socket);
+        if (DIFF_SOCKET && DIFF_SOCKET.readyState === WebSocket.OPEN) {
+          DIFF_SOCKET.send(JSON.stringify({ type: msgData.type, data: msgData.data }));
+        }
+      }
+    }
+    resolve();
+  });
+}
+
 // 연결된 클라이언트 처리
 WSS.on('connection', async (socket) => {
   // 새로 입장했을 때, socket에 고유한 socketId 부여
@@ -348,6 +369,10 @@ WSS.on('connection', async (socket) => {
           STANDBY_SET[socket.gameName].add(socket.socketId);
         }
       }
+    }
+
+    if (msgData.type === 'offer' || msgData.type === 'answer' || msgData.type === 'candidate') {
+      offerAnserCandidateDataProcess({ msgData, socket });
     }
   });
 
