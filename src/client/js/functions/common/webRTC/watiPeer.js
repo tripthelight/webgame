@@ -1,5 +1,5 @@
-import { timeInterval_1, timeInterval_500 } from './common/variable.js';
-import { LOADING_EVENT } from './common/loading.js';
+import { timeInterval_1, timeInterval_500 } from '../variable.js';
+import { LOADING_EVENT } from '../loading.js';
 
 let dotAni = null;
 let matching = true;
