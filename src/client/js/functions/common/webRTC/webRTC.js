@@ -4,84 +4,7 @@ import errorModal from '../popup/errorModal.js';
 import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
 import { LOADING_EVENT } from '../loading.js';
 import msg_str from '../msg_str.js';
-
-let dotAni;
-let matching = true;
-// ENEMY DOT ANIMATION
-const enemyDotAni = () => {
-  const ENEMY_DOT_L = document.querySelector('.wait .enemy .dot-l');
-  const ENEMY_DOT_R = document.querySelector('.wait .enemy .dot-r');
-  if (!ENEMY_DOT_L || !ENEMY_DOT_R) return;
-  dotAni = setInterval(function () {
-    ENEMY_DOT_L.innerText += '.';
-    ENEMY_DOT_R.innerText += '.';
-    if (ENEMY_DOT_L.innerText.length == 4) ENEMY_DOT_L.innerText = '';
-    if (ENEMY_DOT_R.innerText.length == 4) ENEMY_DOT_R.innerText = '';
-    if (!matching) clearInterval(dotAni);
-  }, 500);
-};
-// WAIT ENEMY SHOW/HIDE
-const WAIT_ENEMY = {
-  show: (player) => {
-    const CONTAINER = document.getElementById('container');
-    const WAIT = document.querySelector('.wait');
-    if (!WAIT && CONTAINER) {
-      let waitEl = document.createElement('div');
-      let playerEl = document.createElement('span');
-      let enemyEl = document.createElement('span');
-      let enemyName = document.createElement('en');
-      let enemyDotL = document.createElement('em');
-      let enemyDotR = document.createElement('em');
-      playerEl.classList.add('player');
-      enemyEl.classList.add('enemy');
-      enemyName.classList.add('enemy-name');
-      enemyDotL.classList.add('dot-l');
-      enemyDotR.classList.add('dot-r');
-      enemyEl.appendChild(enemyName);
-      enemyEl.insertBefore(enemyDotL, enemyEl.firstChild);
-      enemyEl.appendChild(enemyDotR);
-      playerEl.innerText = player;
-      enemyName.innerText = 'OPPONENT';
-      waitEl.classList.add('wait');
-      waitEl.appendChild(playerEl);
-      waitEl.appendChild(enemyEl);
-      CONTAINER.appendChild(waitEl);
-      setTimeout(() => {
-        LOADING_EVENT.hide();
-      }, timeInterval_1);
-    }
-  },
-  hide: () => {
-    if (document.querySelector('.wait')) {
-      document.querySelector('.wait').remove();
-      setTimeout(() => {
-        // LOADING_EVENT.hide();
-      }, timeInterval_1);
-    }
-  },
-};
-// WAIT ENEMY
-const waitEnemy = (len, nickName) => {
-  switch (len) {
-    case 1:
-      // wait Enemy
-      WAIT_ENEMY.show(nickName);
-      enemyDotAni();
-      break;
-    case 2:
-      // wait end Enemy
-      clearInterval(dotAni);
-      matching = false;
-      WAIT_ENEMY.hide();
-      break;
-    default:
-      // error
-      alert(text.err);
-      // socket.disconnect();
-      window.location.href = '/';
-      break;
-  }
-};
+import watiPeer from '../../watiPeer.js';
 
 export default function webRTC(gameName) {
   /**
@@ -96,10 +19,14 @@ export default function webRTC(gameName) {
       .split(',')
       .map((s) => s.trim()),
   );
+  if (document.querySelector('.my-nickname')) {
+    document.querySelector('.my-nickname').innerText = DECODE_NICK_NAME;
+  }
 
   /**
    * webRCT event
    */
+  let connectingState = false;
   let signalingSocket;
   signalingSocket = new WebSocket('ws://61.36.169.20:8081');
 
@@ -147,7 +74,10 @@ export default function webRTC(gameName) {
           );
 
           // LOADING_EVENT.hide();
-          waitEnemy(2);
+          watiPeer(2);
+          setTimeout(() => {
+            connectingState = false;
+          }, 1);
         }
 
         // TODO: 각 게임의 send 처리 필요
@@ -222,11 +152,11 @@ export default function webRTC(gameName) {
             document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
           }
 
-          if (message.data.clientId === '') {
+          if (message.data.clientId) {
             // storageMethod('s', 'SET_ITEM', 'clientId', JSON.parse(sessionStorage.getItem('clientId')).us);
-            storageMethod('s', 'REMOVE_ITEM', 'ms');
-          } else {
             storageMethod('s', 'SET_ITEM', 'clientId', message.data.clientId);
+          } else {
+            storageMethod('s', 'REMOVE_ITEM', 'ms');
           }
         }
 
@@ -267,34 +197,33 @@ export default function webRTC(gameName) {
   }
 
   // signalingServer 연결이 열리면
-  signalingSocket.onopen = () => {
+  signalingSocket.onopen = async () => {
     LOADING_EVENT.hide();
-    waitEnemy(1, DECODE_NICK_NAME);
-
-    const reloaded = sessionStorage.getItem('reloaded');
 
     const initOnopen = () => {
-      const clientId = sessionStorage.getItem('clientId');
+      return new Promise((resolve, reject) => {
+        const clientId = sessionStorage.getItem('clientId') ?? null;
 
-      if (clientId) {
-        // 이전에 입장한 room이 있음
+        if (clientId) {
+          // 이전에 입장한 room이 있음
+        } else {
+          // 새로 입장
+        }
+
         signalingSocket.send(
           JSON.stringify({
             type: 'entryOrder',
             gameName: gameName,
-            clientId: clientId ?? '',
+            clientId: clientId,
           }),
         );
-      } else {
-        // 새로 입장
-        signalingSocket.send(JSON.stringify({ type: 'entryOrder', gameName: gameName, clientId: '' }));
-      }
+        resolve();
+      });
     };
 
-    if (reloaded && reloaded === 'true') {
-      setTimeout(initOnopen, 1000);
-    } else {
-      initOnopen();
+    if (!connectingState) {
+      connectingState = true;
+      await initOnopen();
     }
   };
 
@@ -305,11 +234,17 @@ export default function webRTC(gameName) {
     if (msgData.type === 'entryOrder') {
       // 나와 매칭된 user를 sessionStorage에 저장
       if (msgData.setOffer && msgData.setOffer === 'true') {
-        // storageMethod('s', 'SET_ITEM', 'clientId', JSON.stringify(msgData.clientId));
         storageMethod('s', 'SET_ITEM', 'ms', msgData.clientId.ms);
-        storageMethod('s', 'SET_ITEM', 'clientId', msgData.clientId.us);
+        if (msgData.clientId?.us) {
+          storageMethod('s', 'SET_ITEM', 'clientId', msgData.clientId.us);
+        }
         await createOffer(); // 두번째 접속한 사람만 offer를 보내야함
       }
+    }
+
+    if (msgData.type === 'reClientId') {
+      console.log('reClientId : ', msgData.data);
+      storageMethod('s', 'SET_ITEM', 'clientId', msgData.data);
     }
 
     if (msgData.type === 'networkError') {
@@ -318,7 +253,7 @@ export default function webRTC(gameName) {
     }
 
     if (msgData.type === 'otherLeaves') {
-      console.log('상대방이 방을 나감');
+      console.log('상대방이 방을 나감 :: ', msgData.msg);
       otherLeavesComn();
     }
 

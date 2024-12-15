@@ -26,6 +26,7 @@ export const timeInterval_301 = 300;
 export const timeInterval_400 = 400;
 export const timeInterval_401 = 401;
 export const timeInterval_402 = 402;
+export const timeInterval_500 = 500;
 export const timeInterval_600 = 600;
 export const timeInterval_800 = 800;
 export const timeInterval_1000 = 1000;
