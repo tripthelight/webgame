@@ -191,6 +191,7 @@ WSS.on('connection', async (socket) => {
             ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
           }
         } else {
+          ROOMS_MAP[socket.gameName] = new Map();
           ROOMS_MAP[socket.gameName].set(socket.roomName, [socket]);
         }
       }
@@ -217,7 +218,7 @@ WSS.on('connection', async (socket) => {
 
         if (GAME_ROOM && GAME_USER) {
           const diffWsinterval = setInterval(() => {
-            if (ROOMS_MAP[socket.gameName].get(roomName).length === 2) {
+            if (ROOMS_MAP[socket.gameName] && ROOMS_MAP[socket.gameName].get(roomName) && ROOMS_MAP[socket.gameName].get(roomName).length === 2) {
               clearInterval(diffWsinterval);
               const DIFF_SOCKET = ROOMS_MAP[socket.gameName].get(roomName).find((ws) => ws !== socket);
               if (DIFF_SOCKET) {

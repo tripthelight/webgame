@@ -295,6 +295,21 @@ export default function webRTC(gameName) {
   // signalingServer 응답
   signalingSocket.onmessage = async (message) => {
     const msgData = JSON.parse(message.data);
-    await handleMessage(msgData).catch(otherLeavesComn);
+    await handleMessage(msgData)
+      .then(() => {
+        // 새로고침 스트레스 테스트
+        /*
+        let cnt = 0;
+        const interval = setInterval(function () {
+          if (cnt > 1000) {
+            clearInterval(interval);
+          }
+          cnt++;
+          console.log(cnt);
+          location.reload();
+        }, Math.floor(Math.random() * 100) + 1);
+        */
+      })
+      .catch(otherLeavesComn);
   };
 }
