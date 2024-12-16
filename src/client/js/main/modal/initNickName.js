@@ -7,8 +7,6 @@ import getUnicodePoints from '../../functions/common/unicode/getUnicodePoints.js
 import msg_str from '../../functions/common/msg_str.js';
 
 export default function initNickName() {
-  const CLIENT_ID = localStorage.getItem('clientId') ? localStorage.getItem('clientId') : uuidv4();
-
   // localStorage의 nickname은 string[] 로 저장됨
   const NICK_NAME = localStorage.getItem('nickName');
 
@@ -85,7 +83,6 @@ export default function initNickName() {
         // NAME_EL.innerHTML = DE_RESULT;
 
         storageMethod('l', 'SET_ITEM', 'nickName', RESULT);
-        storageMethod('l', 'SET_ITEM', 'clientId', CLIENT_ID);
 
         MODAL_POP_WRAP.remove();
       }

@@ -126,10 +126,10 @@ async function refreshDuringGame(data) {
     const { socket, roomName } = data;
 
     if (ROOMS_MAP[socket.gameName] && ROOMS_MAP[socket.gameName].get(roomName)) {
-      if (ROOMS_MAP[socket.gameName].get(roomName).length !== 2) {
+      if (ROOMS_MAP[socket.gameName].get(roomName) && ROOMS_MAP[socket.gameName].get(roomName).length !== 2) {
         await watiRefreshUser();
       }
-      if (ROOMS_MAP[socket.gameName].get(roomName).length === 2) {
+      if (ROOMS_MAP[socket.gameName].get(roomName) && ROOMS_MAP[socket.gameName].get(roomName).length === 2) {
         const DIFF_SOCKET = ROOMS_MAP[socket.gameName].get(roomName).find((ws) => ws !== socket);
         if (DIFF_SOCKET) {
           DIFF_SOCKET.send(

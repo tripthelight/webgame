@@ -3,7 +3,11 @@ import errorModal from '../popup/errorModal.js';
 import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
 import { LOADING_EVENT } from '../loading.js';
 import msg_str from '../msg_str.js';
-import watiPeer from './watiPeer.js';
+import waitPeer from './waitPeer.js';
+
+import taptapInit from '../../../game/taptap/taptapInit.js';
+import taptapRes from '../../../game/taptap/taptapRes.js';
+import taptapReq from '../../../game/taptap/taptapReq.js';
 
 const servers = {
   iceServers: [
@@ -17,7 +21,7 @@ let signalingSocket = null;
 let peerConnection = null;
 let dataChannel = null;
 
-function otherLeavesComn() {
+export function otherLeavesComn() {
   LOADING_EVENT.show(msg_str('left_user'));
   if (peerConnection) {
     peerConnection.close();
@@ -29,7 +33,7 @@ function otherLeavesComn() {
   }
 }
 
-function initConnect() {
+async function initConnect() {
   return new Promise((resolve, reject) => {
     peerConnection = new RTCPeerConnection(servers);
 
@@ -37,19 +41,24 @@ function initConnect() {
       const onDataChannel = event.channel;
 
       // 내 nickName을 상대방에게 전송
-      // 두 번째로 접속해서 offer를 보낸 user는 sessionStorage에 ms가 있음
       if (onDataChannel && onDataChannel.readyState === 'open') {
         onDataChannel.send(
           JSON.stringify({
             type: 'sharedData',
-            data: {
-              nickname: localStorage.getItem('nickName'),
-            },
+            nickname: localStorage.getItem('nickName'),
           }),
         );
 
-        // LOADING_EVENT.hide();
-        watiPeer(2);
+        waitPeer(2);
+      }
+
+      switch (sessionStorage.getItem('gameName')) {
+        case 'taptap':
+          taptapInit();
+          taptapRes(onDataChannel);
+          break;
+        default:
+          break;
       }
 
       // TODO: 각 게임의 send 처리 필요
@@ -113,7 +122,7 @@ function initConnect() {
     dataChannel.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === 'sharedData') {
-        storageMethod('s', 'SET_ITEM', 'yourName', message.data.nickname);
+        storageMethod('s', 'SET_ITEM', 'yourName', message.nickname);
         const YOUR_NAME = sessionStorage.getItem('yourName');
         const DECODE_YOUR_NAME = fromUnicodePoints(
           YOUR_NAME.replace(/"/g, '')
@@ -129,6 +138,14 @@ function initConnect() {
       if (message.type === 'clickMessage') {
         console.log('click message : ', message.data);
         document.querySelector('.message').innerText = message.data;
+      }
+
+      switch (sessionStorage.getItem('gameName')) {
+        case 'taptap':
+          taptapReq(message);
+          break;
+        default:
+          break;
       }
     };
 
@@ -223,12 +240,12 @@ async function handleMessage(msgData) {
   });
 }
 
-const initOnopen = (gameName) => {
+const initOnopen = () => {
   return new Promise((resolve, reject) => {
     signalingSocket.send(
       JSON.stringify({
         type: 'entryOrder',
-        gameName: gameName,
+        gameName: sessionStorage.getItem('gameName'),
         roomName: sessionStorage.getItem('roomName') ?? null,
       }),
     );
@@ -236,9 +253,7 @@ const initOnopen = (gameName) => {
   });
 };
 
-export default function webRTC(gameName) {
-  const CLIENT_ID = localStorage.getItem('clientId');
-  if (!CLIENT_ID) return errorModal();
+export function webRTC(gameName) {
   const NICK_NAME = localStorage.getItem('nickName');
   if (!NICK_NAME) return errorModal();
   const DECODE_NICK_NAME = fromUnicodePoints(
@@ -249,34 +264,20 @@ export default function webRTC(gameName) {
   if (document.querySelector('.my-nickname')) {
     document.querySelector('.my-nickname').innerText = DECODE_NICK_NAME;
   }
+  storageMethod('s', 'SET_ITEM', 'gameName', gameName);
 
   signalingSocket = new WebSocket('ws://61.36.169.20:8081');
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = async () => {
     LOADING_EVENT.hide();
-    watiPeer(1, DECODE_NICK_NAME);
-    await initOnopen(gameName);
+    waitPeer(1, DECODE_NICK_NAME);
+    await initOnopen();
   };
 
   // signalingServer 응답
   signalingSocket.onmessage = async (message) => {
     const msgData = JSON.parse(message.data);
-    await handleMessage(msgData)
-      .then(() => {
-        // 새로고침 스트레스 테스트
-        /*
-        let cnt = 0;
-        const interval = setInterval(function () {
-          if (cnt > 1000) {
-            clearInterval(interval);
-          }
-          cnt++;
-          console.log(cnt);
-          location.reload();
-        }, Math.floor(Math.random() * 100) + 1);
-        */
-      })
-      .catch(otherLeavesComn);
+    await handleMessage(msgData).catch(otherLeavesComn);
   };
 }

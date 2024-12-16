@@ -1,5 +1,6 @@
 import { timeInterval_1, timeInterval_500 } from '../variable.js';
 import { LOADING_EVENT } from '../loading.js';
+import fromUnicodePoints from '../unicode/fromUnicodePoints.js';
 
 let dotAni = null;
 let matching = true;
@@ -39,7 +40,19 @@ const WAIT_ENEMY = {
       enemyEl.insertBefore(enemyDotL, enemyEl.firstChild);
       enemyEl.appendChild(enemyDotR);
       playerEl.innerText = player;
-      enemyName.innerText = 'OPPONENT';
+
+      const YOUR_NAME = sessionStorage.getItem('yourName');
+      if (YOUR_NAME) {
+        const DECODE_YOUR_NAME = fromUnicodePoints(
+          YOUR_NAME.replace(/"/g, '')
+            .split(',')
+            .map((s) => s.trim()),
+        );
+        enemyName.innerText = DECODE_YOUR_NAME;
+      } else {
+        enemyName.innerText = 'OPPONENT';
+      }
+
       waitEl.classList.add('wait');
       waitEl.appendChild(playerEl);
       waitEl.appendChild(enemyEl);
@@ -59,7 +72,7 @@ const WAIT_ENEMY = {
   },
 };
 
-export default function watiPeer(len, nickName) {
+export default function waitPeer(len, nickName) {
   // WAIT ENEMY
   switch (len) {
     case 1:
