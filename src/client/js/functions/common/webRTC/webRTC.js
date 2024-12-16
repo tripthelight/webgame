@@ -16,7 +16,6 @@ const servers = {
 let signalingSocket = null;
 let peerConnection = null;
 let dataChannel = null;
-let connectingState = false;
 
 function otherLeavesComn() {
   LOADING_EVENT.show(msg_str('left_user'));
@@ -45,16 +44,12 @@ function initConnect() {
             type: 'sharedData',
             data: {
               nickname: localStorage.getItem('nickName'),
-              clientId: sessionStorage.getItem('ms') ? sessionStorage.getItem('ms') : '',
             },
           }),
         );
 
         // LOADING_EVENT.hide();
         watiPeer(2);
-        setTimeout(() => {
-          connectingState = false;
-        }, 1);
       }
 
       // TODO: 각 게임의 send 처리 필요
@@ -128,13 +123,6 @@ function initConnect() {
         if (document.querySelector('.ur-nickname')) {
           document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
         }
-
-        if (message.data.clientId) {
-          // storageMethod('s', 'SET_ITEM', 'clientId', JSON.parse(sessionStorage.getItem('clientId')).us);
-          storageMethod('s', 'SET_ITEM', 'clientId', message.data.clientId);
-        } else {
-          storageMethod('s', 'REMOVE_ITEM', 'ms');
-        }
       }
 
       // TODO: 각 게임의 onmessage 처리 필요
@@ -181,17 +169,8 @@ async function handleMessage(msgData) {
         storageMethod('s', 'SET_ITEM', 'roomName', msgData.roomName);
       }
       if (msgData.setOffer && msgData.setOffer === 'true') {
-        storageMethod('s', 'SET_ITEM', 'clientId', msgData.clientId);
         await createOffer(); // 두번째 접속한 사람만 offer를 보내야함
-      } else {
-        storageMethod('s', 'SET_ITEM', 'clientId', msgData.clientId);
       }
-      resolve();
-    }
-
-    if (msgData.type === 'reClientId') {
-      console.log('reClientId : ', msgData.data);
-      storageMethod('s', 'SET_ITEM', 'clientId', msgData.data);
       resolve();
     }
 
@@ -246,21 +225,11 @@ async function handleMessage(msgData) {
 
 const initOnopen = (gameName) => {
   return new Promise((resolve, reject) => {
-    const clientId = sessionStorage.getItem('clientId') ?? null;
-    const roomName = sessionStorage.getItem('roomName') ?? null;
-
-    if (clientId) {
-      // 이전에 입장한 room이 있음
-    } else {
-      // 새로 입장
-    }
-
     signalingSocket.send(
       JSON.stringify({
         type: 'entryOrder',
         gameName: gameName,
-        clientId: clientId,
-        roomName: roomName,
+        roomName: sessionStorage.getItem('roomName') ?? null,
       }),
     );
     resolve();
@@ -281,12 +250,10 @@ export default function webRTC(gameName) {
     document.querySelector('.my-nickname').innerText = DECODE_NICK_NAME;
   }
 
-  signalingSocket = new WebSocket('ws://61.36.169.31:8081');
+  signalingSocket = new WebSocket('ws://61.36.169.20:8081');
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = async () => {
-    if (connectingState) return;
-    connectingState = true;
     LOADING_EVENT.hide();
     watiPeer(1, DECODE_NICK_NAME);
     await initOnopen(gameName);
