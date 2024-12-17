@@ -5,9 +5,9 @@ import { LOADING_EVENT } from '../loading.js';
 import msg_str from '../msg_str.js';
 import waitPeer from './waitPeer.js';
 
-import taptapInit from '../../../game/taptap/taptapInit.js';
 import taptapRes from '../../../game/taptap/taptapRes.js';
 import taptapReq from '../../../game/taptap/taptapReq.js';
+import taptapGameState from '../../../gameState/taptap.js';
 
 const servers = {
   iceServers: [
@@ -20,6 +20,7 @@ const servers = {
 let signalingSocket = null;
 let peerConnection = null;
 let dataChannel = null;
+export let onDataChannel = null;
 
 export function otherLeavesComn() {
   LOADING_EVENT.show(msg_str('left_user'));
@@ -38,7 +39,8 @@ async function initConnect() {
     peerConnection = new RTCPeerConnection(servers);
 
     peerConnection.ondatachannel = (event) => {
-      const onDataChannel = event.channel;
+      // const onDataChannel = event.channel;
+      onDataChannel = event.channel;
 
       // 내 nickName을 상대방에게 전송
       if (onDataChannel && onDataChannel.readyState === 'open') {
@@ -54,8 +56,7 @@ async function initConnect() {
 
       switch (sessionStorage.getItem('gameName')) {
         case 'taptap':
-          taptapInit();
-          taptapRes(onDataChannel);
+          taptapRes.waitEnemy();
           break;
         default:
           break;
@@ -270,6 +271,7 @@ export function webRTC(gameName) {
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = async () => {
+    taptapGameState.waitEnemy();
     LOADING_EVENT.hide();
     waitPeer(1, DECODE_NICK_NAME);
     await initOnopen();

@@ -1,9 +1,24 @@
-import { otherLeavesComn } from '../../functions/common/webRTC/webRTC.js';
+import { otherLeavesComn, onDataChannel } from '../../functions/common/webRTC/webRTC.js';
 
-export default function taptapRes(onDataChannel) {
-  if (onDataChannel && onDataChannel.readyState === 'open') {
-    //
-  } else {
-    otherLeavesComn();
-  }
-}
+const taptapRes = {
+  gameState: () => {
+    if (onDataChannel && onDataChannel.readyState === 'open') {
+      onDataChannel.send(
+        JSON.stringify({
+          type: 'gameState',
+          data: window.sessionStorage.getItem('gameState'),
+        }),
+      );
+    } else {
+      otherLeavesComn();
+    }
+  },
+  waitEnemy: () => {
+    taptapRes.gameState();
+  },
+  count: () => {
+    taptapRes.gameState();
+  },
+};
+
+export default taptapRes;

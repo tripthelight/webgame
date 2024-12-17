@@ -1,5 +1,7 @@
 import cowndown from './cowndown.js';
 import { timeInterval_1000, timeInterval_2000, timeInterval_3000, timeInterval_4000 } from '../../functions/common/variable.js';
+import gameState from '../../gameState/taptap.js';
+import taptapRes from './taptapRes.js';
 
 export default (innerEl) => {
   let ww = window.innerWidth;
@@ -24,7 +26,7 @@ export default (innerEl) => {
   setTimeout(() => {
     window.sessionStorage.removeItem('count');
     cowndown.hide(document.querySelector('.count'));
-    // gameState.playing();
+    taptapRes.count();
     // setSocketGameState("playing");
   }, timeInterval_4000);
 };

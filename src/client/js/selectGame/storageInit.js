@@ -6,4 +6,5 @@ export default function storageInit() {
   storageMethod('s', 'REMOVE_ITEM', 'roomName');
   storageMethod('s', 'REMOVE_ITEM', 'yourName');
   storageMethod('s', 'REMOVE_ITEM', 'gameName');
+  storageMethod('s', 'REMOVE_ITEM', 'gameState');
 }
