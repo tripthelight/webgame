@@ -19,6 +19,18 @@ const taptapRes = {
   count: () => {
     taptapRes.gameState();
   },
+  tapCount: (count) => {
+    if (onDataChannel && onDataChannel.readyState === 'open') {
+      onDataChannel.send(
+        JSON.stringify({
+          type: 'enemyCount',
+          count: count,
+        }),
+      );
+    } else {
+      otherLeavesComn();
+    }
+  },
 };
 
 export default taptapRes;

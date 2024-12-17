@@ -1,6 +1,6 @@
-import IINTERACTION from "./IINTERACTION.js";
-import showInter from "./showInter.js";
-import { timeInterval_600 } from "../../../js/common/variable.js";
+import IINTERACTION from './IINTERACTION.js';
+import showInter from './showInter.js';
+import { timeInterval_600 } from '../../functions/common/variable.js';
 
 export default {
   show: (diff) => {

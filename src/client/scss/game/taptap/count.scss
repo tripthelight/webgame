@@ -1,3 +1,5 @@
+@use './_keyframes' as anim;
+
 .count {
   position: fixed;
   left: 0;
@@ -20,47 +22,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation-duration: leaner;
-    animation-iteration-count: 1;
-    animation-name: readyAnimation;
-    animation-duration: 4s;
-  }
-  @keyframes readyAnimation {
-    0% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0, 0);
-    }
-    20% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1, 1);
-    }
-    25% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0, 0);
-    }
-    45% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1, 1);
-    }
-    50% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0, 0);
-    }
-    70% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1, 1);
-    }
-    75% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0, 0);
-    }
-    95% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.3, 1.3);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(2, 2);
-    }
+    @include anim.animation(readyAnimation, 4s, 1);
   }
 }

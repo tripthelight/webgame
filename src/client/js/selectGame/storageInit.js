@@ -3,8 +3,6 @@ import errorModal from '../functions/common/popup/errorModal.js';
 import storageMethod from '../functions/common/storage/storageMethod.js';
 
 export default function storageInit() {
-  storageMethod('s', 'REMOVE_ITEM', 'roomName');
-  storageMethod('s', 'REMOVE_ITEM', 'yourName');
-  storageMethod('s', 'REMOVE_ITEM', 'gameName');
-  storageMethod('s', 'REMOVE_ITEM', 'gameState');
+  window.sessionStorage.clear();
+  storageMethod('s', 'REMOVE_ALL');
 }

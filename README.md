@@ -18,6 +18,17 @@
 - npm install @reduxjs/toolkit
 - npm install -g nodemon
 
+- webpack
+  - npm i -D webpack webpack-cli
+  - npm i -D babel-loader @babel/preset-env @babel/core
+  - npm i -D style-loader css-loader sass-loader sass
+  - npm i -D mini-css-extract-plugin
+  - npm i -D html-loader
+  - npm i -D html-webpack-plugin
+  - npm i -D copy-webpack-plugin image-webpack-loader file-loader
+  - npm i -D url-loader
+  - npm i -D webpack-dev-server
+
 # VSCODE EXTENSION
 
 - live server

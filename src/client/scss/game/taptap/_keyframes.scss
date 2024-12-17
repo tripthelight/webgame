@@ -1,0 +1,82 @@
+@mixin keyframes($animation_name) {
+  @keyframes #{$animation_name} {
+    @content;
+  }
+}
+
+@mixin animation($name, $duration: 0s, $iteration-count: 1, $direction: normal, $fill-mode: none) {
+  animation-name: $name;
+  animation-duration: $duration;
+  animation-iteration-count: $iteration-count;
+  animation-direction: $direction;
+  animation-fill-mode: $fill-mode;
+}
+
+@include keyframes(circleAnimation) {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@include keyframes(readyAnimation) {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0, 0);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1, 1);
+  }
+  25% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0, 0);
+  }
+  45% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1, 1);
+  }
+  50% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0, 0);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1, 1);
+  }
+  75% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0, 0);
+  }
+  95% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.3, 1.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2, 2);
+  }
+}
+
+@include keyframes(interactionAnimation) {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}

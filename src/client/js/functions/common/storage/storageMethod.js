@@ -23,6 +23,15 @@ export default function storageMethod(_storage, _method, _key, _value) {
         saveSessionStorage();
       }
       break;
+    case 'REMOVE_ALL':
+      if (_storage === 'l') {
+        window.localStorage.clear();
+        saveLocalStorage();
+      } else if (_storage === 's') {
+        window.sessionStorage.clear();
+        saveSessionStorage();
+      }
+      break;
     default:
       break;
   }

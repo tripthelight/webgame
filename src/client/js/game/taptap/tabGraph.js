@@ -1,6 +1,6 @@
 // import { gameOver as setSocketGameOver } from "../../../js/socket/taptap/setSocket.js";
 import gameResult from './gameResult.js';
-import gameState from '../../../gameState/taptap.js';
+import gameState from '../../gameState/taptap.js';
 
 export default {
   tap: () => {
@@ -25,11 +25,11 @@ export default {
         if (tHeight <= 0 || bHeight <= 0) {
           gameState.gameOver();
           if (tHeight <= 0) {
-            setSocketGameOver('win');
+            // setSocketGameOver('win');
             gameResult(true);
           }
           if (bHeight <= 0) {
-            setSocketGameOver('die');
+            // setSocketGameOver('die');
             gameResult(false);
           }
         }
