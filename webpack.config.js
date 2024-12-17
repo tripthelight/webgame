@@ -69,10 +69,6 @@ const webpackConfig = {
         ],
       },
       {
-        test: /\.html$/,
-        use: ['html-loader'],
-      },
-      {
         test: /\.(png|jpe?g|gif|svg|webp)$/i,
         exclude: /node_modules/,
         use: [

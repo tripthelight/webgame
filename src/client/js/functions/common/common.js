@@ -1,4 +1,5 @@
 // import '../../../scss/common.scss';
+import '../../common/browserLang.js';
 import '../../common/deviceCheck.js';
 import '../../common/networkCheck.js';
 import '../../common/resize.js';
