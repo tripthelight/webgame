@@ -1,4 +1,7 @@
 // import '../../../scss/common.scss';
+import '../../common/deviceCheck.js';
+import '../../common/networkCheck.js';
+import '../../common/resize.js';
 import { LOADING_EVENT } from './loading.js';
 import storageEvent from '../../functions/common/storage/storageEvent.js';
 import refreshEvent from './refreshEvent.js';

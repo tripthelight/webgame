@@ -1,34 +1,24 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import * as sass from 'sass';
 import webpack from 'webpack';
-import autoprefixer from 'autoprefixer';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpackDevServer from 'webpack-dev-server';
+import multipleHtmlPlugins from './src/client/js/functions/module/webpack/htmlPage.js';
+import multipleJsPlugins from './src/client/js/functions/module/webpack/jsPage.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const __filename = fileURLToPath(import.meta.url);
 
 const MODE = process.env.MODE === 'development';
 
 const webpackConfig = {
   mode: process.env.MODE, // development | production
   devtool: MODE ? 'source-map' : false,
-  entry: {
-    main: './src/client/js/main/main.js',
-    selectGame: './src/client/js/selectGame/selectGame.js',
-    taptap: './src/client/js/game/taptap/taptap.js',
-    indianPocker: './src/client/js/game/indianPocker/indianPocker.js',
-    blackAndWhite: './src/client/js/game/blackAndWhite/blackAndWhite.js',
-    findTheSamePicture: './src/client/js/game/findTheSamePicture/findTheSamePicture.js',
-  },
+  entry: multipleJsPlugins,
   output: {
     // filename: "js/[name].bundle.js",
     filename: '[name].[chunkhash].js',
@@ -136,41 +126,9 @@ const webpackConfig = {
     new CssMinimizerPlugin(),
     new MiniCssExtractPlugin({
       linkType: 'text/css',
-      // filename: "css/common.css",
-      filename: '[name].[contenthash].css',
-      chunkFilename: '[id].css',
+      filename: 'css/[name]/[name].css',
     }),
-    new HtmlWebpackPlugin({
-      template: './src/client/index.html',
-      chunks: ['main'],
-      filename: 'index.html',
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/client/views/selectGame.html',
-      chunks: ['selectGame'],
-      filename: 'views/selectGame.html',
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/client/views/game/taptap.html',
-      chunks: ['taptap'],
-      filename: 'views/game/taptap.html',
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/client/views/game/indianPocker.html',
-      chunks: ['indianPocker'],
-      filename: 'views/game/indianPocker.html',
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/client/views/game/blackAndWhite.html',
-      chunks: ['blackAndWhite'],
-      filename: 'views/game/blackAndWhite.html',
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/client/views/game/findTheSamePicture.html',
-      chunks: ['findTheSamePicture'],
-      filename: 'views/game/findTheSamePicture.html',
-    }),
-  ],
+  ].concat(multipleHtmlPlugins),
   optimization: {
     minimizer: [
       new TerserPlugin({

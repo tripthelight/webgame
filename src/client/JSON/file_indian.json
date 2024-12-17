@@ -1,0 +1,4 @@
+{
+  "js": ["defaultGame", "index", "taptap", "blackandwhite1", "indianpoker", "findsamepicture"],
+  "html": ["defaultGame", "index", "taptap", "blackandwhite1", "indianpoker", "findsamepicture"]
+}

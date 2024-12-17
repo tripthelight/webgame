@@ -1,0 +1,4 @@
+{
+  "js": ["index", "selectGame", "taptap"],
+  "html": ["index", "selectGame", "taptap"]
+}
