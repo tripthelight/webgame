@@ -1,7 +1,8 @@
 // import errorComn from "../common/errorComn.js";
+import errorComn from '../../functions/module/client/common/errorComn.js';
 import { comnText } from '../../functions/module/client/common/language.js';
-import screenClickEvent from './screenClickEvent.js';
 import setStorageGameResult from '../../functions/module/client/common/setStorageGameResult.js';
+import storageMethod from '../../functions/common/storage/storageMethod.js';
 
 export default (_result) => {
   // _result: true => 이김
@@ -32,15 +33,15 @@ export default (_result) => {
   POPUP.appendChild(INNER);
   POPUP.appendChild(BTN_WRAP);
   const CONTAINER = document.getElementById('container');
-  // if (!CONTAINER) errorComn();
+  if (!CONTAINER) errorComn();
   CONTAINER.appendChild(POPUP);
 
   BTN_HOME.onclick = () => {
-    window.sessionStorage.clear();
+    storageMethod('s', 'REMOVE_ALL');
     location.replace('/');
   };
   BTN_REPLAY.onclick = () => {
-    window.sessionStorage.clear();
+    storageMethod('s', 'REMOVE_ALL');
     location.replace('/taptap');
   };
 

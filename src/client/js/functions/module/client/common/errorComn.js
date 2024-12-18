@@ -1,16 +1,13 @@
-import namespace from "../../socket/namespace.js";
-import { text } from "./language.js";
+import { text } from './language.js';
+import { onDataChannel } from '../../../common/webRTC/webRTC.js';
+import gameResponse from '../../peerConn/gameResponse.js';
 
 export default (_errTxt) => {
-  let ns = namespace || null;
-  if (ns && ns.nsp === window.location.pathname) {
+  if (onDataChannel && onDataChannel.readyState === 'open') {
     alert(_errTxt ? _errTxt : text.err);
-    namespace.emit("errorCommon", {
-      room: window.sessionStorage.roomName,
-      err: true,
-    });
+    gameResponse.errorCommon();
   } else {
     alert(text.leaveRoom);
   }
-  window.location.href = "/";
+  window.location.href = '/';
 };

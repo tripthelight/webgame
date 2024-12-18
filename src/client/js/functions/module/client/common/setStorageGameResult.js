@@ -156,7 +156,6 @@ export default (_gameName, _result) => {
     }
 
     // 게임 결과를 localStorage에 저장
-    // window.localStorage.setItem("gameResults", JSON.stringify(gameResultArr));
     storageMethod('l', 'SET_ITEM', 'gameResults', JSON.stringify(gameResultArr));
   }
 };

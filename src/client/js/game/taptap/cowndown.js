@@ -1,9 +1,11 @@
+import storageMethod from '../../functions/common/storage/storageMethod.js';
+
 export default {
   show: (countStyle) => {
     if (!document.querySelector('.count')) {
       let countEl = document.createElement('div');
       let inner = document.createElement('span');
-      window.sessionStorage.setItem('count', 3);
+      storageMethod('s', 'SET_ITEM', 'count', 3);
       inner.innerText = '3';
       countEl.classList.add('count');
       countEl.appendChild(inner);

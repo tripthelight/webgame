@@ -5,9 +5,15 @@ import { LOADING_EVENT } from '../loading.js';
 import msg_str from '../msg_str.js';
 import waitPeer from './waitPeer.js';
 
+import LOADING from '../../module/client/common/loading.js';
 import taptapRes from '../../../game/taptap/taptapRes.js';
 import taptapReq from '../../../game/taptap/taptapReq.js';
 import taptapGameState from '../../../gameState/taptap.js';
+import screenClickEvent from '../../../game/taptap/screenClickEvent.js';
+import connectResult from '../../module/peerConn/taptap/connectResult.js';
+import refreshEvent from '../../../refresh/taptap/taptap.js';
+import cowndown from '../../../game/taptap/cowndown.js';
+import countStyle from '../../../game/taptap/countStyle.js';
 
 const servers = {
   iceServers: [
@@ -56,7 +62,25 @@ async function initConnect() {
 
       switch (sessionStorage.getItem('gameName')) {
         case 'taptap':
-          taptapRes.waitEnemy();
+          console.log('step 1 ::: ');
+
+          const gameState = window.sessionStorage.getItem('gameState');
+          if (gameState === 'waitEnemy') {
+            taptapRes.waitEnemy();
+          }
+          if (gameState === 'count') {
+            taptapRes.count();
+            cowndown.show(countStyle);
+          }
+          if (gameState === 'playing') {
+            refreshEvent.tapGraph();
+            screenClickEvent.tap();
+          }
+          if (gameState === 'gameOver') {
+            refreshEvent.tapGraph();
+          }
+
+          // connectResult();
           break;
         default:
           break;
@@ -271,7 +295,10 @@ export function webRTC(gameName) {
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = async () => {
-    taptapGameState.waitEnemy();
+    if (!window.sessionStorage.getItem('gameState')) {
+      taptapGameState.waitEnemy();
+    }
+
     LOADING_EVENT.hide();
     waitPeer(1, DECODE_NICK_NAME);
     await initOnopen();
