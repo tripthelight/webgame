@@ -22,6 +22,18 @@ const taptapRes = {
   playing: () => {
     taptapRes.gameState();
   },
+  endCount: () => {
+    if (onDataChannel && onDataChannel.readyState === 'open') {
+      onDataChannel.send(
+        JSON.stringify({
+          type: 'endCount',
+          data: window.sessionStorage.getItem('gameState'),
+        }),
+      );
+    } else {
+      otherLeavesComn();
+    }
+  },
   tapCount: (count) => {
     if (onDataChannel && onDataChannel.readyState === 'open') {
       onDataChannel.send(
@@ -45,6 +57,23 @@ const taptapRes = {
     } else {
       otherLeavesComn();
     }
+  },
+  gameStateRe: () => {
+    const promise = new Promise((resolve, reject) => {
+      resolve(onDataChannel);
+    });
+    promise.then((dataChannel) => {
+      if (dataChannel && dataChannel.readyState === 'open') {
+        dataChannel.send(
+          JSON.stringify({
+            type: 'gameStateRe',
+            gameState: window.sessionStorage.getItem('gameState'),
+          }),
+        );
+      } else {
+        otherLeavesComn();
+      }
+    });
   },
 };
 

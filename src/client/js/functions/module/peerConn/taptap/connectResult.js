@@ -11,8 +11,15 @@ export default () => {
     if (window.sessionStorage.gameState === 'gameOver') {
       refreshEvent.tapGraph();
     } else if (window.sessionStorage.gameState === 'count') {
+      /*
       LOADING.show();
       console.log('count >>>>> ');
+      const countEnd = () => {
+        LOADING.hide();
+        storageMethod('s', 'REMOVE_ITEM', 'count');
+        gameState.playing();
+        taptapRes.playing();
+      };
       if (window.sessionStorage.count) {
         let cnt = Number(window.sessionStorage.count);
         if (cnt > 0) {
@@ -20,20 +27,16 @@ export default () => {
             console.log('interval >>> ');
             if (cnt <= 0) {
               clearInterval(CNT_INTERVAL);
-              storageMethod('s', 'REMOVE_ITEM', 'count');
-              gameState.playing();
-              taptapRes.playing();
+              countEnd();
             }
             cnt--;
             storageMethod('s', 'SET_ITEM', 'count', cnt);
           }, 1000);
         } else {
-          storageMethod('s', 'REMOVE_ITEM', 'count');
-          gameState.playing();
-          taptapRes.playing();
+          countEnd();
         }
       }
-      // window.sessionStorage.count
+      */
     } else if (window.sessionStorage.gameState === 'playing') {
       // setSocketGameState("playing");
       storageMethod('s', 'REMOVE_ITEM', 'count');

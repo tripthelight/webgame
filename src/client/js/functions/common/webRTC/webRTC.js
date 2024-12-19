@@ -11,6 +11,7 @@ import taptapReq from '../../../game/taptap/taptapReq.js';
 import taptapGameState from '../../../gameState/taptap.js';
 import screenClickEvent from '../../../game/taptap/screenClickEvent.js';
 import connectResult from '../../module/peerConn/taptap/connectResult.js';
+import connectRefresh from '../../module/peerConn/taptap/connectRefresh.js';
 import refreshEvent from '../../../refresh/taptap/taptap.js';
 import cowndown from '../../../game/taptap/cowndown.js';
 import countStyle from '../../../game/taptap/countStyle.js';
@@ -66,21 +67,32 @@ async function initConnect() {
 
           const gameState = window.sessionStorage.getItem('gameState');
           if (gameState === 'waitEnemy') {
+            console.log('waitEnemy 새로 진입 >>>>>>>>>>> ');
+
             taptapRes.waitEnemy();
           }
-          if (gameState === 'count') {
-            taptapRes.count();
-            cowndown.show(countStyle);
-          }
-          if (gameState === 'playing') {
-            refreshEvent.tapGraph();
-            screenClickEvent.tap();
-          }
-          if (gameState === 'gameOver') {
-            refreshEvent.tapGraph();
+          // 여기서 부터는 나 or 상대가 새로고침으로 진입
+          // if (gameState === 'count') {
+          //   console.log('count 에서 새로고침 >>>>>>>>>>> ');
+
+          //   taptapRes.count();
+          //   cowndown.show(countStyle);
+          // }
+          // if (gameState === 'playing') {
+          //   console.log('playing 에서 새로고침 >>>>>>>>>>> ');
+
+          //   refreshEvent.tapGraph();
+          //   screenClickEvent.tap();
+          // }
+          // if (gameState === 'gameOver') {
+          //   console.log('gameOver 에서 새로고침 >>>>>>>>>>> ');
+          //   refreshEvent.tapGraph();
+          // }
+
+          if (gameState === 'count' || gameState === 'playing' || gameState === 'gameOver') {
+            connectRefresh();
           }
 
-          // connectResult();
           break;
         default:
           break;
@@ -145,33 +157,38 @@ async function initConnect() {
     };
 
     dataChannel.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === 'sharedData') {
-        storageMethod('s', 'SET_ITEM', 'yourName', message.nickname);
-        const YOUR_NAME = sessionStorage.getItem('yourName');
-        const DECODE_YOUR_NAME = fromUnicodePoints(
-          YOUR_NAME.replace(/"/g, '')
-            .split(',')
-            .map((s) => s.trim()),
-        );
-        if (document.querySelector('.ur-nickname')) {
-          document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
+      const promise = new Promise((resolve, reject) => {
+        resolve(event);
+      });
+      promise.then((_event) => {
+        const message = JSON.parse(_event.data);
+        if (message.type === 'sharedData') {
+          storageMethod('s', 'SET_ITEM', 'yourName', message.nickname);
+          const YOUR_NAME = sessionStorage.getItem('yourName');
+          const DECODE_YOUR_NAME = fromUnicodePoints(
+            YOUR_NAME.replace(/"/g, '')
+              .split(',')
+              .map((s) => s.trim()),
+          );
+          if (document.querySelector('.ur-nickname')) {
+            document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
+          }
         }
-      }
 
-      // TODO: 각 게임의 onmessage 처리 필요
-      if (message.type === 'clickMessage') {
-        console.log('click message : ', message.data);
-        document.querySelector('.message').innerText = message.data;
-      }
+        // TODO: 각 게임의 onmessage 처리 필요
+        if (message.type === 'clickMessage') {
+          console.log('click message : ', message.data);
+          document.querySelector('.message').innerText = message.data;
+        }
 
-      switch (sessionStorage.getItem('gameName')) {
-        case 'taptap':
-          taptapReq(message);
-          break;
-        default:
-          break;
-      }
+        switch (sessionStorage.getItem('gameName')) {
+          case 'taptap':
+            taptapReq(message);
+            break;
+          default:
+            break;
+        }
+      });
     };
 
     dataChannel.onclose = () => {

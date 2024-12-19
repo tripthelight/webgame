@@ -1,0 +1,40 @@
+내가 새로고침 -
+상대와 재연결 -
+
+--------------------------------------------------------------------------------------
+
+재연결 완료 후 서로에게 자신의 gameState를 보냄
+
+--------------------------------------------------------------------------------------
+
+[ 상대가 보낸 gameState | 내 gameState ]
+위 2 gameState를 비교
+
+--------------------------------------------------------------------------------------
+
+if 같으면 :
+
+if gameState === 'count' :
+
+1) LOADING 화면 노출
+2) 상대가 다음 step인 playing으로 바뀐 후 나에게 gameState를 줄 때까지 기다림
+3) 상대의 gameState 를 받으면 나도 playing으로 전환
+
+if gameState === 'playing' :
+
+playing으로 전환
+
+if gameState === 'gameOver' :
+
+gameOver로 전환
+
+if 다르면 :
+
+[ 'count' | 'playing' | 'gameOver' ]
+
+내가 count      | 상대가 playing    => 내가 playing
+내가 count      | 상대가 gameOver   => 내가 gameOver
+내가 playing    | 상대가 count      => 상대가 count
+내가 playing    | 상대가 gameOver   => 내가 gameOver
+내가 gameOver   | 상대가 count      => 상대가 gameOver
+내가 gameOver   | 상대가 playing    => 상대가 gameOver

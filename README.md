@@ -49,5 +49,9 @@
 
 # 진행상태
 
-- 241215 오후:
-  - webRTC로 연결된 후 한쪽에서 새로고침 하면, 요청을 안보냄
+- 241219 오후:
+  - gameState - 'waitEnemy', 'count', 'playing', 'gameOver' - 별로 실행 함수 나눌 것
+  - webRTC Peer 사이에 이루어 지는 모든 통신은 promise 시킬 것
+  - signaling server와 client 간의 모든 요청과 응답은 promise 시킬 것
+  - 정상진입 단계와 gameState별로 새로고침 시 단계 정의할 것
+  - 정의한 단계별로 나눈 실행함수를 실행할 것

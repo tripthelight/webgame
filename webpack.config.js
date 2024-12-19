@@ -150,7 +150,7 @@ const compiler = webpack(webpackConfig);
 const server = new webpackDevServer(
   {
     static: {
-      directory: path.join('dist'), // 정적 파일 제공 디렉터리
+      directory: path.resolve(__dirname, 'src'), // 정적 파일 제공 디렉터리
     },
     compress: true,
     port: 3000,
