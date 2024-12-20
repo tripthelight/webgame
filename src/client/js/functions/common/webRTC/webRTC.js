@@ -15,6 +15,7 @@ import connectRefresh from '../../module/peerConn/taptap/connectRefresh.js';
 import refreshEvent from '../../../refresh/taptap/taptap.js';
 import cowndown from '../../../game/taptap/cowndown.js';
 import countStyle from '../../../game/taptap/countStyle.js';
+import errorComn from '../../module/client/common/errorComn.js';
 
 const servers = {
   iceServers: [
@@ -68,26 +69,8 @@ async function initConnect() {
           const gameState = window.sessionStorage.getItem('gameState');
           if (gameState === 'waitEnemy') {
             console.log('waitEnemy 새로 진입 >>>>>>>>>>> ');
-
             taptapRes.waitEnemy();
           }
-          // 여기서 부터는 나 or 상대가 새로고침으로 진입
-          // if (gameState === 'count') {
-          //   console.log('count 에서 새로고침 >>>>>>>>>>> ');
-
-          //   taptapRes.count();
-          //   cowndown.show(countStyle);
-          // }
-          // if (gameState === 'playing') {
-          //   console.log('playing 에서 새로고침 >>>>>>>>>>> ');
-
-          //   refreshEvent.tapGraph();
-          //   screenClickEvent.tap();
-          // }
-          // if (gameState === 'gameOver') {
-          //   console.log('gameOver 에서 새로고침 >>>>>>>>>>> ');
-          //   refreshEvent.tapGraph();
-          // }
 
           if (gameState === 'count' || gameState === 'playing' || gameState === 'gameOver') {
             connectRefresh();
@@ -157,38 +140,40 @@ async function initConnect() {
     };
 
     dataChannel.onmessage = (event) => {
-      const promise = new Promise((resolve, reject) => {
+      const onmessagePromise = new Promise((resolve, reject) => {
         resolve(event);
       });
-      promise.then((_event) => {
-        const message = JSON.parse(_event.data);
-        if (message.type === 'sharedData') {
-          storageMethod('s', 'SET_ITEM', 'yourName', message.nickname);
-          const YOUR_NAME = sessionStorage.getItem('yourName');
-          const DECODE_YOUR_NAME = fromUnicodePoints(
-            YOUR_NAME.replace(/"/g, '')
-              .split(',')
-              .map((s) => s.trim()),
-          );
-          if (document.querySelector('.ur-nickname')) {
-            document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
+      onmessagePromise
+        .then((_event) => {
+          const message = JSON.parse(_event.data);
+          if (message.type === 'sharedData') {
+            storageMethod('s', 'SET_ITEM', 'yourName', message.nickname);
+            const YOUR_NAME = sessionStorage.getItem('yourName');
+            const DECODE_YOUR_NAME = fromUnicodePoints(
+              YOUR_NAME.replace(/"/g, '')
+                .split(',')
+                .map((s) => s.trim()),
+            );
+            if (document.querySelector('.ur-nickname')) {
+              document.querySelector('.ur-nickname').innerText = DECODE_YOUR_NAME;
+            }
           }
-        }
 
-        // TODO: 각 게임의 onmessage 처리 필요
-        if (message.type === 'clickMessage') {
-          console.log('click message : ', message.data);
-          document.querySelector('.message').innerText = message.data;
-        }
+          // TODO: 각 게임의 onmessage 처리 필요
+          if (message.type === 'clickMessage') {
+            console.log('click message : ', message.data);
+            document.querySelector('.message').innerText = message.data;
+          }
 
-        switch (sessionStorage.getItem('gameName')) {
-          case 'taptap':
-            taptapReq(message);
-            break;
-          default:
-            break;
-        }
-      });
+          switch (sessionStorage.getItem('gameName')) {
+            case 'taptap':
+              taptapReq(message);
+              break;
+            default:
+              break;
+          }
+        })
+        .catch(otherLeavesComn);
     };
 
     dataChannel.onclose = () => {
@@ -220,66 +205,64 @@ async function createOffer() {
   console.log('offer 보냄');
 }
 
-async function handleMessage(msgData) {
-  return new Promise(async (resolve, reject) => {
-    if (msgData.type === 'entryOrder') {
-      // 나와 매칭된 user를 sessionStorage에 저장
-      if (msgData.roomName) {
-        storageMethod('s', 'SET_ITEM', 'roomName', msgData.roomName);
-      }
-      if (msgData.setOffer && msgData.setOffer === 'true') {
-        await createOffer(); // 두번째 접속한 사람만 offer를 보내야함
-      }
-      resolve();
-    }
-
-    if (msgData.type === 'networkError') {
-      otherLeavesComn();
-      resolve();
-    }
-
-    if (msgData.type === 'otherLeaves') {
-      console.log('otherLeaves ::: ', msgData.msg);
-      otherLeavesComn();
-      resolve();
-    }
-
-    if (msgData.type === 'offer') {
-      console.log('offer 받음 ::: ', JSON.parse(msgData.data).offer);
-      await initConnect();
-
-      const offer = JSON.parse(msgData.data).offer;
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await peerConnection.createAnswer();
-      await peerConnection.setLocalDescription(answer);
-      // Answer를 signaling 서버를 통해 첫 번째 사용자에게 전달
-      signalingSocket.send(
-        JSON.stringify({
-          type: 'answer',
-          data: JSON.stringify({ answer }),
-        }),
-      );
-
-      console.log('answer 보냄');
-      resolve();
-    }
-
-    if (msgData.type === 'answer') {
-      console.log('answer 받음 ::: ', JSON.parse(msgData.data).answer);
-      const answer = JSON.parse(msgData.data).answer;
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-      resolve();
-    }
-
-    if (msgData.type === 'candidate') {
-      console.log('candidate 받음 ::: ', JSON.parse(msgData.data).candidate);
-      const candidate = JSON.parse(msgData.data).candidate;
-      peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-      resolve();
-    }
-
-    reject();
+function handleMessage(msgData) {
+  const handleMessagePromise = new Promise((resolve) => {
+    resolve(msgData);
   });
+
+  handleMessagePromise
+    .then(async (msgData) => {
+      if (msgData.type === 'entryOrder') {
+        // 나와 매칭된 user를 sessionStorage에 저장
+        if (msgData.roomName) {
+          storageMethod('s', 'SET_ITEM', 'roomName', msgData.roomName);
+        }
+        if (msgData.setOffer && msgData.setOffer === 'true') {
+          await createOffer(); // 두번째 접속한 사람만 offer를 보내야함
+        }
+      }
+
+      if (msgData.type === 'networkError') {
+        otherLeavesComn();
+      }
+
+      if (msgData.type === 'otherLeaves') {
+        console.log('otherLeaves ::: ', msgData.msg);
+        otherLeavesComn();
+      }
+
+      if (msgData.type === 'offer') {
+        console.log('offer 받음 ::: ', JSON.parse(msgData.data).offer);
+        await initConnect();
+
+        const offer = JSON.parse(msgData.data).offer;
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+        // Answer를 signaling 서버를 통해 첫 번째 사용자에게 전달
+        signalingSocket.send(
+          JSON.stringify({
+            type: 'answer',
+            data: JSON.stringify({ answer }),
+          }),
+        );
+
+        console.log('answer 보냄');
+      }
+
+      if (msgData.type === 'answer') {
+        console.log('answer 받음 ::: ', JSON.parse(msgData.data).answer);
+        const answer = JSON.parse(msgData.data).answer;
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+      }
+
+      if (msgData.type === 'candidate') {
+        console.log('candidate 받음 ::: ', JSON.parse(msgData.data).candidate);
+        const candidate = JSON.parse(msgData.data).candidate;
+        peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+      }
+    })
+    .catch(otherLeavesComn);
 }
 
 const initOnopen = () => {
@@ -323,7 +306,11 @@ export function webRTC(gameName) {
 
   // signalingServer 응답
   signalingSocket.onmessage = async (message) => {
-    const msgData = JSON.parse(message.data);
-    await handleMessage(msgData).catch(otherLeavesComn);
+    try {
+      const msgData = JSON.parse(message.data);
+      handleMessage(msgData);
+    } catch (error) {
+      errorComn(error);
+    }
   };
 }

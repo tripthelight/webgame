@@ -36,12 +36,12 @@ STANDBY_MAP = {
 // roomName이 있는지 check
 async function roomsMapInit(data) {
   return new Promise((resolve, reject) => {
-    const { msgData, socket } = data;
+    const { parsedData, socket } = data;
 
-    if (msgData.roomName) {
-      socket.roomName = msgData.roomName;
-      if (msgData.gameName) {
-        socket.gameName = msgData.gameName;
+    if (parsedData.roomName) {
+      socket.roomName = parsedData.roomName;
+      if (parsedData.gameName) {
+        socket.gameName = parsedData.gameName;
         if (ROOMS_MAP[socket.gameName]) {
           if (ROOMS_MAP[socket.gameName].get(socket.roomName)) {
             ROOMS_MAP[socket.gameName].get(socket.roomName).push(socket);
@@ -157,16 +157,16 @@ async function refreshDuringGame(data) {
 
 async function handleEntryOrder(data) {
   return new Promise(async (resolve, reject) => {
-    const { msgData, socket } = data;
+    const { socket, gameName, roomName } = data;
 
-    socket.gameName = msgData.gameName;
+    socket.gameName = gameName;
 
     if (!ROOMS_MAP[socket.gameName]) ROOMS_MAP[socket.gameName] = new Map(); // gameName 에 따라 Map 생성
     if (!STANDBY_MAP[socket.gameName]) STANDBY_MAP[socket.gameName] = new Map(); // gameName 에 따라 standby 상태만 Map 생성
 
-    if (msgData.roomName) {
+    if (roomName) {
       // 게임 중 새로고침
-      await refreshDuringGame({ socket, roomName: msgData.roomName }).catch(() => {
+      await refreshDuringGame({ socket, roomName }).catch(() => {
         socket.send(JSON.stringify({ type: 'otherLeaves', msg: 'r4' }));
       });
     } else {
@@ -179,12 +179,12 @@ async function handleEntryOrder(data) {
 
 async function offerAnserCandidateDataProcess(resData) {
   return new Promise((resolve, reject) => {
-    const { msgData, socket } = resData;
-    if (msgData && socket) {
+    const { parsedData, socket } = resData;
+    if (parsedData && socket) {
       if (socket.gameName && socket.roomName && ROOMS_MAP[socket.gameName] && ROOMS_MAP[socket.gameName].get(socket.roomName) && ROOMS_MAP[socket.gameName].get(socket.roomName).length === 2) {
         const DIFF_SOCKET = ROOMS_MAP[socket.gameName].get(socket.roomName).find((ws) => ws !== socket);
         if (DIFF_SOCKET && DIFF_SOCKET.readyState === WebSocket.OPEN) {
-          DIFF_SOCKET.send(JSON.stringify({ type: msgData.type, data: msgData.data }));
+          DIFF_SOCKET.send(JSON.stringify({ type: parsedData.type, data: parsedData.data }));
         } else {
           reject();
         }
@@ -200,44 +200,68 @@ async function offerAnserCandidateDataProcess(resData) {
 
 // 연결된 클라이언트 처리
 WSS.on('connection', async (socket) => {
-  // 새로 입장했을 때, socket에 고유한 socketId 부여
-  if (!socket.socketId) socket.socketId = uuidv4();
+  const connectionPromise = new Promise((resolve) => {
+    resolve(socket);
+  });
 
-  socket.on('message', async (message) => {
-    const msgData = JSON.parse(message);
-    const DATA = { msgData, socket };
-
-    await roomsMapInit(DATA);
-
-    if (msgData.type === 'entryOrder') {
-      await handleEntryOrder(DATA);
-    }
-
-    if (msgData.type === 'offer' || msgData.type === 'answer' || msgData.type === 'candidate') {
-      await offerAnserCandidateDataProcess({ msgData, socket }).catch(() => {
-        socket.send(JSON.stringify({ type: 'otherLeaves', msg: '2' }));
+  connectionPromise.then((socket) => {
+    socket.on('message', (data) => {
+      const messagePromise = new Promise((resolve, reject) => {
+        try {
+          const parsedData = JSON.parse(data); // 메시지 파싱
+          resolve(parsedData);
+        } catch (error) {
+          reject(error);
+        }
       });
-    }
+
+      messagePromise
+        .then(async (parsedData) => {
+          await roomsMapInit({ parsedData, socket });
+
+          if (parsedData.type === 'entryOrder') {
+            await handleEntryOrder({
+              socket,
+              gameName: parsedData.gameName,
+              roomName: parsedData.roomName,
+            });
+          }
+
+          if (parsedData.type === 'offer' || parsedData.type === 'answer' || parsedData.type === 'candidate') {
+            await offerAnserCandidateDataProcess({ parsedData, socket }).catch(() => {
+              socket.send(JSON.stringify({ type: 'otherLeaves', msg: '2' }));
+            });
+          }
+        })
+        .catch((err) => {
+          socket.send(JSON.stringify({ type: 'otherLeaves', msg: err }));
+        });
+    });
   });
 
   // 클라이언트 연결 종료 시
   socket.on('close', () => {
-    const roomsMapState = socket.gameName && socket.roomName && ROOMS_MAP[socket.gameName] && ROOMS_MAP[socket.gameName].get(socket.roomName);
-    if (roomsMapState) {
-      const room = ROOMS_MAP[socket.gameName].get(socket.roomName);
-      const index = room.indexOf(socket);
-      if (index !== -1) {
-        room.splice(index, 1); // socket을 배열에서 삭제
+    const closePromise = new Promise((resolve) => {
+      resolve(socket);
+    });
+    closePromise.then(async (socket) => {
+      const roomsMapState = socket.gameName && socket.roomName && ROOMS_MAP[socket.gameName] && ROOMS_MAP[socket.gameName].get(socket.roomName);
+      if (roomsMapState) {
+        const room = ROOMS_MAP[socket.gameName].get(socket.roomName);
+        const index = room.indexOf(socket);
+        if (index !== -1) {
+          room.splice(index, 1); // socket을 배열에서 삭제
+        }
+        if (ROOMS_MAP[socket.gameName].get(socket.roomName).length === 0) {
+          ROOMS_MAP[socket.gameName].delete(socket.roomName);
+        }
       }
-      if (ROOMS_MAP[socket.gameName].get(socket.roomName).length === 0) {
-        ROOMS_MAP[socket.gameName].delete(socket.roomName);
-      }
-    }
 
-    const standbyMapState = socket.gameName && socket.socketId && STANDBY_MAP[socket.gameName] && STANDBY_MAP[socket.gameName].get(socket.socketId);
-    if (standbyMapState) {
-      STANDBY_MAP[socket.gameName].delete(socket.socketId);
-    }
+      const standbyMapState = socket.gameName && socket.socketId && STANDBY_MAP[socket.gameName] && STANDBY_MAP[socket.gameName].get(socket.socketId);
+      if (standbyMapState) {
+        STANDBY_MAP[socket.gameName].delete(socket.socketId);
+      }
+    });
   });
 });
 
