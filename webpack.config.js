@@ -144,6 +144,12 @@ const webpackConfig = {
       maxSize: 50000, // 50KB로 설정하여, 특정 크기(라인 수)에 도달하면 분할
     },
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // @를 src 디렉토리로 설정
+    },
+    extensions: ['.js'], // 확장자 생략 가능
+  },
 };
 
 const compiler = webpack(webpackConfig);

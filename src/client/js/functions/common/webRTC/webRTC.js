@@ -15,7 +15,7 @@ import connectRefresh from '../../module/peerConn/taptap/connectRefresh.js';
 import refreshEvent from '../../../refresh/taptap/taptap.js';
 import cowndown from '../../../game/taptap/cowndown.js';
 import countStyle from '../../../game/taptap/countStyle.js';
-import errorComn from '../../module/client/common/errorComn.js';
+import errorComn from '@/client/js/functions/module/client/common/errorComn.js';
 
 const servers = {
   iceServers: [
@@ -291,7 +291,7 @@ export function webRTC(gameName) {
   }
   storageMethod('s', 'SET_ITEM', 'gameName', gameName);
 
-  signalingSocket = new WebSocket('ws://61.36.169.20:8081');
+  signalingSocket = new WebSocket('ws://58.72.192.17:8081');
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = async () => {

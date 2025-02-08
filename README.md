@@ -41,6 +41,7 @@
 - Indent-rainbow
 - Auto rename tag
 - Markdown All in One
+- plantUML
 
 # build
 

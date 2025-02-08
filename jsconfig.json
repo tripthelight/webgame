@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".", // 현재 디렉토리를 기준으로 설정
+    "paths": {
+      "@/*": ["src/*"] // @를 src로 매핑
+    }
+  },
+  "include": ["src/**/*"] // src 디렉토리의 모든 파일 포함
+}
