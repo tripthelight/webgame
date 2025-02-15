@@ -128,12 +128,12 @@ const webpackConfig = {
   optimization: {
     minimizer: [
       new TerserPlugin({
+        // `extractComments`를 제거하거나 올바르게 설정
+        extractComments: false, // 주석 추출 비활성화
         terserOptions: {
-          compress: {
-            // drop_console: true,
+          format: {
+            comments: false, // 모든 주석 제거
           },
-          // JavaScript 파일에서 주석 제거
-          extractComments: false,
         },
       }),
       new CssMinimizerPlugin(),

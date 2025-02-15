@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.3.0",
+    "lit": "^3.2.1",
     "redux": "^5.0.1",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.8.0",

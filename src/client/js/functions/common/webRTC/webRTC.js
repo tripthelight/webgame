@@ -291,7 +291,7 @@ export function webRTC(gameName) {
   }
   storageMethod('s', 'SET_ITEM', 'gameName', gameName);
 
-  signalingSocket = new WebSocket('ws://58.72.192.17:8081');
+  signalingSocket = new WebSocket('ws://58.72.192.77:8081');
 
   // signalingServer 연결이 열리면
   signalingSocket.onopen = async () => {
