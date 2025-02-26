@@ -1,0 +1,99 @@
+{
+  "ticketList": [
+    {
+      "deleteAt": "20250404111100",
+      "isUnpaid": false,
+      "journey": "{\"busTckKndNm\":\"어른 2, 아동 1\",\"deprDt\":\"20250404\",\"deprTime\":\"111100\",\"deprTrmlCd\":\"2551901\",\"deprTrmlNm\":\"강릉시외터미널\",\"mrnpDt\":\"20250220\",\"tissuNcnt\":3,\"trvlMrnpDtlList\":[{\"busTckKndCd\":\"TV00\",\"busTckKndNm\":\"어른\",\"evcpUseYn\":\"N\",\"psngFrnm\":\"김경욱\",\"psngGndrCd\":\"M\",\"psngMbphNo\":\"01095887646\",\"pubDt\":\"20250220\",\"pubShctTrmlCd\":\"0906\",\"pubSno\":1,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrnpSqno\":\"1\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502200006564\"},{\"busTckKndCd\":\"TV00\",\"busTckKndNm\":\"어른\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250220\",\"pubShctTrmlCd\":\"0906\",\"pubSno\":2,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrnpSqno\":\"2\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502200006565\"},{\"busTckKndCd\":\"TV01\",\"busTckKndNm\":\"아동\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250220\",\"pubShctTrmlCd\":\"0906\",\"pubSno\":3,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrnpSqno\":\"3\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502200006566\"}],\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrsStaCd\":\"1\",\"trvlMrsStaNm\":\"예매완료\",\"trvlPrdId\":\"T9320021\",\"trvlPrdNm\":\"테스트\"}",
+      "srtDt": "20250404111100",
+      "type": "FG"
+    },
+    {
+      "deleteAt": "20250327160000",
+      "isUnpaid": false,
+      "journey": "{\"dropoffAt\":\"20250328160000\",\"dropoffPoi\":\"제주국제공항\",\"fuelTpNm\":\"휘발유\",\"imgUrl\":\"https://ims-mobility-public.s3.ap-northeast-2.amazonaws.com/cars/342.png\",\"maxVhmy\":\"2022\",\"mimVhmy\":\"2022\",\"mncrNm\":\"지프\",\"mrnpStaNm\":\"예약 확정\",\"pickupAt\":\"20250327160000\",\"pickupPoi\":\"제주국제공항\",\"rncrMrnpSno\":\"20250220000000963082\",\"seater\":\"5\",\"subMdlNm\":\"레니게이드\",\"tmgAcmtAmt\":\"0\",\"tmgDcAmt\":\"0\",\"totRntAmt\":\"97190\"}",
+      "srtDt": "20250327160000",
+      "type": "L"
+    },
+    {
+      "deleteAt": "20250323150000",
+      "isUnpaid": false,
+      "journey": "{\"adtCnt\":\"1\",\"airPnrNumber\":\"Z2MZRL\",\"airlineImage\":\"https://cdns.tourvis.com/air/dist/images/logo/7C.png\",\"airlineName\":\"제주항공\",\"arrAirportCode\":\"CJU\",\"arrAirportName\":\"제주\",\"arrivalDate\":\"20250323160000\",\"cabinClass\":\"비즈니스석\",\"chdCnt\":\"1\",\"departureDate\":\"20250323150000\",\"deptAirportCode\":\"GMP\",\"deptAirportName\":\"김포\",\"flightNumber\":\"7C151\",\"freeBaggageValue\":\"무료위탁 수하물 30kg\",\"infCnt\":\"1\",\"jrnySqNo\":\"20250221000000127245\",\"jrnySttName\":\"예약완료\",\"pnrNumber\":\"A15000137001\"}",
+      "srtDt": "20250323150000",
+      "type": "U"
+    },
+    {
+      "deleteAt": "20250314060500",
+      "isUnpaid": false,
+      "journey": "{\"adtCnt\":\"1\",\"airPnrNumber\":\"W24XCT\",\"airlineImage\":\"https://cdns.tourvis.com/air/dist/images/logo/LJ.png\",\"airlineName\":\"진에어\",\"arrAirportCode\":\"CJU\",\"arrAirportName\":\"제주\",\"arrivalDate\":\"20250314071500\",\"cabinClass\":\"비즈니스석\",\"chdCnt\":\"1\",\"departureDate\":\"20250314060500\",\"deptAirportCode\":\"GMP\",\"deptAirportName\":\"김포\",\"flightNumber\":\"LJ501\",\"freeBaggageValue\":\"무료위탁 수하물 30kg\",\"infCnt\":\"1\",\"jrnySqNo\":\"20250221000000127244\",\"jrnySttName\":\"예약완료\",\"pnrNumber\":\"A15000137000\"}",
+      "srtDt": "20250314060500",
+      "type": "U"
+    },
+    {
+      "deleteAt": "20250307093000",
+      "isUnpaid": false,
+      "journey": "{\"adtCnt\":\"1\",\"airPnrNumber\":\"DB63PK\",\"airlineImage\":\"https://cdns.tourvis.com/air/dist/images/logo/ZE.png\",\"airlineName\":\"이스타항공\",\"arrAirportCode\":\"GMP\",\"arrAirportName\":\"김포\",\"arrivalDate\":\"20250307104000\",\"cabinClass\":\"일반석\",\"chdCnt\":\"1\",\"departureDate\":\"20250307093000\",\"deptAirportCode\":\"CJU\",\"deptAirportName\":\"제주\",\"flightNumber\":\"ZE204\",\"freeBaggageValue\":\"무료위탁 수하물 15kg\",\"infCnt\":\"0\",\"jrnySqNo\":\"20250214000000127222\",\"jrnySttName\":\"예약완료\",\"pnrNumber\":\"A15000136238\"}",
+      "srtDt": "20250307093000",
+      "type": "U"
+    },
+    {
+      "deleteAt": "20250306154000",
+      "isUnpaid": false,
+      "journey": "{\"arvDt1\":\"20250306\",\"arvDt2\":\"20250306\",\"arvRsStnCd1\":\"0502\",\"arvRsStnCd2\":\"0551\",\"arvRsStnNm1\":\"천안아산\",\"arvRsStnNm2\":\"수서\",\"arvTm1\":\"173200\",\"arvTm2\":\"184800\",\"dptDt1\":\"20250306\",\"dptDt2\":\"20250306\",\"dptRsStnCd1\":\"0020\",\"dptRsStnCd2\":\"0502\",\"dptRsStnNm1\":\"부산\",\"dptRsStnNm2\":\"천안아산\",\"dptTm1\":\"154000\",\"dptTm2\":\"180700\",\"pnrNo\":\"320250209751346\",\"stlbTrnClsfCd1\":\"17\",\"stlbTrnClsfCd2\":\"17\",\"tkAndStList1\":[{\"dcntKndCd\":\"192\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"1\",\"psgTpDvNm\":\"어른\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"F262A14088E45A1271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"5\",\"seatNo\":\"1A\",\"tkNo\":\"83535-0220-10001-45\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"204\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"7\",\"psgTpDvNm\":\"경로\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"F262A14048E4121271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"5\",\"seatNo\":\"1B\",\"tkNo\":\"83535-0220-10002-36\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"201\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"3\",\"psgTpDvNm\":\"어린이\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"F262A140C8E4451271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"5\",\"seatNo\":\"1C\",\"tkNo\":\"83535-0220-10003-81\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"202\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"8\",\"psgTpDvNm\":\"유아\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"F262A14028E4051271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"5\",\"seatNo\":\"1D\",\"tkNo\":\"83535-0220-10004-80\",\"tkSttCd\":\"02\"}],\"tkAndStList2\":[{\"dcntKndCd\":\"192\",\"locSeatAttCd\":\"011\",\"locSeatAttNm\":\"1인\",\"psgTpDvCd\":\"1\",\"psgTpDvNm\":\"어른\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"F262A14088E45A1271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"3\",\"seatNo\":\"1A\",\"tkNo\":\"83535-0220-10001-45\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"204\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"7\",\"psgTpDvNm\":\"경로\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"F262A14048E4121271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"3\",\"seatNo\":\"1B\",\"tkNo\":\"83535-0220-10002-36\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"201\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"3\",\"psgTpDvNm\":\"어린이\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"F262A140C8E4451271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"3\",\"seatNo\":\"1C\",\"tkNo\":\"83535-0220-10003-81\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"202\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"8\",\"psgTpDvNm\":\"유아\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"F262A14028E4051271803A80B0A000006F807CC0318006800F0A48602800E4400200\",\"scarNo\":\"3\",\"seatNo\":\"2C\",\"tkNo\":\"83535-0220-10004-80\",\"tkSttCd\":\"02\"}],\"tkCnt\":4,\"trnGpCd1\":\"300\",\"trnGpCd2\":\"300\",\"trnNo1\":\"00348\",\"trnNo2\":\"00352\"}",
+      "srtDt": "20250306154000",
+      "type": "R"
+    },
+    {
+      "deleteAt": "20250306063900",
+      "isUnpaid": false,
+      "journey": "{\"arvDt1\":\"20250306\",\"arvDt2\":\"20250306\",\"arvRsStnCd1\":\"0502\",\"arvRsStnCd2\":\"0020\",\"arvRsStnNm1\":\"천안아산\",\"arvRsStnNm2\":\"부산\",\"arvTm1\":\"071700\",\"arvTm2\":\"092900\",\"dptDt1\":\"20250306\",\"dptDt2\":\"20250306\",\"dptRsStnCd1\":\"0551\",\"dptRsStnCd2\":\"0502\",\"dptRsStnNm1\":\"수서\",\"dptRsStnNm2\":\"천안아산\",\"dptTm1\":\"063900\",\"dptTm2\":\"072900\",\"pnrNo\":\"320250209751344\",\"stlbTrnClsfCd1\":\"17\",\"stlbTrnClsfCd2\":\"17\",\"tkAndStList1\":[{\"dcntKndCd\":\"192\",\"locSeatAttCd\":\"011\",\"locSeatAttNm\":\"1인\",\"psgTpDvCd\":\"1\",\"psgTpDvNm\":\"어른\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A140A8E479127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"8A\",\"tkNo\":\"83534-0220-10005-79\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"204\",\"locSeatAttCd\":\"011\",\"locSeatAttNm\":\"1인\",\"psgTpDvCd\":\"7\",\"psgTpDvNm\":\"경로\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A14068E459127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"9A\",\"tkNo\":\"83534-0220-10006-77\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"201\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"3\",\"psgTpDvNm\":\"어린이\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A140E8E45C127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"9B\",\"tkNo\":\"83534-0220-10007-29\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"202\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"8\",\"psgTpDvNm\":\"유아\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A14018E462127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"9C\",\"tkNo\":\"83534-0220-10008-35\",\"tkSttCd\":\"02\"}],\"tkAndStList2\":[{\"dcntKndCd\":\"192\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"1\",\"psgTpDvNm\":\"어른\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A140A8E479127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"5\",\"seatNo\":\"1A\",\"tkNo\":\"83534-0220-10005-79\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"204\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"7\",\"psgTpDvNm\":\"경로\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A14068E459127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"5\",\"seatNo\":\"1B\",\"tkNo\":\"83534-0220-10006-77\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"201\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"3\",\"psgTpDvNm\":\"어린이\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A140E8E45C127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"5\",\"seatNo\":\"1C\",\"tkNo\":\"83534-0220-10007-29\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"202\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"8\",\"psgTpDvNm\":\"유아\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A14018E462127180B140B0A000006F807CC03180CC80067295C0E44028000200\",\"scarNo\":\"5\",\"seatNo\":\"1D\",\"tkNo\":\"83534-0220-10008-35\",\"tkSttCd\":\"02\"}],\"tkCnt\":4,\"trnGpCd1\":\"300\",\"trnGpCd2\":\"300\",\"trnNo1\":\"00653\",\"trnNo2\":\"00307\"}",
+      "srtDt": "20250306063900",
+      "type": "R"
+    },
+    {
+      "deleteAt": "20250305180000",
+      "isUnpaid": false,
+      "journey": "{\"busTckKndNm\":\"어른 1, 아동 1\",\"deprDt\":\"20250305\",\"deprTime\":\"180000\",\"deprTrmlCd\":\"T932A17\",\"deprTrmlNm\":\"shinsegaeticketx1\",\"mrnpDt\":\"20250218\",\"tissuNcnt\":2,\"trvlMrnpDtlList\":[{\"busTckKndCd\":\"TV00\",\"busTckKndNm\":\"어른\",\"chtkDtm\":\"20250226095006\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250218\",\"pubShctTrmlCd\":\"T974\",\"pubSno\":1,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlChtkId\":\"TC202502260000461\",\"trvlMrnpSno\":\"20250218-03061\",\"trvlMrnpSqno\":\"1\",\"trvlTckStaCd\":\"40\",\"trvlTissuId\":\"TT202502180006557\"},{\"busTckKndCd\":\"TV01\",\"busTckKndNm\":\"아동\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250218\",\"pubShctTrmlCd\":\"T974\",\"pubSno\":2,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250218-03061\",\"trvlMrnpSqno\":\"2\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502180006558\"}],\"trvlMrnpSno\":\"20250218-03061\",\"trvlMrsStaCd\":\"1\",\"trvlMrsStaNm\":\"예매완료\",\"trvlPrdId\":\"T9320031\",\"trvlPrdNm\":\"평창 핫플레이스 이용권\"}",
+      "srtDt": "20250305180000",
+      "type": "FG"
+    },
+    {
+      "deleteAt": "20250228080500",
+      "isUnpaid": false,
+      "journey": "{\"arvDt1\":\"20250228\",\"arvRsStnCd1\":\"0020\",\"arvRsStnNm1\":\"부산\",\"arvTm1\":\"105100\",\"dptDt1\":\"20250228\",\"dptRsStnCd1\":\"0551\",\"dptRsStnNm1\":\"수서\",\"dptTm1\":\"080500\",\"pnrNo\":\"320250209751079\",\"stlbTrnClsfCd1\":\"17\",\"tkAndStList1\":[{\"dcntKndCd\":\"192\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"1\",\"psgTpDvNm\":\"어른\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"3262A24088E4421250E0DC80B0A00000000000000000000001505660E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"8B\",\"tkNo\":\"83532-0218-10001-33\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"202\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"8\",\"psgTpDvNm\":\"유아\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"3262A24048E4241250E0DC80B0A00000000000000000000001505660E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"8C\",\"tkNo\":\"83532-0218-10002-18\",\"tkSttCd\":\"02\"}],\"tkCnt\":2,\"trnGpCd1\":\"300\",\"trnNo1\":\"00315\"}",
+      "srtDt": "20250228080500",
+      "type": "R"
+    },
+    {
+      "deleteAt": "20250228060500",
+      "isUnpaid": false,
+      "journey": "{\"adtCnt\":\"1\",\"airPnrNumber\":\"AKA2DM\",\"airlineImage\":\"https://cdns.tourvis.com/air/dist/images/logo/LJ.png\",\"airlineName\":\"진에어\",\"arrAirportCode\":\"CJU\",\"arrAirportName\":\"제주\",\"arrivalDate\":\"20250228071500\",\"cabinClass\":\"일반석\",\"chdCnt\":\"1\",\"departureDate\":\"20250228060500\",\"deptAirportCode\":\"GMP\",\"deptAirportName\":\"김포\",\"flightNumber\":\"LJ501\",\"freeBaggageValue\":\"무료위탁 수하물 15kg\",\"infCnt\":\"0\",\"jrnySqNo\":\"20250214000000127221\",\"jrnySttName\":\"예약완료\",\"pnrNumber\":\"A15000136237\"}",
+      "srtDt": "20250228060500",
+      "type": "U"
+    },
+    {
+      "deleteAt": "20250227065400",
+      "isUnpaid": false,
+      "journey": "{\"arvDt1\":\"20250227\",\"arvDt2\":\"20250227\",\"arvRsStnCd1\":\"0015\",\"arvRsStnCd2\":\"0020\",\"arvRsStnNm1\":\"동대구\",\"arvRsStnNm2\":\"부산\",\"arvTm1\":\"084100\",\"arvTm2\":\"094500\",\"dptDt1\":\"20250227\",\"dptDt2\":\"20250227\",\"dptRsStnCd1\":\"0551\",\"dptRsStnCd2\":\"0015\",\"dptRsStnNm1\":\"수서\",\"dptRsStnNm2\":\"동대구\",\"dptTm1\":\"065400\",\"dptTm2\":\"085900\",\"pnrNo\":\"320250209751341\",\"stlbTrnClsfCd1\":\"17\",\"stlbTrnClsfCd2\":\"17\",\"tkAndStList1\":[{\"dcntKndCd\":\"192\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"1\",\"psgTpDvNm\":\"어른\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A14088E46C125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"8\",\"seatNo\":\"12B\",\"tkNo\":\"83534-0220-10001-27\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"204\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"7\",\"psgTpDvNm\":\"경로\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A14048E448125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"8\",\"seatNo\":\"13C\",\"tkNo\":\"83534-0220-10002-09\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"201\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"3\",\"psgTpDvNm\":\"어린이\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A140C8E45A125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"8\",\"seatNo\":\"14A\",\"tkNo\":\"83534-0220-10003-45\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"202\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"8\",\"psgTpDvNm\":\"유아\",\"psrmClCd\":\"1\",\"psrmClNm\":\"일반실\",\"qrcode\":\"7262A14028E462125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"8\",\"seatNo\":\"15D\",\"tkNo\":\"83534-0220-10004-35\",\"tkSttCd\":\"02\"}],\"tkAndStList2\":[{\"dcntKndCd\":\"192\",\"locSeatAttCd\":\"012\",\"locSeatAttNm\":\"창측\",\"psgTpDvCd\":\"1\",\"psgTpDvNm\":\"어른\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A14088E46C125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"7C\",\"tkNo\":\"83534-0220-10001-27\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"204\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"7\",\"psgTpDvNm\":\"경로\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A14048E448125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"8B\",\"tkNo\":\"83534-0220-10002-09\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"201\",\"locSeatAttCd\":\"011\",\"locSeatAttNm\":\"1인\",\"psgTpDvCd\":\"3\",\"psgTpDvNm\":\"어린이\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A140C8E45A125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"9A\",\"tkNo\":\"83534-0220-10003-45\",\"tkSttCd\":\"02\"},{\"dcntKndCd\":\"202\",\"locSeatAttCd\":\"013\",\"locSeatAttNm\":\"내측\",\"psgTpDvCd\":\"8\",\"psgTpDvNm\":\"유아\",\"psrmClCd\":\"2\",\"psrmClNm\":\"특실\",\"qrcode\":\"7262A14028E462125360CC80B0A00000F0007CC01360AC80063695A0E44028000200\",\"scarNo\":\"3\",\"seatNo\":\"11B\",\"tkNo\":\"83534-0220-10004-35\",\"tkSttCd\":\"02\"}],\"tkCnt\":4,\"trnGpCd1\":\"300\",\"trnGpCd2\":\"300\",\"trnNo1\":\"00307\",\"trnNo2\":\"00309\"}",
+      "srtDt": "20250227065400",
+      "type": "R"
+    },
+    {
+      "deleteAt": "20250211140921",
+      "isUnpaid": false,
+      "journey": "{\"bdCod\":\"2\",\"bdCodNam\":\"일반_T\",\"busDvsCd\":\"H\",\"corCod\":\"03\",\"corNam\":\"동양고속\",\"fltNo\":\"14,15\",\"linSno\":\"K486846324\",\"sortDte\":\"20250211140921\",\"takTim\":\"60\",\"tckDetailList\":[{\"bmgCod\":\"1\",\"btkCod\":\"1\",\"btkSno\":\"2025021199506529601031002\",\"setNo\":\"02\"},{\"bmgCod\":\"1\",\"btkCod\":\"1\",\"btkSno\":\"2025021199506529501031001\",\"setNo\":\"01\"}],\"tckExpireAt\":\"20250301060000\",\"tckKndCod\":\"M\",\"terSfr\":\"010\",\"terSfrNam\":\"서울경부\",\"terSto\":\"310\",\"terStoNam\":\"천안고속\",\"timDte\":\"20250228\",\"timTim\":\"0600\"}",
+      "srtDt": "20250211140921",
+      "type": "H"
+    },
+    {
+      "deleteAt": "20250211111903",
+      "isUnpaid": false,
+      "journey": "{\"bdCod\":\"IDG\",\"bdCodNam\":\"일반_T\",\"busDvsCd\":\"C\",\"corCod\":\"C013\",\"corNam\":\"용남고속\",\"fltNo\":\"23\",\"frSynTerNam\":\"동서울\",\"frSynYn\":\"Y\",\"linSno\":\"L250211111903252125B0012025\",\"sortDte\":\"20250211111903\",\"takTim\":\"80\",\"tckDetailList\":[{\"birth\":\"850226\",\"bmgCod\":\"1\",\"btkCod\":\"IG00\",\"btkSno\":\"2025021100306000020511601311200102\",\"chkNo\":\"48\",\"hpNo\":\"0109588\",\"satsNoPrinYn\":\"Y\",\"setNo\":\"02\",\"tckPubDivCod\":\"P\"},{\"birth\":\"850226\",\"bmgCod\":\"1\",\"btkCod\":\"IG00\",\"btkSno\":\"2025021100306000010511601311200101\",\"chkNo\":\"08\",\"hpNo\":\"0109588\",\"satsNoPrinYn\":\"Y\",\"setNo\":\"01\",\"tckPubDivCod\":\"P\"}],\"tckExpireAt\":\"20250301071500\",\"terSfr\":\"0511601\",\"terSfrNam\":\"동서울\",\"terSto\":\"3112001\",\"terStoNam\":\"천안\",\"timDte\":\"20250228\",\"timTim\":\"0715\",\"toSynYn\":\"N\"}",
+      "srtDt": "20250211111903",
+      "type": "C"
+    }
+  ],
+  "response": {
+    "code": "0000",
+    "message": "OK"
+  }
+}
