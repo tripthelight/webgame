@@ -1,0 +1,43 @@
+{
+  "ticketList": [
+    {
+      "deleteAt": "20250404111100",
+      "isUnpaid": false,
+      "journey": "{\"busTckKndNm\":\"어른 2, 아동 1\",\"deprDt\":\"20250404\",\"deprTime\":\"111100\",\"deprTrmlCd\":\"2551901\",\"deprTrmlNm\":\"강릉시외터미널\",\"mrnpDt\":\"20250220\",\"tissuNcnt\":3,\"trvlMrnpDtlList\":[{\"busTckKndCd\":\"TV00\",\"busTckKndNm\":\"어른\",\"evcpUseYn\":\"N\",\"psngFrnm\":\"김경욱\",\"psngGndrCd\":\"M\",\"psngMbphNo\":\"01095887646\",\"pubDt\":\"20250220\",\"pubShctTrmlCd\":\"0906\",\"pubSno\":1,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrnpSqno\":\"1\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502200006564\"},{\"busTckKndCd\":\"TV00\",\"busTckKndNm\":\"어른\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250220\",\"pubShctTrmlCd\":\"0906\",\"pubSno\":2,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrnpSqno\":\"2\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502200006565\"},{\"busTckKndCd\":\"TV01\",\"busTckKndNm\":\"아동\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250220\",\"pubShctTrmlCd\":\"0906\",\"pubSno\":3,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrnpSqno\":\"3\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502200006566\"}],\"trvlMrnpSno\":\"20250220-03066\",\"trvlMrsStaCd\":\"1\",\"trvlMrsStaNm\":\"예매완료\",\"trvlPrdId\":\"T9320021\",\"trvlPrdNm\":\"테스트\"}",
+      "srtDt": "20250404111100",
+      "type": "FG"
+    },
+    {
+      "deleteAt": "20250305180000",
+      "isUnpaid": false,
+      "journey": "{\"busTckKndNm\":\"어른 1, 아동 1\",\"deprDt\":\"20250305\",\"deprTime\":\"180000\",\"deprTrmlCd\":\"T932A17\",\"deprTrmlNm\":\"shinsegaeticketx1\",\"mrnpDt\":\"20250218\",\"tissuNcnt\":2,\"trvlMrnpDtlList\":[{\"busTckKndCd\":\"TV00\",\"busTckKndNm\":\"어른\",\"chtkDtm\":\"20250226095006\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250218\",\"pubShctTrmlCd\":\"T974\",\"pubSno\":1,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlChtkId\":\"TC202502260000461\",\"trvlMrnpSno\":\"20250218-03061\",\"trvlMrnpSqno\":\"1\",\"trvlTckStaCd\":\"40\",\"trvlTissuId\":\"TT202502180006557\"},{\"busTckKndCd\":\"TV01\",\"busTckKndNm\":\"아동\",\"evcpUseYn\":\"N\",\"pubDt\":\"20250218\",\"pubShctTrmlCd\":\"T974\",\"pubSno\":2,\"pubWndNo\":\"60\",\"satsNo\":99,\"trvlMrnpSno\":\"20250218-03061\",\"trvlMrnpSqno\":\"2\",\"trvlTckStaCd\":\"10\",\"trvlTissuId\":\"TT202502180006558\"}],\"trvlMrnpSno\":\"20250218-03061\",\"trvlMrsStaCd\":\"1\",\"trvlMrsStaNm\":\"예매완료\",\"trvlPrdId\":\"T9320031\",\"trvlPrdNm\":\"평창 핫플레이스 이용권\"}",
+      "srtDt": "20250305180000",
+      "type": "FG"
+    },
+    {
+      "deleteAt": "20250227154725",
+      "isUnpaid": false,
+      "journey": "{\"counts\":1,\"myUseInfoListForT\":[{\"callKey\":\"50016315\",\"callStatus\":\"T\",\"carNumber\":\"대구00아0003\",\"drvMdn\":\"01032210718\",\"endLoc\":\"대구광역시 동구 신암동36-1\",\"estimatedTime\":\"8분\",\"estimatedTimeFmt\":\"(오후 4:44)\",\"getOnTimeString\":\"02월 27일 목요일, 15:47\",\"isForOtherRider\":false,\"payTypeString\":\"BC플래티늄신용\",\"startLoc\":\"대구광역시 동구 신암동294\",\"taxiName\":\"온다택시 중형\",\"taxiType\":\"N\"}],\"sortDte\":\"20250227154725\"}",
+      "srtDt": "20250227154725",
+      "type": "O"
+    },
+    {
+      "deleteAt": "20250211140921",
+      "isUnpaid": false,
+      "journey": "{\"bdCod\":\"2\",\"bdCodNam\":\"일반_T\",\"busDvsCd\":\"H\",\"corCod\":\"03\",\"corNam\":\"동양고속\",\"fltNo\":\"14,15\",\"linSno\":\"K486846324\",\"sortDte\":\"20250211140921\",\"takTim\":\"60\",\"tckDetailList\":[{\"bmgCod\":\"1\",\"btkCod\":\"1\",\"btkSno\":\"2025021199506529601031002\",\"setNo\":\"02\"},{\"bmgCod\":\"1\",\"btkCod\":\"1\",\"btkSno\":\"2025021199506529501031001\",\"setNo\":\"01\"}],\"tckExpireAt\":\"20250301060000\",\"tckKndCod\":\"M\",\"terSfr\":\"010\",\"terSfrNam\":\"서울경부\",\"terSto\":\"310\",\"terStoNam\":\"천안고속\",\"timDte\":\"20250228\",\"timTim\":\"0600\"}",
+      "srtDt": "20250211140921",
+      "type": "H"
+    },
+    {
+      "deleteAt": "20250211111903",
+      "isUnpaid": false,
+      "journey": "{\"bdCod\":\"IDG\",\"bdCodNam\":\"일반_T\",\"busDvsCd\":\"C\",\"corCod\":\"C013\",\"corNam\":\"용남고속\",\"fltNo\":\"23\",\"frSynTerNam\":\"동서울\",\"frSynYn\":\"Y\",\"linSno\":\"L250211111903252125B0012025\",\"sortDte\":\"20250211111903\",\"takTim\":\"80\",\"tckDetailList\":[{\"birth\":\"850226\",\"bmgCod\":\"1\",\"btkCod\":\"IG00\",\"btkSno\":\"2025021100306000020511601311200102\",\"chkNo\":\"48\",\"hpNo\":\"0109588\",\"satsNoPrinYn\":\"Y\",\"setNo\":\"02\",\"tckPubDivCod\":\"P\"},{\"birth\":\"850226\",\"bmgCod\":\"1\",\"btkCod\":\"IG00\",\"btkSno\":\"2025021100306000010511601311200101\",\"chkNo\":\"08\",\"hpNo\":\"0109588\",\"satsNoPrinYn\":\"Y\",\"setNo\":\"01\",\"tckPubDivCod\":\"P\"}],\"tckExpireAt\":\"20250301071500\",\"terSfr\":\"0511601\",\"terSfrNam\":\"동서울\",\"terSto\":\"3112001\",\"terStoNam\":\"천안\",\"timDte\":\"20250228\",\"timTim\":\"0715\",\"toSynYn\":\"N\"}",
+      "srtDt": "20250211111903",
+      "type": "C"
+    }
+  ],
+  "response": {
+    "code": "0000",
+    "message": "OK"
+  }
+}
